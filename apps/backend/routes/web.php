@@ -26,10 +26,18 @@ Route::get('/api', function () {
     ]);
 });
 
-// Fallback mirror routes to ensure zero 404 HTML errors on both root & /api prefixes
+// Root level public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::get('/courses', [CourseController::class, 'index']);
+
+// Direct /api/ prefixed public routes for guaranteed matching
+Route::post('/api/register', [AuthController::class, 'register']);
+Route::post('/api/verify-otp', [AuthController::class, 'verifyOtp']);
+Route::post('/api/login', [AuthController::class, 'login']);
+Route::post('/api/send-otp', [AuthController::class, 'sendOtp']);
+Route::post('/api/reset-password', [AuthController::class, 'resetPassword']);
+Route::get('/api/courses', [CourseController::class, 'index']);

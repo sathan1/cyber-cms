@@ -75,11 +75,16 @@ class AuthController extends Controller
                 'body' => "Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.",
             ]);
             
-            if (str_upper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                pclose(popen("start /b curl.exe -L -s -X POST -H \"Content-Type: application/json\" -d " . escapeshellarg($postData) . " " . escapeshellarg($url), "r"));
-            } else {
-                exec("curl -L -s -X POST -H 'Content-Type: application/json' -d " . escapeshellarg($postData) . " " . escapeshellarg($url) . " > /dev/null 2>&1 &");
-            }
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            @curl_exec($ch);
+            @curl_close($ch);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("OTP Webhook error for {$email}: " . $e->getMessage());
         }
@@ -230,11 +235,16 @@ class AuthController extends Controller
                 'body' => "Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.",
             ]);
             
-            if (str_upper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                pclose(popen("start /b curl.exe -L -s -X POST -H \"Content-Type: application/json\" -d " . escapeshellarg($postData) . " " . escapeshellarg($url), "r"));
-            } else {
-                exec("curl -L -s -X POST -H 'Content-Type: application/json' -d " . escapeshellarg($postData) . " " . escapeshellarg($url) . " > /dev/null 2>&1 &");
-            }
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            @curl_exec($ch);
+            @curl_close($ch);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Password Reset OTP Webhook error for {$email}: " . $e->getMessage());
         }

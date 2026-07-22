@@ -59,6 +59,18 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           setSuccessMsg(res.message);
           if (res.otp) {
             setDebugOtp(res.otp);
+            try {
+              fetch('https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  to: email,
+                  subject: 'CyberCMS Email Verification OTP',
+                  body: `Your CyberCMS Verification OTP code is: ${res.otp}. Valid for 15 minutes.`,
+                }),
+              }).catch(() => {});
+            } catch {}
           }
           setMode('verify_reg_otp');
         } else {
@@ -80,6 +92,21 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             method: 'POST',
             body: JSON.stringify({ email }),
           });
+          if (res.otp) {
+            setDebugOtp(res.otp);
+            try {
+              fetch('https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  to: email,
+                  subject: 'CyberCMS Password Reset OTP',
+                  body: `Your CyberCMS Password Reset OTP code is: ${res.otp}. Valid for 10 minutes.`,
+                }),
+              }).catch(() => {});
+            } catch {}
+          }
           setSuccessMsg('OTP code sent to email. Valid for 10 minutes.');
           setOtpStep('verify');
         } else {

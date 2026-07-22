@@ -67,17 +67,6 @@ class AuthController extends Controller
             'used' => false,
         ]);
 
-        try {
-            $webhookUrl = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
-            \Illuminate\Support\Facades\Http::async()->post($webhookUrl, [
-                'to' => $email,
-                'subject' => 'CyberCMS Email Verification OTP',
-                'body' => "Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.",
-            ]);
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("OTP Webhook error for {$email}: " . $e->getMessage());
-        }
-
         return response()->json([
             'message' => 'Account created! Please check your email for the 6-digit OTP code to complete registration.',
             'require_otp' => true,
@@ -215,17 +204,6 @@ class AuthController extends Controller
             'expires_at' => now()->addMinutes(10),
             'used' => false,
         ]);
-
-        try {
-            $webhookUrl = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
-            \Illuminate\Support\Facades\Http::async()->post($webhookUrl, [
-                'to' => $email,
-                'subject' => 'CyberCMS Password Reset OTP',
-                'body' => "Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.",
-            ]);
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("Password Reset OTP Webhook error for {$email}: " . $e->getMessage());
-        }
 
         return response()->json([
             'message' => 'Password reset OTP generated and sent to email.',

@@ -149,7 +149,7 @@ class AuthController extends Controller
                             if (!$dept) {
                                 $dept = Department::create(['name' => $meta['dept_name'], 'code' => $meta['dept']]);
                             }
-                            $m = MentorId::where('mentor_code', $meta['mcode'])->first();
+                            $m = MentorId::where('mentor_code', $meta['mcode'])->orWhere('staff_id', $meta['staff_id'])->first();
                             if (!$m) {
                                 $m = MentorId::create(['staff_id' => $meta['staff_id'], 'mentor_code' => $meta['mcode'], 'department_id' => $dept->id]);
                             }

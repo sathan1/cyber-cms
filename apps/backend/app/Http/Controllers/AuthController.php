@@ -125,60 +125,64 @@ class AuthController extends Controller
         if (in_array($email, ['sathandhurkes@gmail.com', 'sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
             $expectedPassword = ($email === 'sathandhurkes@gmail.com') ? 'Sathanu@061766' : 'password123';
             if ($request->password === $expectedPassword) {
-                $user = User::where('email', $email)->first();
-                if (!$user) {
-                    if ($email === 'sathandhurkes@gmail.com') {
-                        $user = User::create([
-                            'name' => 'Sathan (System Administrator)',
-                            'email' => $email,
-                            'password' => Hash::make($expectedPassword),
-                            'role' => 'ADMIN',
-                            'status' => 'active',
-                            'email_verified_at' => now(),
-                        ]);
+                try {
+                    $user = User::where('email', $email)->first();
+                    if (!$user) {
+                        if ($email === 'sathandhurkes@gmail.com') {
+                            $user = User::create([
+                                'name' => 'Sathan (System Administrator)',
+                                'email' => $email,
+                                'password' => Hash::make($expectedPassword),
+                                'role' => 'ADMIN',
+                                'status' => 'active',
+                                'email_verified_at' => now(),
+                            ]);
+                        } else {
+                            $codeMap = [
+                                'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
+                                'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'dept_name' => 'Electronics & Communication',  'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
+                                'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'dept_name' => 'Information Technology',       'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
+                                'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
+                            ];
+                            $meta = $codeMap[$email];
+                            $dept = Department::where('code', $meta['dept'])->first();
+                            if (!$dept) {
+                                $dept = Department::create(['name' => $meta['dept_name'], 'code' => $meta['dept']]);
+                            }
+                            $m = MentorId::where('mentor_code', $meta['mcode'])->first();
+                            if (!$m) {
+                                $m = MentorId::create(['staff_id' => $meta['staff_id'], 'mentor_code' => $meta['mcode'], 'department_id' => $dept->id]);
+                            }
+                            $user = User::create([
+                                'name' => $meta['name'],
+                                'email' => $email,
+                                'password' => Hash::make($expectedPassword),
+                                'role' => 'STAFF',
+                                'mentor_id' => $m ? $m->id : null,
+                                'status' => 'active',
+                                'email_verified_at' => now(),
+                            ]);
+                        }
                     } else {
-                        $codeMap = [
-                            'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
-                            'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'dept_name' => 'Electronics & Communication',  'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
-                            'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'dept_name' => 'Information Technology',       'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
-                            'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
-                        ];
-                        $meta = $codeMap[$email];
-                        $dept = Department::where('code', $meta['dept'])->first();
-                        if (!$dept) {
-                            $dept = Department::create(['name' => $meta['dept_name'], 'code' => $meta['dept']]);
-                        }
-                        $m = MentorId::where('mentor_code', $meta['mcode'])->first();
-                        if (!$m) {
-                            $m = MentorId::create(['staff_id' => $meta['staff_id'], 'mentor_code' => $meta['mcode'], 'department_id' => $dept->id]);
-                        }
-                        $user = User::create([
-                            'name' => $meta['name'],
-                            'email' => $email,
+                        $user->update([
                             'password' => Hash::make($expectedPassword),
-                            'role' => 'STAFF',
-                            'mentor_id' => $m ? $m->id : null,
-                            'status' => 'active',
                             'email_verified_at' => now(),
+                            'status' => 'active',
                         ]);
                     }
-                } else {
-                    $user->update([
-                        'password' => Hash::make($expectedPassword),
-                        'email_verified_at' => now(),
-                        'status' => 'active',
-                    ]);
-                }
 
-                $token = $user->createToken('auth_token')->plainTextToken;
-                if ($user->mentor_id && $user->mentor) {
-                    $user->load('mentor.department');
+                    $token = $user->createToken('auth_token')->plainTextToken;
+                    if ($user->mentor_id && $user->mentor) {
+                        $user->load('mentor.department');
+                    }
+                    return response()->json([
+                        'message' => 'Login successful',
+                        'token' => $token,
+                        'user' => $user,
+                    ]);
+                } catch (\Throwable $e) {
+                    return response()->json(['error_detail' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()], 500);
                 }
-                return response()->json([
-                    'message' => 'Login successful',
-                    'token' => $token,
-                    'user' => $user,
-                ]);
             }
         }
 

@@ -67,32 +67,28 @@ class AuthController extends Controller
             'used' => false,
         ]);
 
-        try {
-            $url = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
-            $payload = json_encode([
-                'to' => $email,
-                'subject' => 'CyberCMS Email Verification OTP',
-                'body' => "Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.",
-            ]);
-            
-            $parts = parse_url($url);
-            $host = $parts['host'];
-            $path = $parts['path'];
-            $fp = @fsockopen("ssl://" . $host, 443, $errno, $errstr, 2);
-            if ($fp) {
-                stream_set_blocking($fp, false);
-                $out = "POST " . $path . " HTTP/1.1\r\n";
-                $out .= "Host: " . $host . "\r\n";
-                $out .= "Content-Type: application/json\r\n";
-                $out .= "Content-Length: " . strlen($payload) . "\r\n";
-                $out .= "Connection: Close\r\n\r\n";
-                $out .= $payload;
-                @fwrite($fp, $out);
-                @fclose($fp);
+        register_shutdown_function(function () use ($email, $otp) {
+            try {
+                $url = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
+                $postData = json_encode([
+                    'to' => $email,
+                    'subject' => 'CyberCMS Email Verification OTP',
+                    'body' => "Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.",
+                ]);
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                @curl_exec($ch);
+                @curl_close($ch);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error("OTP Webhook error for {$email}: " . $e->getMessage());
             }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("OTP Webhook error for {$email}: " . $e->getMessage());
-        }
+        });
 
         return response()->json([
             'message' => 'Account created! Please check your email for the 6-digit OTP code to complete registration.',
@@ -232,32 +228,28 @@ class AuthController extends Controller
             'used' => false,
         ]);
 
-        try {
-            $url = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
-            $payload = json_encode([
-                'to' => $email,
-                'subject' => 'CyberCMS Password Reset OTP',
-                'body' => "Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.",
-            ]);
-            
-            $parts = parse_url($url);
-            $host = $parts['host'];
-            $path = $parts['path'];
-            $fp = @fsockopen("ssl://" . $host, 443, $errno, $errstr, 2);
-            if ($fp) {
-                stream_set_blocking($fp, false);
-                $out = "POST " . $path . " HTTP/1.1\r\n";
-                $out .= "Host: " . $host . "\r\n";
-                $out .= "Content-Type: application/json\r\n";
-                $out .= "Content-Length: " . strlen($payload) . "\r\n";
-                $out .= "Connection: Close\r\n\r\n";
-                $out .= $payload;
-                @fwrite($fp, $out);
-                @fclose($fp);
+        register_shutdown_function(function () use ($email, $otp) {
+            try {
+                $url = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
+                $postData = json_encode([
+                    'to' => $email,
+                    'subject' => 'CyberCMS Password Reset OTP',
+                    'body' => "Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.",
+                ]);
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+                curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                @curl_exec($ch);
+                @curl_close($ch);
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error("Password Reset OTP Webhook error for {$email}: " . $e->getMessage());
             }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("Password Reset OTP Webhook error for {$email}: " . $e->getMessage());
-        }
+        });
 
         return response()->json([
             'message' => 'Password reset OTP generated and sent to email.',

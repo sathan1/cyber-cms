@@ -371,7 +371,7 @@ export default function LessonPlayerModal({
                                 }`}>
                                   {mySubmission.status === 'graded' ? `Graded: ${mySubmission.score}/${assignment.max_score}` : 'Submitted'}
                                 </span>
-                                {mySubmission.feedback && <p className="text-[10px] text-gray-400 mt-1 max-w-xs text-right">"{mySubmission.feedback}"</p>}
+                                {mySubmission.feedback && <p className="text-[10px] text-gray-400 mt-1 max-w-xs text-right">&quot;{mySubmission.feedback}&quot;</p>}
                               </div>
                             ) : (
                               !isOverdue && (

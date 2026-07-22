@@ -236,7 +236,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           {mode === 'login' && (
             <>
               <p>
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <button onClick={() => { setMode('register'); setError(null); }} className="text-indigo-400 hover:underline font-semibold">
                   Register here
                 </button>

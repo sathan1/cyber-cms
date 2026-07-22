@@ -1,7 +1,7 @@
 FROM php:8.3-cli-alpine
 
-# Install system dependencies & pdo_sqlite
-RUN apk add --no-gradable --no-cache \
+# Install system dependencies
+RUN apk add --no-cache \
     sqlite-dev \
     libpng-dev \
     oniguruma-dev \
@@ -17,15 +17,22 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# Copy backend files
+# Copy backend application
 COPY apps/backend /app
 
-# Install dependencies
+# Install PHP packages
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Set permissions
-RUN chmod -R 777 /app/storage /app/bootstrap/cache /app/database
+# Touch database file & set permissions
+RUN touch /app/database/database.sqlite \
+    && chmod -R 777 /app/storage /app/bootstrap/cache /app/database
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && php -d variables_order=EGPCS -S 0.0.0.0:${PORT:-8000} -t public/"]
+ENV PORT=8000
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+ENV DB_CONNECTION=sqlite
+ENV DB_DATABASE=/app/database/database.sqlite
+
+CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && php -d variables_order=EGPCS -S 0.0.0.0:${PORT} -t public/"]

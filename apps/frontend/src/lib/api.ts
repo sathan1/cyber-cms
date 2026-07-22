@@ -33,16 +33,23 @@ export async function fetchApi<T = any>(endpoint: string, options: RequestInit =
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (!response.ok) {
-    throw new Error(data.message || 'An error occurred while processing your request.');
+    if (!response.ok) {
+      throw new Error(data.message || 'An error occurred while processing your request.');
+    }
+
+    return data;
+  } catch (err: any) {
+    if (err.name === 'TypeError' && err.message.includes('fetch')) {
+      throw new Error('Unable to connect to Railway backend API. Please verify your Railway domain URL.');
+    }
+    throw err;
   }
-
-  return data;
 }

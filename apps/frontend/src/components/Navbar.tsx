@@ -76,7 +76,7 @@ export default function Navbar({ user, onUserChange, onOpenAuth, onOpenOnboardin
               </div>
               <div>
                 <span className="font-bold text-lg text-white tracking-wide">CyberCMS</span>
-                <span className="text-xs block text-indigo-400 font-medium">MCET Academic Platform</span>
+                <span className="text-xs block text-indigo-400 font-medium">Academic &amp; Skill Platform</span>
               </div>
             </Link>
 

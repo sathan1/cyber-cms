@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         // 4. Staff Mentor Account
         $mentorUser = User::create([
             'name' => 'Prof. Smith (CSE Department)',
-            'email' => 'prof.smith@mcet.in',
+            'email' => 'prof.smith@cybercms.org',
             'password' => Hash::make('password123'),
             'role' => 'STAFF',
             'mentor_id' => 1,
@@ -84,7 +84,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\PlatformSetting::create([
             'id' => 1,
             'upi_id' => 'sathancreator@gmail.com',
-            'bank_details' => "Bank: State Bank of India\nAccount: 40982341029\nIFSC: SBIN0001842\nName: MCET Academic CMS",
+            'bank_details' => "Bank: State Bank of India\nAccount: 40982341029\nIFSC: SBIN0001842\nName: CyberCMS Academic Platform",
         ]);
     }
 }

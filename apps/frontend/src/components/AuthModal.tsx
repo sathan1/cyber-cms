@@ -121,7 +121,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           </h3>
           <p className="text-xs text-gray-400 mt-1">
             {mode === 'login' && 'Enter your credentials to access your portal'}
-            {mode === 'register' && 'Use your college email (@mcet.in or @drmcet.ac.in)'}
+            {mode === 'register' && 'Create your account to start learning'}
             {mode === 'verify_reg_otp' && `Enter the 6-digit OTP code sent to ${email}`}
             {mode === 'otp' && (otpStep === 'request' ? 'Receive a 10-minute single-use OTP code' : 'Enter the 6-digit code and your new password')}
           </p>
@@ -162,7 +162,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           {(mode === 'login' || mode === 'register' || (mode === 'otp' && otpStep === 'request')) && (
             <div>
               <label className="block text-xs font-semibold text-gray-300 mb-1">
-                {mode === 'register' ? 'College Email Address (@mcet.in / @drmcet.ac.in) *' : 'Email Address'}
+                Email Address *
               </label>
               <div className="relative">
                 <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-500" />
@@ -171,7 +171,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder={mode === 'register' ? 'name@mcet.in or name@drmcet.ac.in' : 'sathandhurkes@gmail.com'}
+                  placeholder="e.g. student@example.com"
                   className="w-full pl-9 pr-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
                 />
               </div>
@@ -187,9 +187,9 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
                   onChange={(e) => setRole(e.target.value as Role)}
                   className="w-full px-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white focus:outline-none focus:border-indigo-500"
                 >
-                  <option value="STUDENT">Academic Student (@mcet.in)</option>
-                  <option value="STAFF">Department Staff / Mentor (@drmcet.ac.in / @mcet.in)</option>
-                  <option value="PAID_USER">Paid Course Member (Any Email)</option>
+                  <option value="STUDENT">Academic Student</option>
+                  <option value="STAFF">Department Staff / Mentor</option>
+                  <option value="PAID_USER">Paid Course Member</option>
                 </select>
               </div>
 

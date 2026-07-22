@@ -89,9 +89,9 @@ export default function AdminDashboard() {
             <span className="px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs font-bold uppercase tracking-wider">
               System Administrator Console
             </span>
-            <h1 className="text-3xl font-extrabold text-white mt-1">MCET System Control &amp; Analytics</h1>
+            <h1 className="text-3xl font-extrabold text-white mt-1">CyberCMS System Control &amp; Analytics</h1>
             <p className="text-xs text-gray-300">
-              Manage platform domain rules (@mcet.in / @drmcet.ac.in), course catalog, staff/student accounts, and revenue logs.
+              Manage platform settings, course catalog, staff/student accounts, and payment logs.
             </p>
           </div>
 
@@ -384,14 +384,14 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block font-semibold text-gray-300 mb-1">Verified College Email Domains</label>
+                <label className="block font-semibold text-gray-300 mb-1">Supported Email Domains</label>
                 <input
                   type="text"
                   readOnly
-                  value="@mcet.in / @drmcet.ac.in"
+                  value="All Domains Allowed"
                   className="w-full px-3 py-2 rounded-lg bg-gray-950 border border-indigo-500/40 text-indigo-300 font-mono font-bold"
                 />
-                <p className="text-[10px] text-gray-500 mt-1">Students and Staff registering must use official college emails (@mcet.in or @drmcet.ac.in)</p>
+                <p className="text-[10px] text-gray-500 mt-1">Any valid email address can register as Student, Staff, or Paid Member</p>
               </div>
 
               <div>

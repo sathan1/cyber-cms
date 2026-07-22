@@ -23,21 +23,6 @@ class AuthController extends Controller
         $email = strtolower($request->email);
         $role = $request->role ?? 'STUDENT';
 
-        // Institutional email domain checks
-        if ($role === 'STUDENT') {
-            if (!str_ends_with($email, '@mcet.in') && !str_ends_with($email, '@drmcet.ac.in')) {
-                return response()->json([
-                    'message' => 'Student registration requires an official college email ending in @mcet.in or @drmcet.ac.in.',
-                ], 422);
-            }
-        } elseif ($role === 'STAFF') {
-            if (!str_ends_with($email, '@drmcet.ac.in') && !str_ends_with($email, '@mcet.in')) {
-                return response()->json([
-                    'message' => 'Staff registration requires an official faculty email ending in @drmcet.ac.in or @mcet.in.',
-                ], 422);
-            }
-        }
-
         // Mentor code validation for Staff
         $mentorId = null;
         if ($role === 'STAFF') {

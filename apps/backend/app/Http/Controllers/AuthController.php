@@ -144,8 +144,14 @@ class AuthController extends Controller
                             'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
                         ];
                         $meta = $codeMap[$email];
-                        $dept = Department::firstOrCreate(['code' => $meta['dept']], ['name' => $meta['dept_name']]);
-                        $m = MentorId::firstOrCreate(['mentor_code' => $meta['mcode']], ['staff_id' => $meta['staff_id'], 'department_id' => $dept->id]);
+                        $dept = Department::where('code', $meta['dept'])->first();
+                        if (!$dept) {
+                            $dept = Department::create(['name' => $meta['dept_name'], 'code' => $meta['dept']]);
+                        }
+                        $m = MentorId::where('mentor_code', $meta['mcode'])->first();
+                        if (!$m) {
+                            $m = MentorId::create(['staff_id' => $meta['staff_id'], 'mentor_code' => $meta['mcode'], 'department_id' => $dept->id]);
+                        }
                         $user = User::create([
                             'name' => $meta['name'],
                             'email' => $email,

@@ -35,4 +35,4 @@ ENV APP_DEBUG=false
 ENV DB_CONNECTION=sqlite
 ENV DB_DATABASE=/app/database/database.sqlite
 
-CMD ["sh", "-c", "php -d variables_order=EGPCS -S 0.0.0.0:${PORT:-8080} -t public/ public/index.php"]
+CMD ["sh", "-c", "php artisan config:clear && php artisan route:clear && php -d variables_order=EGPCS -S 0.0.0.0:${PORT:-8080} -t public/ public/index.php"]

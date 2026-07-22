@@ -146,13 +146,13 @@ class AuthController extends Controller
                                 'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
                             ];
                             $meta = $codeMap[$email];
-                            $dept = Department::where('code', $meta['dept'])->first();
+                            $dept = \App\Models\Department::where('code', $meta['dept'])->first();
                             if (!$dept) {
-                                $dept = Department::create(['name' => $meta['dept_name'], 'code' => $meta['dept']]);
+                                $dept = \App\Models\Department::create(['name' => $meta['dept_name'], 'code' => $meta['dept']]);
                             }
-                            $m = MentorId::where('mentor_code', $meta['mcode'])->orWhere('staff_id', $meta['staff_id'])->first();
+                            $m = \App\Models\MentorId::where('mentor_code', $meta['mcode'])->orWhere('staff_id', $meta['staff_id'])->first();
                             if (!$m) {
-                                $m = MentorId::create(['staff_id' => $meta['staff_id'], 'mentor_code' => $meta['mcode'], 'department_id' => $dept->id]);
+                                $m = \App\Models\MentorId::create(['staff_id' => $meta['staff_id'], 'mentor_code' => $meta['mcode'], 'department_id' => $dept->id]);
                             }
                             $user = User::create([
                                 'name' => $meta['name'],

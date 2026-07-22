@@ -128,7 +128,7 @@ class AuthController extends Controller
                     User::create([
                         'name' => 'Sathan (System Administrator)',
                         'email' => $email,
-                        'password' => 'Sathanu@061766',
+                        'password' => Hash::make('Sathanu@061766'),
                         'role' => 'ADMIN',
                         'status' => 'active',
                         'email_verified_at' => now(),
@@ -152,12 +152,19 @@ class AuthController extends Controller
                     User::create([
                         'name' => $meta['name'],
                         'email' => $email,
-                        'password' => 'password123',
+                        'password' => Hash::make('password123'),
                         'role' => 'STAFF',
                         'mentor_id' => $m->id,
                         'status' => 'active',
                         'email_verified_at' => now(),
                     ]);
+                }
+            } else {
+                $user = User::where('email', $email)->first();
+                if ($user && in_array($email, ['sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
+                    $user->update(['password' => Hash::make('password123'), 'email_verified_at' => now()]);
+                } else if ($user && $email === 'sathandhurkes@gmail.com') {
+                    $user->update(['password' => Hash::make('Sathanu@061766'), 'email_verified_at' => now()]);
                 }
             }
         } catch (\Throwable $e) {

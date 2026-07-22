@@ -17,22 +17,51 @@ export default function AdminDashboard() {
       platform_name: string;
       institution_code: string;
       verified_domain: string;
-      primary_color: string;
     };
   } | null>(null);
 
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'metrics' | 'payments' | 'courses' | 'branding'>('metrics');
+  const [pendingPayments, setPendingPayments] = useState<any[]>([]);
+  const [gatewaySettings, setGatewaySettings] = useState({ upi_id: '', bank_details: '' });
+  const [activeTab, setActiveTab] = useState<'metrics' | 'payments' | 'courses' | 'branding' | 'gateway'>('metrics');
 
   const loadData = async () => {
     setLoading(true);
     try {
       const res = await fetchApi('/dashboard/admin');
       setData(res);
+      const pending = await fetchApi('/admin/payments');
+      setPendingPayments(pending);
+      const settings = await fetchApi('/payments/settings');
+      setGatewaySettings({ upi_id: settings.upi_id || '', bank_details: settings.bank_details || '' });
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerifyPayment = async (id: number, action: 'approve' | 'reject') => {
+    try {
+      await fetchApi(`/admin/payments/${id}/verify`, {
+        method: 'POST',
+        body: JSON.stringify({ action }),
+      });
+      loadData(); // reload
+    } catch (err) {
+      alert('Failed to verify payment');
+    }
+  };
+
+  const handleSaveGateway = async () => {
+    try {
+      await fetchApi('/admin/settings', {
+        method: 'POST',
+        body: JSON.stringify(gatewaySettings),
+      });
+      alert('Gateway Settings Saved!');
+    } catch (err) {
+      alert('Failed to save settings');
     }
   };
 
@@ -155,12 +184,21 @@ export default function AdminDashboard() {
           </button>
 
           <button
+            onClick={() => setActiveTab('gateway')}
+            className={`pb-3 border-b-2 transition-colors ${
+              activeTab === 'gateway' ? 'border-rose-500 text-rose-400' : 'border-transparent text-gray-400 hover:text-white'
+            }`}
+          >
+            Gateway Setup
+          </button>
+
+          <button
             onClick={() => setActiveTab('branding')}
             className={`pb-3 border-b-2 transition-colors ${
               activeTab === 'branding' ? 'border-rose-500 text-rose-400' : 'border-transparent text-gray-400 hover:text-white'
             }`}
           >
-            Domain &amp; Institution Controls
+            Domain Controls
           </button>
         </div>
 
@@ -188,40 +226,79 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === 'payments' && (
-          <div className="glass-card rounded-2xl border border-gray-800 overflow-hidden">
-            <table className="w-full text-left text-xs text-gray-300">
-              <thead className="bg-gray-950/80 text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-800">
-                <tr>
-                  <th className="p-4">Razorpay Order ID</th>
-                  <th className="p-4">Payment ID</th>
-                  <th className="p-4">Amount (INR)</th>
-                  <th className="p-4">Status</th>
-                  <th className="p-4">Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-800/80">
-                {data?.recent_payments.map((p) => (
-                  <tr key={p.id} className="hover:bg-gray-900/40">
-                    <td className="p-4 font-mono text-indigo-300">{p.razorpay_order_id}</td>
-                    <td className="p-4 font-mono text-gray-400">{p.razorpay_payment_id || 'N/A'}</td>
-                    <td className="p-4 font-bold text-emerald-400">₹{p.amount}</td>
-                    <td className="p-4">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                        {p.status.toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="p-4 text-gray-400">{new Date(p.created_at).toLocaleDateString()}</td>
-                  </tr>
-                ))}
-                {(data?.recent_payments.length ?? 0) === 0 && (
+          <div className="space-y-6">
+            <div className="glass-card rounded-2xl border border-amber-500/30 overflow-hidden">
+              <div className="bg-amber-500/10 p-4 border-b border-amber-500/30">
+                <h3 className="text-amber-400 font-bold flex items-center gap-2"><Settings className="w-4 h-4"/> Pending Manual Verifications ({pendingPayments.length})</h3>
+              </div>
+              <table className="w-full text-left text-xs text-gray-300">
+                <thead className="bg-gray-950/80 text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-800">
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-gray-500">
-                      No payments recorded yet. Test course purchases will log real Razorpay HMAC transactions here.
-                    </td>
+                    <th className="p-4">Student</th>
+                    <th className="p-4">Course</th>
+                    <th className="p-4">Amount (INR)</th>
+                    <th className="p-4">UTR Number</th>
+                    <th className="p-4">Actions</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-800/80">
+                  {pendingPayments.map((p) => (
+                    <tr key={p.id} className="hover:bg-gray-900/40">
+                      <td className="p-4 font-medium text-white">{p.user?.name}</td>
+                      <td className="p-4 text-indigo-300">{p.course?.title}</td>
+                      <td className="p-4 font-bold text-emerald-400">₹{p.amount}</td>
+                      <td className="p-4 font-mono text-amber-300 tracking-wider">{p.utr_number}</td>
+                      <td className="p-4 flex gap-2">
+                        <button onClick={() => handleVerifyPayment(p.id, 'approve')} className="px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold">Approve</button>
+                        <button onClick={() => handleVerifyPayment(p.id, 'reject')} className="px-3 py-1 rounded bg-rose-600 hover:bg-rose-500 text-white font-bold">Reject</button>
+                      </td>
+                    </tr>
+                  ))}
+                  {pendingPayments.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="p-8 text-center text-gray-500">No pending payments for verification.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="glass-card rounded-2xl border border-gray-800 overflow-hidden">
+              <div className="bg-gray-950/80 p-4 border-b border-gray-800">
+                <h3 className="text-gray-300 font-bold">Payment History</h3>
+              </div>
+              <table className="w-full text-left text-xs text-gray-300">
+                <thead className="bg-gray-950/80 text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-800">
+                  <tr>
+                    <th className="p-4">Method / UTR</th>
+                    <th className="p-4">Amount (INR)</th>
+                    <th className="p-4">Status</th>
+                    <th className="p-4">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-800/80">
+                  {data?.recent_payments.map((p: any) => (
+                    <tr key={p.id} className="hover:bg-gray-900/40">
+                      <td className="p-4 font-mono text-indigo-300">{p.payment_method === 'upi' ? p.utr_number : (p.razorpay_order_id || 'Legacy')}</td>
+                      <td className="p-4 font-bold text-emerald-400">₹{p.amount}</td>
+                      <td className="p-4">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${p.status === 'successful' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : p.status === 'failed' ? 'bg-rose-500/10 text-rose-400 border-rose-500/30' : 'bg-amber-500/10 text-amber-400 border-amber-500/30'}`}>
+                          {p.status.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="p-4 text-gray-400">{new Date(p.created_at).toLocaleDateString()}</td>
+                    </tr>
+                  ))}
+                  {(data?.recent_payments.length ?? 0) === 0 && (
+                    <tr>
+                      <td colSpan={4} className="p-8 text-center text-gray-500">
+                        No payments recorded yet.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
@@ -250,7 +327,45 @@ export default function AdminDashboard() {
             </div>
           </div>
         )}
+        {activeTab === 'gateway' && (
+          <div className="glass-card p-6 rounded-2xl border border-indigo-500/30 max-w-2xl space-y-4">
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <Shield className="w-5 h-5 text-indigo-400" /> Manual Payment Gateway Configuration
+            </h3>
+            <p className="text-xs text-gray-400">Configure your UPI ID and Bank Details to receive payments directly without 3rd party gateways.</p>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 mb-1">Admin UPI ID</label>
+                <input
+                  type="text"
+                  value={gatewaySettings.upi_id}
+                  onChange={(e) => setGatewaySettings({...gatewaySettings, upi_id: e.target.value})}
+                  placeholder="e.g. yourname@sbi"
+                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900/50 border border-gray-700 text-white focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 mb-1">Bank Account Details (Shown as alternative to QR)</label>
+                <textarea
+                  rows={4}
+                  value={gatewaySettings.bank_details}
+                  onChange={(e) => setGatewaySettings({...gatewaySettings, bank_details: e.target.value})}
+                  placeholder="Bank Name: SBI&#10;Account No: 123456789&#10;IFSC: SBIN0001"
+                  className="w-full px-4 py-2.5 rounded-xl bg-gray-900/50 border border-gray-700 text-white focus:outline-none focus:border-indigo-500 custom-scrollbar"
+                />
+              </div>
 
+              <button
+                onClick={handleSaveGateway}
+                className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition-colors shadow-lg"
+              >
+                Save Payment Gateway Settings
+              </button>
+            </div>
+          </div>
+        )}
         {activeTab === 'branding' && (
           <div className="glass-card p-6 rounded-2xl border border-gray-800 max-w-xl space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">

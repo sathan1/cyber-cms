@@ -15,6 +15,9 @@ class Payment extends Model
         'razorpay_order_id',
         'razorpay_payment_id',
         'razorpay_signature',
+        'utr_number',
+        'payment_method',
+        'verified_by_admin_id',
         'amount',
         'status',
     ];

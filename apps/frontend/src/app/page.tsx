@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import AuthModal from '@/components/AuthModal';
 import OnboardingModal from '@/components/OnboardingModal';
-import RazorpayCheckoutModal from '@/components/RazorpayCheckoutModal';
+import ManualCheckoutModal from '@/components/ManualCheckoutModal';
 import LessonPlayerModal from '@/components/LessonPlayerModal';
 import RemarkDrawer from '@/components/RemarkDrawer';
 import { Course, User, Remark } from '@/types';
@@ -223,7 +223,7 @@ export default function Home() {
       )}
 
       {selectedCourseForPayment && (
-        <RazorpayCheckoutModal
+        <ManualCheckoutModal
           isOpen={!!selectedCourseForPayment}
           course={selectedCourseForPayment}
           user={user}

@@ -48,9 +48,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/remarks', [RemarkController::class, 'store']);
     Route::post('/remarks/{id}/reply', [RemarkController::class, 'reply']);
 
-    // Razorpay Payments
-    Route::post('/payments/order', [PaymentController::class, 'createOrder']);
-    Route::post('/payments/verify', [PaymentController::class, 'verifyPayment']);
+    // Manual Payments & Checkout
+    Route::get('/payments/settings', [PaymentController::class, 'getSettings']);
+    Route::post('/payments/manual', [PaymentController::class, 'submitManualPayment']);
+    
+    // Admin Payment Verification & Settings
+    Route::get('/admin/payments', [PaymentController::class, 'getPendingPayments']);
+    Route::post('/admin/payments/{id}/verify', [PaymentController::class, 'verifyManualPayment']);
+    Route::post('/admin/settings', [PaymentController::class, 'updateSettings']);
 
     // Dashboards
     Route::get('/dashboard/student', [DashboardController::class, 'studentMetrics']);

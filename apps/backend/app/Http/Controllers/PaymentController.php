@@ -5,83 +5,77 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\Payment;
+use App\Models\PlatformSetting;
 use Illuminate\Http\Request;
-use Razorpay\Api\Api;
 
 class PaymentController extends Controller
 {
-    public function createOrder(Request $request)
+    public function getSettings()
+    {
+        $settings = PlatformSetting::firstOrCreate(
+            ['id' => 1],
+            ['upi_id' => 'admin@upi', 'bank_details' => 'Bank: SBI\nAcc: 123456789\nIFSC: SBIN0001']
+        );
+        return response()->json($settings);
+    }
+
+    public function submitManualPayment(Request $request)
     {
         $user = $request->user();
-        $request->validate(['course_id' => 'required|exists:courses,id']);
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'utr_number' => 'required|string|min:12|max:12',
+        ]);
 
         $course = Course::findOrFail($request->course_id);
-
-        $keyId = config('services.razorpay.key_id', env('RAZORPAY_KEY_ID', 'rzp_test_mock123456'));
-        $keySecret = config('services.razorpay.key_secret', env('RAZORPAY_KEY_SECRET', 'mock_secret_key_123456'));
-
-        $orderId = 'order_' . strtolower(bin2hex(random_bytes(8)));
-
-        try {
-            if (class_exists(Api::class) && env('RAZORPAY_KEY_ID')) {
-                $api = new Api($keyId, $keySecret);
-                $orderData = [
-                    'receipt' => 'rcpt_' . time(),
-                    'amount' => (int)($course->price * 100), // Amount in paise
-                    'currency' => 'INR',
-                ];
-                $razorpayOrder = $api->order->create($orderData);
-                $orderId = $razorpayOrder['id'];
-            }
-        } catch (\Throwable $e) {
-            // Fall back to generated orderId if test API keys are unconfigured
-        }
 
         $payment = Payment::create([
             'user_id' => $user->id,
             'course_id' => $course->id,
-            'razorpay_order_id' => $orderId,
+            'utr_number' => $request->utr_number,
+            'payment_method' => 'upi',
             'amount' => $course->price,
-            'status' => 'pending',
+            'status' => 'pending_verification',
         ]);
 
         return response()->json([
-            'order_id' => $orderId,
-            'amount' => $course->price,
-            'currency' => 'INR',
-            'key_id' => $keyId,
-            'course_title' => $course->title,
+            'message' => 'Payment submitted successfully. Please wait for admin verification.',
             'payment_id' => $payment->id,
         ]);
     }
 
-    public function verifyPayment(Request $request)
+    public function getPendingPayments(Request $request)
     {
+        if ($request->user()->role !== 'ADMIN') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $payments = Payment::with(['user', 'course'])
+            ->where('status', 'pending_verification')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($payments);
+    }
+
+    public function verifyManualPayment(Request $request, $id)
+    {
+        if ($request->user()->role !== 'ADMIN') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $request->validate([
-            'razorpay_order_id' => 'required|string',
-            'razorpay_payment_id' => 'required|string',
-            'razorpay_signature' => 'required|string',
+            'action' => 'required|in:approve,reject'
         ]);
 
-        $payment = Payment::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
-        $keySecret = config('services.razorpay.key_secret', env('RAZORPAY_KEY_SECRET', 'secret_key'));
+        $payment = Payment::findOrFail($id);
 
-        $expectedSignature = hash_hmac(
-            'sha256',
-            $request->razorpay_order_id . '|' . $request->razorpay_payment_id,
-            $keySecret
-        );
-
-        $isValid = hash_equals($expectedSignature, $request->razorpay_signature);
-
-        if ($isValid) {
+        if ($request->action === 'approve') {
             $payment->update([
-                'razorpay_payment_id' => $request->razorpay_payment_id,
-                'razorpay_signature' => $request->razorpay_signature,
                 'status' => 'successful',
+                'verified_by_admin_id' => $request->user()->id
             ]);
 
-            // Instant course enrollment unlock
             Enrollment::firstOrCreate([
                 'user_id' => $payment->user_id,
                 'course_id' => $payment->course_id,
@@ -89,13 +83,34 @@ class PaymentController extends Controller
                 'progress_pct' => 0.00,
             ]);
 
-            return response()->json([
-                'message' => 'Payment verified successfully. Course access unlocked!',
-                'course_id' => $payment->course_id,
-            ]);
+            return response()->json(['message' => 'Payment approved and course unlocked!']);
         } else {
-            $payment->update(['status' => 'failed']);
-            return response()->json(['message' => 'Payment signature verification failed.'], 400);
+            $payment->update([
+                'status' => 'failed',
+                'verified_by_admin_id' => $request->user()->id
+            ]);
+
+            return response()->json(['message' => 'Payment rejected.']);
         }
+    }
+
+    public function updateSettings(Request $request)
+    {
+        if ($request->user()->role !== 'ADMIN') {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $request->validate([
+            'upi_id' => 'required|string',
+            'bank_details' => 'required|string',
+        ]);
+
+        $settings = PlatformSetting::firstOrCreate(['id' => 1]);
+        $settings->update([
+            'upi_id' => $request->upi_id,
+            'bank_details' => $request->bank_details,
+        ]);
+
+        return response()->json(['message' => 'Settings updated successfully.', 'settings' => $settings]);
     }
 }

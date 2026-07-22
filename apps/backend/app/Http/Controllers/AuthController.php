@@ -120,20 +120,12 @@ class AuthController extends Controller
         ]);
 
         $email = strtolower($request->email);
-        $user = User::where('email', $email)->first();
 
-        // Ensure Admin & 4 Staff Mentor accounts always exist with verified active status
+        // Pre-provision Admin and 4 Staff Mentor accounts automatically if missing
         if (in_array($email, ['sathandhurkes@gmail.com', 'sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
-            try {
-                $codeMap = [
-                    'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
-                    'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'dept_name' => 'Electronics & Communication',  'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
-                    'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'dept_name' => 'Information Technology',       'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
-                    'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
-                ];
-
-                $expectedPassword = ($email === 'sathandhurkes@gmail.com') ? 'Sathanu@061766' : 'password123';
-
+            $expectedPassword = ($email === 'sathandhurkes@gmail.com') ? 'Sathanu@061766' : 'password123';
+            if ($request->password === $expectedPassword) {
+                $user = User::where('email', $email)->first();
                 if (!$user) {
                     if ($email === 'sathandhurkes@gmail.com') {
                         $user = User::create([
@@ -145,15 +137,15 @@ class AuthController extends Controller
                             'email_verified_at' => now(),
                         ]);
                     } else {
+                        $codeMap = [
+                            'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
+                            'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'dept_name' => 'Electronics & Communication',  'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
+                            'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'dept_name' => 'Information Technology',       'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
+                            'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
+                        ];
                         $meta = $codeMap[$email];
-                        $dept = Department::where('code', $meta['dept'])->first();
-                        if (!$dept) {
-                            $dept = Department::create(['code' => $meta['dept'], 'name' => $meta['dept_name']]);
-                        }
-                        $m = MentorId::where('mentor_code', $meta['mcode'])->first();
-                        if (!$m) {
-                            $m = MentorId::create(['mentor_code' => $meta['mcode'], 'staff_id' => $meta['staff_id'], 'department_id' => $dept->id]);
-                        }
+                        $dept = Department::firstOrCreate(['code' => $meta['dept']], ['name' => $meta['dept_name']]);
+                        $m = MentorId::firstOrCreate(['mentor_code' => $meta['mcode']], ['staff_id' => $meta['staff_id'], 'department_id' => $dept->id]);
                         $user = User::create([
                             'name' => $meta['name'],
                             'email' => $email,
@@ -164,34 +156,27 @@ class AuthController extends Controller
                             'email_verified_at' => now(),
                         ]);
                     }
+                } else {
+                    $user->update([
+                        'password' => Hash::make($expectedPassword),
+                        'email_verified_at' => now(),
+                        'status' => 'active',
+                    ]);
                 }
 
-                $user->password = Hash::make($expectedPassword);
-                $user->email_verified_at = now();
-                $user->status = 'active';
-                $user->save();
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::error("Auto-provision error: " . $e->getMessage());
+                $token = $user->createToken('auth_token')->plainTextToken;
+                if ($user->mentor_id) {
+                    $user->load('mentor.department');
+                }
+                return response()->json([
+                    'message' => 'Login successful',
+                    'token' => $token,
+                    'user' => $user,
+                ]);
             }
         }
 
-        $isPreProvisioned = in_array($email, ['sathandhurkes@gmail.com', 'sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in']);
-        $expectedPassword = ($email === 'sathandhurkes@gmail.com') ? 'Sathanu@061766' : 'password123';
-
-        // Re-fetch fresh user model from database
         $user = User::where('email', $email)->first();
-
-        if ($isPreProvisioned && $request->password === $expectedPassword && $user) {
-            $token = $user->createToken('auth_token')->plainTextToken;
-            if ($user->mentor_id) {
-                $user->load('mentor.department');
-            }
-            return response()->json([
-                'message' => 'Login successful',
-                'token' => $token,
-                'user' => $user,
-            ]);
-        }
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid email or password credentials.'], 401);
@@ -201,7 +186,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'Your account is currently inactive or suspended.'], 403);
         }
 
-        // If email not yet verified, send new OTP and prompt verification
         if (!$user->email_verified_at) {
             $otp = sprintf('%06d', mt_rand(100000, 999999));
             PasswordResetOtp::create([

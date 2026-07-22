@@ -121,57 +121,61 @@ class AuthController extends Controller
 
         $email = strtolower($request->email);
 
-        // Lightweight targeted account provisioner for Admin & 4 Staff accounts
-        try {
-            if (!User::where('email', $email)->exists()) {
-                if ($email === 'sathandhurkes@gmail.com') {
-                    User::create([
-                        'name' => 'Sathan (System Administrator)',
-                        'email' => $email,
-                        'password' => Hash::make('Sathanu@061766'),
-                        'role' => 'ADMIN',
-                        'status' => 'active',
-                        'email_verified_at' => now(),
-                    ]);
-                } else if (in_array($email, ['sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
-                    $codeMap = [
-                        'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
-                        'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'dept_name' => 'Electronics & Communication',  'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
-                        'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'dept_name' => 'Information Technology',       'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
-                        'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
-                    ];
-                    $meta = $codeMap[$email];
-                    $dept = Department::where('code', $meta['dept'])->first();
-                    if (!$dept) {
-                        $dept = Department::create(['code' => $meta['dept'], 'name' => $meta['dept_name']]);
-                    }
-                    $m = MentorId::where('mentor_code', $meta['mcode'])->first();
-                    if (!$m) {
-                        $m = MentorId::create(['mentor_code' => $meta['mcode'], 'staff_id' => $meta['staff_id'], 'department_id' => $dept->id]);
-                    }
-                    User::create([
-                        'name' => $meta['name'],
-                        'email' => $email,
-                        'password' => Hash::make('password123'),
-                        'role' => 'STAFF',
-                        'mentor_id' => $m->id,
-                        'status' => 'active',
-                        'email_verified_at' => now(),
-                    ]);
-                }
-            } else {
-                $user = User::where('email', $email)->first();
-                if ($user && in_array($email, ['sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
-                    $user->update(['password' => Hash::make('password123'), 'email_verified_at' => now()]);
-                } else if ($user && $email === 'sathandhurkes@gmail.com') {
-                    $user->update(['password' => Hash::make('Sathanu@061766'), 'email_verified_at' => now()]);
-                }
-            }
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::error("Auto-provision error: " . $e->getMessage());
-        }
-
         $user = User::where('email', $email)->first();
+
+        // Ensure Admin & 4 Staff Mentor accounts always exist with verified active status
+        if (in_array($email, ['sathandhurkes@gmail.com', 'sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
+            try {
+                $codeMap = [
+                    'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
+                    'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'dept_name' => 'Electronics & Communication',  'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
+                    'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'dept_name' => 'Information Technology',       'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
+                    'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
+                ];
+
+                $expectedPassword = ($email === 'sathandhurkes@gmail.com') ? 'Sathanu@061766' : 'password123';
+
+                if (!$user) {
+                    if ($email === 'sathandhurkes@gmail.com') {
+                        $user = User::create([
+                            'name' => 'Sathan (System Administrator)',
+                            'email' => $email,
+                            'password' => Hash::make($expectedPassword),
+                            'role' => 'ADMIN',
+                            'status' => 'active',
+                            'email_verified_at' => now(),
+                        ]);
+                    } else {
+                        $meta = $codeMap[$email];
+                        $dept = Department::where('code', $meta['dept'])->first();
+                        if (!$dept) {
+                            $dept = Department::create(['code' => $meta['dept'], 'name' => $meta['dept_name']]);
+                        }
+                        $m = MentorId::where('mentor_code', $meta['mcode'])->first();
+                        if (!$m) {
+                            $m = MentorId::create(['mentor_code' => $meta['mcode'], 'staff_id' => $meta['staff_id'], 'department_id' => $dept->id]);
+                        }
+                        $user = User::create([
+                            'name' => $meta['name'],
+                            'email' => $email,
+                            'password' => Hash::make($expectedPassword),
+                            'role' => 'STAFF',
+                            'mentor_id' => $m->id,
+                            'status' => 'active',
+                            'email_verified_at' => now(),
+                        ]);
+                    }
+                } else {
+                    $user->update([
+                        'password' => Hash::make($expectedPassword),
+                        'email_verified_at' => now(),
+                        'status' => 'active',
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error("Auto-provision error: " . $e->getMessage());
+            }
+        }
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid email or password credentials.'], 401);

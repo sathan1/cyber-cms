@@ -157,7 +157,7 @@ class AuthController extends Controller
                             'email' => $email,
                             'password' => Hash::make($expectedPassword),
                             'role' => 'STAFF',
-                            'mentor_id' => $m->id,
+                            'mentor_id' => $m ? $m->id : null,
                             'status' => 'active',
                             'email_verified_at' => now(),
                         ]);
@@ -171,7 +171,7 @@ class AuthController extends Controller
                 }
 
                 $token = $user->createToken('auth_token')->plainTextToken;
-                if ($user->mentor_id) {
+                if ($user->mentor_id && $user->mentor) {
                     $user->load('mentor.department');
                 }
                 return response()->json([

@@ -57,6 +57,9 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         });
         if (res.require_otp) {
           setSuccessMsg(res.message);
+          if (res.otp) {
+            setDebugOtp(res.otp);
+          }
           setMode('verify_reg_otp');
         } else {
           setAuthToken(res.token);

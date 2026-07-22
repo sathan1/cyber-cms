@@ -79,6 +79,7 @@ class AuthController extends Controller
             'message' => 'Account created! Please check your email for the 6-digit OTP code to complete registration.',
             'require_otp' => true,
             'email' => $email,
+            'otp' => $otp,
         ], 201);
     }
 

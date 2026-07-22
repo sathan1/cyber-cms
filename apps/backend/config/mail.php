@@ -46,7 +46,7 @@ return [
             'username' => env('MAIL_USERNAME', 'sathandhurkes@gmail.com'),
             'password' => env('MAIL_PASSWORD', 'qywkwndksnfdmffi'),
             'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
-            'timeout' => null,
+            'timeout' => 3,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 

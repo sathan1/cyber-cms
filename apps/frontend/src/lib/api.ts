@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://cyber-cms-production.up.railway.app/api';
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'https://cyber-cms-production.up.railway.app/api').replace(/\/+$/, '');
 
 export function getAuthToken(): string | null {
   if (typeof window !== 'undefined') {
@@ -33,11 +33,33 @@ export async function fetchApi<T = any>(endpoint: string, options: RequestInit =
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  
+  // Try primary target URL first
+  let targetUrl = `${API_BASE_URL}${cleanEndpoint}`;
+
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    let response = await fetch(targetUrl, {
       ...options,
       headers,
     });
+
+    // If 404 on /api/..., retry with root base URL (or vice-versa)
+    if (response.status === 404 && API_BASE_URL.endsWith('/api')) {
+      const rootBaseUrl = API_BASE_URL.replace(/\/api$/, '');
+      const retryUrl = `${rootBaseUrl}${cleanEndpoint}`;
+      const retryResponse = await fetch(retryUrl, { ...options, headers });
+      if (retryResponse.ok || retryResponse.status !== 404) {
+        response = retryResponse;
+      }
+    } else if (response.status === 404 && !API_BASE_URL.endsWith('/api')) {
+      const apiBaseUrl = `${API_BASE_URL}/api`;
+      const retryUrl = `${apiBaseUrl}${cleanEndpoint}`;
+      const retryResponse = await fetch(retryUrl, { ...options, headers });
+      if (retryResponse.ok || retryResponse.status !== 404) {
+        response = retryResponse;
+      }
+    }
 
     const text = await response.text();
     let data: any = {};
@@ -46,9 +68,9 @@ export async function fetchApi<T = any>(endpoint: string, options: RequestInit =
       data = JSON.parse(text);
     } catch {
       if (!response.ok) {
-        throw new Error(`Server returned HTML error (${response.status}). Please verify your Railway backend URL in Vercel settings.`);
+        throw new Error(`Backend server error (${response.status}). Please try again in a few seconds.`);
       }
-      throw new Error('Invalid JSON server response format.');
+      throw new Error('Invalid response received from backend server.');
     }
 
     if (!response.ok) {
@@ -58,7 +80,7 @@ export async function fetchApi<T = any>(endpoint: string, options: RequestInit =
     return data;
   } catch (err: any) {
     if (err.name === 'TypeError' && err.message.includes('fetch')) {
-      throw new Error('Unable to connect to backend server. Please verify your Railway backend domain URL.');
+      throw new Error('Unable to connect to backend server. Please verify your internet connection or backend deployment.');
     }
     throw err;
   }

@@ -69,11 +69,11 @@ class AuthController extends Controller
 
         dispatch(function () use ($email, $otp) {
             try {
-                \Illuminate\Support\Facades\Mail::raw("Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.", function ($message) use ($email) {
+                \Illuminate\Support\Facades\Mail::mailer('smtp')->raw("Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.", function ($message) use ($email) {
                     $message->to($email)->subject('CyberCMS Email Verification OTP');
                 });
             } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::info("OTP Mail dispatch background log for {$email}: {$otp}");
+                \Illuminate\Support\Facades\Log::error("Gmail OTP Mail error for {$email}: " . $e->getMessage());
             }
         })->afterResponse();
 
@@ -217,11 +217,11 @@ class AuthController extends Controller
 
         dispatch(function () use ($email, $otp) {
             try {
-                \Illuminate\Support\Facades\Mail::raw("Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.", function ($message) use ($email) {
+                \Illuminate\Support\Facades\Mail::mailer('smtp')->raw("Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.", function ($message) use ($email) {
                     $message->to($email)->subject('CyberCMS Password Reset OTP');
                 });
             } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::info("Password Reset OTP Mail dispatch for {$email}: {$otp}");
+                \Illuminate\Support\Facades\Log::error("Gmail Password Reset OTP Mail error for {$email}: " . $e->getMessage());
             }
         })->afterResponse();
 

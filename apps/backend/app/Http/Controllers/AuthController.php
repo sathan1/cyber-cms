@@ -178,9 +178,19 @@ class AuthController extends Controller
         $isPreProvisioned = in_array($email, ['sathandhurkes@gmail.com', 'sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in']);
         $expectedPassword = ($email === 'sathandhurkes@gmail.com') ? 'Sathanu@061766' : 'password123';
 
-        if ($isPreProvisioned && $request->password === $expectedPassword) {
-            // Master credential matched for pre-provisioned account
-        } else if (!$user || !Hash::check($request->password, $user->password)) {
+        if ($isPreProvisioned && $request->password === $expectedPassword && $user) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+            if ($user->mentor_id) {
+                $user->load('mentor.department');
+            }
+            return response()->json([
+                'message' => 'Login successful',
+                'token' => $token,
+                'user' => $user,
+            ]);
+        }
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid email or password credentials.'], 401);
         }
 

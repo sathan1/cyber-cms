@@ -66,7 +66,7 @@ export default function AdminDashboard() {
 
           <div className="flex items-center gap-2">
             <span className="text-xs text-gray-400">Total Revenue:</span>
-            <span className="text-xl font-extrabold text-emerald-400">${data?.total_revenue.toFixed(2)}</span>
+            <span className="text-xl font-extrabold text-emerald-400">₹{data?.total_revenue || 0}</span>
           </div>
         </div>
 
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
                   <tr key={p.id} className="hover:bg-gray-900/40">
                     <td className="p-4 font-mono text-indigo-300">{p.razorpay_order_id}</td>
                     <td className="p-4 font-mono text-gray-400">{p.razorpay_payment_id || 'N/A'}</td>
-                    <td className="p-4 font-bold text-emerald-400">${p.amount}</td>
+                    <td className="p-4 font-bold text-emerald-400">₹{p.amount}</td>
                     <td className="p-4">
                       <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
                         {p.status.toUpperCase()}
@@ -179,7 +179,7 @@ export default function AdminDashboard() {
                 {data?.courses.map((c) => (
                   <div key={c.id} className="flex justify-between items-center py-1 border-b border-gray-800/60 last:border-0">
                     <span className="text-white font-medium truncate pr-2">{c.title}</span>
-                    <span className="text-emerald-400 font-bold flex-shrink-0">${c.price.toFixed(2)}</span>
+                    <span className="text-emerald-400 font-bold flex-shrink-0">₹{c.price}</span>
                   </div>
                 ))}
                 {(data?.courses.length ?? 0) === 0 && <p className="text-center text-gray-500 py-2">No courses yet.</p>}

@@ -17,25 +17,101 @@ class AuthController extends Controller
             'email' => 'required|string|email|unique:users',
             'password' => 'required|string|min:6',
             'role' => 'nullable|in:ADMIN,STAFF,STUDENT,PAID_USER',
+            'mentor_code' => 'nullable|string',
         ]);
 
+        $email = strtolower($request->email);
         $role = $request->role ?? 'STUDENT';
+
+        // Institutional email domain checks
+        if ($role === 'STUDENT') {
+            if (!str_ends_with($email, '@mcet.in') && !str_ends_with($email, '@drmcet.ac.in')) {
+                return response()->json([
+                    'message' => 'Student registration requires an official college email ending in @mcet.in or @drmcet.ac.in.',
+                ], 422);
+            }
+        } elseif ($role === 'STAFF') {
+            if (!str_ends_with($email, '@drmcet.ac.in') && !str_ends_with($email, '@mcet.in')) {
+                return response()->json([
+                    'message' => 'Staff registration requires an official faculty email ending in @drmcet.ac.in or @mcet.in.',
+                ], 422);
+            }
+        }
+
+        // Mentor code validation for Staff
+        $mentorId = null;
+        if ($role === 'STAFF') {
+            if ($request->mentor_code) {
+                $mentor = MentorId::where('mentor_code', $request->mentor_code)
+                    ->orWhere('staff_id', $request->mentor_code)
+                    ->first();
+                if (!$mentor) {
+                    return response()->json([
+                        'message' => 'Invalid Staff Mentor ID or Staff Code.',
+                    ], 422);
+                }
+                $mentorId = $mentor->id;
+            }
+        }
 
         $user = User::create([
             'name' => $request->name,
-            'email' => strtolower($request->email),
+            'email' => $email,
             'password' => Hash::make($request->password),
             'role' => $role,
+            'mentor_id' => $mentorId,
             'status' => 'active',
+            'email_verified_at' => null, // Requires OTP verification
         ]);
+
+        // Generate 6-digit OTP code for email verification
+        $otp = sprintf('%06d', mt_rand(100000, 999999));
+        PasswordResetOtp::create([
+            'email' => $email,
+            'otp_code' => Hash::make($otp),
+            'expires_at' => now()->addMinutes(15),
+            'used' => false,
+        ]);
+
+        return response()->json([
+            'message' => 'Account created! Please enter the 6-digit OTP sent to your email to complete registration.',
+            'require_otp' => true,
+            'email' => $email,
+            'debug_otp' => $otp, // Exposed for instant demo testing
+        ], 201);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'otp' => 'required|string|size:6',
+        ]);
+
+        $email = strtolower($request->email);
+
+        $otpRecord = PasswordResetOtp::where('email', $email)
+            ->where('used', false)
+            ->where('expires_at', '>', now())
+            ->latest()
+            ->first();
+
+        if (!$otpRecord || !Hash::check($request->otp, $otpRecord->otp_code)) {
+            return response()->json(['message' => 'Invalid or expired OTP verification code.'], 422);
+        }
+
+        $otpRecord->update(['used' => true]);
+
+        $user = User::where('email', $email)->firstOrFail();
+        $user->update(['email_verified_at' => now()]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Registration successful',
+            'message' => 'Email verified successfully! Welcome to CyberCMS.',
             'token' => $token,
             'user' => $user->load('mentor.department'),
-        ], 201);
+        ]);
     }
 
     public function login(Request $request)
@@ -53,6 +129,24 @@ class AuthController extends Controller
 
         if ($user->status !== 'active') {
             return response()->json(['message' => 'Your account is currently inactive or suspended.'], 403);
+        }
+
+        // If email not yet verified, send new OTP and prompt verification
+        if (!$user->email_verified_at) {
+            $otp = sprintf('%06d', mt_rand(100000, 999999));
+            PasswordResetOtp::create([
+                'email' => $user->email,
+                'otp_code' => Hash::make($otp),
+                'expires_at' => now()->addMinutes(15),
+                'used' => false,
+            ]);
+
+            return response()->json([
+                'message' => 'Email verification pending. A new OTP has been sent to your email.',
+                'require_otp' => true,
+                'email' => $user->email,
+                'debug_otp' => $otp,
+            ], 403);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -80,17 +174,6 @@ class AuthController extends Controller
             'year' => 'required|integer|min:1|max:4',
             'roll_number' => 'required|string|unique:users,roll_number,' . $user->id,
         ]);
-
-        // Email domain check (e.g. institution email)
-        $allowedDomain = config('app.institution_email_domain', 'institution.edu');
-        if ($allowedDomain && !str_ends_with($user->email, "@{$allowedDomain}")) {
-            // Also allow standard testing domains if needed, or enforce check
-            if (!str_contains($user->email, 'institution.edu') && !str_contains($user->email, 'test')) {
-                return response()->json([
-                    'message' => "College email verification failed. Must be an official @{$allowedDomain} email.",
-                ], 422);
-            }
-        }
 
         $mentor = MentorId::where('mentor_code', $request->mentor_code)->firstOrFail();
 
@@ -121,10 +204,9 @@ class AuthController extends Controller
             'used' => false,
         ]);
 
-        // Return OTP in json response for easy production testing / debug preview
         return response()->json([
             'message' => 'Password reset OTP generated and sent to email.',
-            'debug_otp' => $otp, // Useful for demo and testing without email server
+            'debug_otp' => $otp,
             'expires_in_minutes' => 10,
         ]);
     }

@@ -160,14 +160,14 @@ export default function RazorpayCheckoutModal({ isOpen, course, user, onClose, o
                   <h4 className="text-sm font-semibold text-white">{course.title}</h4>
                   <p className="text-xs text-gray-400 mt-0.5">{course.department?.name || 'Academic Course'}</p>
                 </div>
-                <span className="text-lg font-bold text-emerald-400">${course.price.toFixed(2)}</span>
+                <span className="text-lg font-bold text-emerald-400">₹{course.price}</span>
               </div>
 
               <div className="border-t border-gray-700/60 pt-3 flex items-center justify-between text-xs text-gray-400">
                 <span className="flex items-center gap-1">
                   <Lock className="w-3.5 h-3.5 text-emerald-400" /> SSL 256-bit Encrypted
                 </span>
-                <span className="text-emerald-400 font-medium">Paise / INR / USD</span>
+                <span className="text-emerald-400 font-medium">INR (₹)</span>
               </div>
             </div>
 
@@ -180,7 +180,7 @@ export default function RazorpayCheckoutModal({ isOpen, course, user, onClose, o
                 <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               ) : (
                 <>
-                  <ShieldCheck className="w-5 h-5" /> Launch Razorpay & Pay ${course.price.toFixed(2)}
+                  <ShieldCheck className="w-5 h-5" /> Launch Razorpay &amp; Pay ₹{course.price}
                 </>
               )}
             </button>

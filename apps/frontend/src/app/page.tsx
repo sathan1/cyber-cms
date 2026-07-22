@@ -161,7 +161,7 @@ export default function Home() {
                       {course.department?.code || 'CSE'}
                     </span>
                     <span className="text-sm font-bold text-emerald-400">
-                      {course.price === 0 ? 'FREE' : `$${course.price.toFixed(2)}`}
+                      {course.price === 0 ? 'FREE' : `₹${course.price}`}
                     </span>
                   </div>
 

@@ -453,7 +453,7 @@ export default function StaffCmsPage() {
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex-1 min-w-0 pr-2">
                         <h3 className="text-sm font-bold text-white truncate">{course.title}</h3>
-                        <p className="text-xs text-gray-400 mt-0.5">{course.department?.code || 'N/A'} · ${course.price}</p>
+                        <p className="text-xs text-gray-400 mt-0.5">{course.department?.code || 'N/A'} · ₹{course.price}</p>
                       </div>
                       <StatusBadge status={course.status} />
                     </div>
@@ -782,7 +782,7 @@ export default function StaffCmsPage() {
             </div>
             {[
               { label: 'Course Title *', key: 'title', type: 'text', placeholder: 'e.g. Cyber Security Fundamentals' },
-              { label: 'Price (USD) *', key: 'price', type: 'number', placeholder: '0 for free' },
+              { label: 'Price (INR ₹) *', key: 'price', type: 'number', placeholder: '0 for free' },
             ].map(f => (
               <div key={f.key}>
                 <label className="block text-xs text-gray-400 mb-1">{f.label}</label>

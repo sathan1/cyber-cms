@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, Mail, Lock, User as UserIcon, Shield, KeyRound, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Mail, Lock, User as UserIcon, Shield, KeyRound, ArrowRight, CheckCircle, AlertCircle, Award } from 'lucide-react';
 import { fetchApi, setAuthToken } from '@/lib/api';
 import { User, Role } from '@/types';
 
@@ -13,7 +13,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSuccess }: AuthModalProps) {
-  const [mode, setMode] = useState<'login' | 'register' | 'otp'>(initialMode);
+  const [mode, setMode] = useState<'login' | 'register' | 'otp' | 'verify_reg_otp'>(initialMode);
   const [otpStep, setOtpStep] = useState<'request' | 'verify'>('request');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +25,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<Role>('STUDENT');
+  const [mentorCode, setMentorCode] = useState('');
   const [otpCode, setOtpCode] = useState('');
 
   if (!isOpen) return null;
@@ -41,13 +42,33 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           method: 'POST',
           body: JSON.stringify({ email, password }),
         });
-        setAuthToken(res.token);
-        onSuccess(res.user);
-        onClose();
+        if (res.require_otp) {
+          setSuccessMsg(res.message);
+          if (res.debug_otp) setDebugOtp(res.debug_otp);
+          setMode('verify_reg_otp');
+        } else {
+          setAuthToken(res.token);
+          onSuccess(res.user);
+          onClose();
+        }
       } else if (mode === 'register') {
         const res = await fetchApi('/register', {
           method: 'POST',
-          body: JSON.stringify({ name, email, password, role }),
+          body: JSON.stringify({ name, email, password, role, mentor_code: mentorCode }),
+        });
+        if (res.require_otp) {
+          setSuccessMsg(res.message);
+          if (res.debug_otp) setDebugOtp(res.debug_otp);
+          setMode('verify_reg_otp');
+        } else {
+          setAuthToken(res.token);
+          onSuccess(res.user);
+          onClose();
+        }
+      } else if (mode === 'verify_reg_otp') {
+        const res = await fetchApi('/verify-otp', {
+          method: 'POST',
+          body: JSON.stringify({ email, otp: otpCode }),
         });
         setAuthToken(res.token);
         onSuccess(res.user);
@@ -58,7 +79,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             method: 'POST',
             body: JSON.stringify({ email }),
           });
-          setSuccessMsg('OTP code sent successfully. Valid for 10 minutes.');
+          setSuccessMsg('OTP code sent to email. Valid for 10 minutes.');
           if (res.debug_otp) setDebugOtp(res.debug_otp);
           setOtpStep('verify');
         } else {
@@ -82,7 +103,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
       <div className="glass-panel w-full max-w-md rounded-2xl border border-gray-700/80 shadow-2xl overflow-hidden p-6 relative">
         <button
           onClick={onClose}
@@ -93,16 +114,18 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
 
         <div className="text-center mb-6">
           <div className="w-12 h-12 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mx-auto mb-3">
-            {mode === 'otp' ? <KeyRound className="w-6 h-6" /> : <Shield className="w-6 h-6" />}
+            {mode === 'otp' || mode === 'verify_reg_otp' ? <KeyRound className="w-6 h-6" /> : <Shield className="w-6 h-6" />}
           </div>
           <h3 className="text-xl font-bold text-white">
             {mode === 'login' && 'Sign In to CyberCMS'}
             {mode === 'register' && 'Create Academic Account'}
+            {mode === 'verify_reg_otp' && 'Verify Email OTP Code'}
             {mode === 'otp' && (otpStep === 'request' ? 'Password Reset OTP' : 'Verify OTP & Reset Password')}
           </h3>
           <p className="text-xs text-gray-400 mt-1">
-            {mode === 'login' && 'Enter your credentials to access your dashboard'}
-            {mode === 'register' && 'Join your academic department or course platform'}
+            {mode === 'login' && 'Enter your credentials to access your portal'}
+            {mode === 'register' && 'Use your college email (@mcet.in or @drmcet.ac.in)'}
+            {mode === 'verify_reg_otp' && `Enter the 6-digit OTP code sent to ${email}`}
             {mode === 'otp' && (otpStep === 'request' ? 'Receive a 10-minute single-use OTP code' : 'Enter the 6-digit code and your new password')}
           </p>
         </div>
@@ -120,7 +143,9 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             <div>
               <p>{successMsg}</p>
               {debugOtp && (
-                <p className="font-mono mt-1 text-amber-300 font-bold">Generated OTP Preview: {debugOtp}</p>
+                <p className="font-mono mt-1 text-amber-300 font-bold bg-amber-500/10 p-1.5 rounded border border-amber-500/20">
+                  Demo OTP Code: <span className="text-white tracking-widest">{debugOtp}</span>
+                </p>
               )}
             </div>
           </div>
@@ -129,8 +154,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === 'register' && (
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1">Full Name</label>
-
+              <label className="block text-xs font-semibold text-gray-300 mb-1">Full Name *</label>
               <div className="relative">
                 <UserIcon className="w-4 h-4 absolute left-3 top-3 text-gray-500" />
                 <input
@@ -145,9 +169,11 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             </div>
           )}
 
-          {(mode !== 'otp' || (mode === 'otp' && otpStep === 'request')) && (
+          {(mode === 'login' || mode === 'register' || (mode === 'otp' && otpStep === 'request')) && (
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1">Email Address</label>
+              <label className="block text-xs font-semibold text-gray-300 mb-1">
+                {mode === 'register' ? 'College Email Address (@mcet.in / @drmcet.ac.in) *' : 'Email Address'}
+              </label>
               <div className="relative">
                 <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-500" />
                 <input
@@ -155,7 +181,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="student@institution.edu"
+                  placeholder={mode === 'register' ? 'name@mcet.in or name@drmcet.ac.in' : 'sathandhurkes@gmail.com'}
                   className="w-full pl-9 pr-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
                 />
               </div>
@@ -163,18 +189,36 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           )}
 
           {mode === 'register' && (
-            <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1">Select Account Type</label>
-              <select
-                value={role}
-                onChange={(e) => setRole(e.target.value as Role)}
-                className="w-full px-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white focus:outline-none focus:border-indigo-500"
-              >
-                <option value="STUDENT">Academic Student (Requires Mentor ID)</option>
-                <option value="PAID_USER">Paid Course Member</option>
-                <option value="STAFF">Department Staff / Mentor</option>
-              </select>
-            </div>
+            <>
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 mb-1">Select Account Type *</label>
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value as Role)}
+                  className="w-full px-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white focus:outline-none focus:border-indigo-500"
+                >
+                  <option value="STUDENT">Academic Student (@mcet.in)</option>
+                  <option value="STAFF">Department Staff / Mentor (@drmcet.ac.in / @mcet.in)</option>
+                  <option value="PAID_USER">Paid Course Member (Any Email)</option>
+                </select>
+              </div>
+
+              {role === 'STAFF' && (
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1">Staff Mentor ID / Code (Optional)</label>
+                  <div className="relative">
+                    <Award className="w-4 h-4 absolute left-3 top-3 text-gray-500" />
+                    <input
+                      type="text"
+                      value={mentorCode}
+                      onChange={(e) => setMentorCode(e.target.value)}
+                      placeholder="e.g. ST-1001 or MTR-CSE-101"
+                      className="w-full pl-9 pr-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+                    />
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {(mode === 'login' || mode === 'register' || (mode === 'otp' && otpStep === 'verify')) && (
@@ -196,9 +240,9 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             </div>
           )}
 
-          {mode === 'otp' && otpStep === 'verify' && (
+          {(mode === 'verify_reg_otp' || (mode === 'otp' && otpStep === 'verify')) && (
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1">6-Digit Single-Use OTP Code</label>
+              <label className="block text-xs font-semibold text-gray-300 mb-1">6-Digit Verification OTP Code *</label>
               <div className="relative">
                 <KeyRound className="w-4 h-4 absolute left-3 top-3 text-gray-500" />
                 <input
@@ -224,8 +268,9 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             ) : (
               <>
                 {mode === 'login' && 'Sign In'}
-                {mode === 'register' && 'Complete Registration'}
-                {mode === 'otp' && (otpStep === 'request' ? 'Generate OTP' : 'Update Password')}
+                {mode === 'register' && 'Register & Send OTP'}
+                {mode === 'verify_reg_otp' && 'Verify OTP & Enter Portal'}
+                {mode === 'otp' && (otpStep === 'request' ? 'Generate Reset OTP' : 'Update Password')}
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
@@ -249,18 +294,9 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             </>
           )}
 
-          {mode === 'register' && (
+          {(mode === 'register' || mode === 'verify_reg_otp' || mode === 'otp') && (
             <p>
-              Already registered?{' '}
-              <button onClick={() => { setMode('login'); setError(null); }} className="text-indigo-400 hover:underline font-semibold">
-                Sign In
-              </button>
-            </p>
-          )}
-
-          {mode === 'otp' && (
-            <p>
-              Back to{' '}
+              Already verified?{' '}
               <button onClick={() => { setMode('login'); setError(null); }} className="text-indigo-400 hover:underline font-semibold">
                 Sign In
               </button>

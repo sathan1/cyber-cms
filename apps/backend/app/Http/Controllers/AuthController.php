@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\MentorId;
 use App\Models\PasswordResetOtp;
 use App\Models\User;

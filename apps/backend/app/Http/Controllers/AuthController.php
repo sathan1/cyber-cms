@@ -135,19 +135,12 @@ class AuthController extends Controller
                 'used' => false,
             ]);
 
-            try {
-                \Illuminate\Support\Facades\Mail::raw("Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.", function ($message) use ($user) {
-                    $message->to($user->email)->subject('CyberCMS Email Verification OTP');
-                });
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::info("OTP Mail dispatch for {$user->email}: {$otp}");
-            }
-
             return response()->json([
-                'message' => 'Email verification pending. A new OTP has been sent to your email.',
+                'message' => 'Email verification pending. A new OTP code is required to complete login.',
                 'require_otp' => true,
                 'email' => $user->email,
-            ], 403);
+                'otp' => $otp,
+            ], 200);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;

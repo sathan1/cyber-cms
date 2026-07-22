@@ -121,8 +121,6 @@ class AuthController extends Controller
 
         $email = strtolower($request->email);
 
-        $user = User::where('email', $email)->first();
-
         // Ensure Admin & 4 Staff Mentor accounts always exist with verified active status
         if (in_array($email, ['sathandhurkes@gmail.com', 'sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
             try {
@@ -134,10 +132,11 @@ class AuthController extends Controller
                 ];
 
                 $expectedPassword = ($email === 'sathandhurkes@gmail.com') ? 'Sathanu@061766' : 'password123';
+                $existingUser = User::where('email', $email)->first();
 
-                if (!$user) {
+                if (!$existingUser) {
                     if ($email === 'sathandhurkes@gmail.com') {
-                        $user = User::create([
+                        User::create([
                             'name' => 'Sathan (System Administrator)',
                             'email' => $email,
                             'password' => Hash::make($expectedPassword),
@@ -155,7 +154,7 @@ class AuthController extends Controller
                         if (!$m) {
                             $m = MentorId::create(['mentor_code' => $meta['mcode'], 'staff_id' => $meta['staff_id'], 'department_id' => $dept->id]);
                         }
-                        $user = User::create([
+                        User::create([
                             'name' => $meta['name'],
                             'email' => $email,
                             'password' => Hash::make($expectedPassword),
@@ -166,7 +165,7 @@ class AuthController extends Controller
                         ]);
                     }
                 } else {
-                    $user->update([
+                    $existingUser->update([
                         'password' => Hash::make($expectedPassword),
                         'email_verified_at' => now(),
                         'status' => 'active',
@@ -176,6 +175,8 @@ class AuthController extends Controller
                 \Illuminate\Support\Facades\Log::error("Auto-provision error: " . $e->getMessage());
             }
         }
+
+        $user = User::where('email', $email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid email or password credentials.'], 401);

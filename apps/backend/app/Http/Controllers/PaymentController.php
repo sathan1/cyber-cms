@@ -64,7 +64,7 @@ class PaymentController extends Controller
         ]);
 
         $payment = Payment::where('razorpay_order_id', $request->razorpay_order_id)->firstOrFail();
-        $keySecret = config('services.razorpay.key_secret', env('RAZORPAY_KEY_SECRET', 'mock_secret_key_123456'));
+        $keySecret = config('services.razorpay.key_secret', env('RAZORPAY_KEY_SECRET', 'secret_key'));
 
         $expectedSignature = hash_hmac(
             'sha256',
@@ -72,7 +72,7 @@ class PaymentController extends Controller
             $keySecret
         );
 
-        $isValid = ($expectedSignature === $request->razorpay_signature) || str_starts_with($request->razorpay_signature, 'sig_demo');
+        $isValid = hash_equals($expectedSignature, $request->razorpay_signature);
 
         if ($isValid) {
             $payment->update([

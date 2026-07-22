@@ -54,8 +54,8 @@ export default function RazorpayCheckoutModal({ isOpen, course, user, onClose, o
       const orderId = orderRes.order_id;
       const keyId = orderRes.key_id;
 
-      // 2. Launch Razorpay Web Checkout Modal if SDK is loaded
-      if (typeof window !== 'undefined' && window.Razorpay && keyId && !keyId.startsWith('rzp_test_mock')) {
+      // 2. Launch Razorpay Web Checkout Modal
+      if (typeof window !== 'undefined' && window.Razorpay && keyId) {
         const options = {
           key: keyId,
           amount: Math.round(orderRes.amount * 100),
@@ -100,24 +100,7 @@ export default function RazorpayCheckoutModal({ isOpen, course, user, onClose, o
         const rzp = new window.Razorpay(options);
         rzp.open();
       } else {
-        // Test Mode / Fallback Order Verification Simulation
-        const mockPaymentId = 'pay_' + Math.random().toString(36).substring(2, 10);
-        const mockSignature = 'sig_demo_hash_' + Math.random().toString(36).substring(2, 10);
-
-        await fetchApi('/payments/verify', {
-          method: 'POST',
-          body: JSON.stringify({
-            razorpay_order_id: orderId,
-            razorpay_payment_id: mockPaymentId,
-            razorpay_signature: mockSignature,
-          }),
-        });
-
-        setStep('success');
-        setTimeout(() => {
-          onSuccess(course.id);
-          onClose();
-        }, 1800);
+        throw new Error('Razorpay payment gateway SDK is not loaded. Please check your internet connection and Razorpay credentials.');
       }
     } catch (err: any) {
       setError(err.message || 'Payment processing failed.');

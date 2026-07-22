@@ -82,10 +82,9 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'message' => 'Account created! Please enter the 6-digit OTP sent to your email to complete registration.',
+            'message' => 'Account created! Please check your email for the 6-digit OTP code to complete registration.',
             'require_otp' => true,
             'email' => $email,
-            'debug_otp' => $otp, // Exposed for instant demo testing
         ], 201);
     }
 
@@ -153,7 +152,6 @@ class AuthController extends Controller
                 'message' => 'Email verification pending. A new OTP has been sent to your email.',
                 'require_otp' => true,
                 'email' => $user->email,
-                'debug_otp' => $otp,
             ], 403);
         }
 
@@ -214,7 +212,6 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Password reset OTP generated and sent to email.',
-            'debug_otp' => $otp,
             'expires_in_minutes' => 10,
         ]);
     }

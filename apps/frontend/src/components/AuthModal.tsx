@@ -44,7 +44,6 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         });
         if (res.require_otp) {
           setSuccessMsg(res.message);
-          if (res.debug_otp) setDebugOtp(res.debug_otp);
           setMode('verify_reg_otp');
         } else {
           setAuthToken(res.token);
@@ -58,7 +57,6 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         });
         if (res.require_otp) {
           setSuccessMsg(res.message);
-          if (res.debug_otp) setDebugOtp(res.debug_otp);
           setMode('verify_reg_otp');
         } else {
           setAuthToken(res.token);
@@ -80,7 +78,6 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             body: JSON.stringify({ email }),
           });
           setSuccessMsg('OTP code sent to email. Valid for 10 minutes.');
-          if (res.debug_otp) setDebugOtp(res.debug_otp);
           setOtpStep('verify');
         } else {
           await fetchApi('/reset-password', {
@@ -140,14 +137,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         {successMsg && (
           <div className="mb-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-2 text-emerald-400 text-xs">
             <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <div>
-              <p>{successMsg}</p>
-              {debugOtp && (
-                <p className="font-mono mt-1 text-amber-300 font-bold bg-amber-500/10 p-1.5 rounded border border-amber-500/20">
-                  Demo OTP Code: <span className="text-white tracking-widest">{debugOtp}</span>
-                </p>
-              )}
-            </div>
+            <p>{successMsg}</p>
           </div>
         )}
 

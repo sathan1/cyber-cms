@@ -30,9 +30,6 @@ class AppServiceProvider extends ServiceProvider
                     '--force' => true,
                 ]);
             }
-            \Illuminate\Support\Facades\Artisan::call('db:seed', [
-                '--force' => true,
-            ]);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('AppServiceProvider boot error: ' . $e->getMessage());
         }

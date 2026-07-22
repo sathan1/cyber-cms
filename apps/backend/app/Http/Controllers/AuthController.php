@@ -178,6 +178,9 @@ class AuthController extends Controller
         $isPreProvisioned = in_array($email, ['sathandhurkes@gmail.com', 'sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in']);
         $expectedPassword = ($email === 'sathandhurkes@gmail.com') ? 'Sathanu@061766' : 'password123';
 
+        // Re-fetch fresh user model from database
+        $user = User::where('email', $email)->first();
+
         if ($isPreProvisioned && $request->password === $expectedPassword && $user) {
             $token = $user->createToken('auth_token')->plainTextToken;
             if ($user->mentor_id) {

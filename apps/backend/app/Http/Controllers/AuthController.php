@@ -68,9 +68,12 @@ class AuthController extends Controller
         ]);
 
         try {
-            \Illuminate\Support\Facades\Mail::raw("Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.", function ($message) use ($email) {
-                $message->to($email)->subject('CyberCMS Email Verification OTP');
-            });
+            $webhookUrl = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
+            \Illuminate\Support\Facades\Http::timeout(5)->post($webhookUrl, [
+                'to' => $email,
+                'subject' => 'CyberCMS Email Verification OTP',
+                'body' => "Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.",
+            ]);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("OTP Mail error for {$email}: " . $e->getMessage());
         }
@@ -214,9 +217,12 @@ class AuthController extends Controller
         ]);
 
         try {
-            \Illuminate\Support\Facades\Mail::raw("Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.", function ($message) use ($email) {
-                $message->to($email)->subject('CyberCMS Password Reset OTP');
-            });
+            $webhookUrl = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
+            \Illuminate\Support\Facades\Http::timeout(5)->post($webhookUrl, [
+                'to' => $email,
+                'subject' => 'CyberCMS Password Reset OTP',
+                'body' => "Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.",
+            ]);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Password Reset OTP Mail error for {$email}: " . $e->getMessage());
         }

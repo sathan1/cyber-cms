@@ -35,4 +35,4 @@ ENV APP_DEBUG=false
 ENV DB_CONNECTION=sqlite
 ENV DB_DATABASE=/app/database/database.sqlite
 
-CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && php -d variables_order=EGPCS -S 0.0.0.0:${PORT} -t public/"]
+CMD ["sh", "-c", "php artisan config:clear && php artisan migrate --force && php artisan db:seed --force && php -d variables_order=EGPCS -S 0.0.0.0:${PORT} -t public/"]

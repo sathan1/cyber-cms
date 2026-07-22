@@ -68,20 +68,12 @@ class AuthController extends Controller
         ]);
 
         try {
-            $url = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
-            $payload = json_encode([
+            $webhookUrl = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
+            \Illuminate\Support\Facades\Http::async()->post($webhookUrl, [
                 'to' => $email,
                 'subject' => 'CyberCMS Email Verification OTP',
                 'body' => "Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.",
             ]);
-            $tmpFile = tempnam(sys_get_temp_dir(), 'otp_') . '.json';
-            file_put_contents($tmpFile, $payload);
-            
-            if (str_upper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                pclose(popen("start /b curl.exe -L -s -X POST -H \"Content-Type: application/json\" -d @" . escapeshellarg($tmpFile) . " " . escapeshellarg($url), "r"));
-            } else {
-                exec("curl -L -s -X POST -H 'Content-Type: application/json' -d @" . escapeshellarg($tmpFile) . " " . escapeshellarg($url) . " > /dev/null 2>&1 &");
-            }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("OTP Webhook error for {$email}: " . $e->getMessage());
         }
@@ -225,20 +217,12 @@ class AuthController extends Controller
         ]);
 
         try {
-            $url = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
-            $payload = json_encode([
+            $webhookUrl = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
+            \Illuminate\Support\Facades\Http::async()->post($webhookUrl, [
                 'to' => $email,
                 'subject' => 'CyberCMS Password Reset OTP',
                 'body' => "Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.",
             ]);
-            $tmpFile = tempnam(sys_get_temp_dir(), 'rotp_') . '.json';
-            file_put_contents($tmpFile, $payload);
-            
-            if (str_upper(substr(PHP_OS, 0, 3)) === 'WIN') {
-                pclose(popen("start /b curl.exe -L -s -X POST -H \"Content-Type: application/json\" -d @" . escapeshellarg($tmpFile) . " " . escapeshellarg($url), "r"));
-            } else {
-                exec("curl -L -s -X POST -H 'Content-Type: application/json' -d @" . escapeshellarg($tmpFile) . " " . escapeshellarg($url) . " > /dev/null 2>&1 &");
-            }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Password Reset OTP Webhook error for {$email}: " . $e->getMessage());
         }

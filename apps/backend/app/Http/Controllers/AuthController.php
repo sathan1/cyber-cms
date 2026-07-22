@@ -20,8 +20,14 @@ class AuthController extends Controller
             'mentor_code' => 'nullable|string',
         ]);
 
-        $email = strtolower($request->email);
-        $role = $request->role ?? 'STUDENT';
+        // Backend domain restriction check for Student and Staff
+        if ($role === 'STUDENT' || $role === 'STAFF') {
+            if (!str_ends_with($email, '@mcet.in') && !str_ends_with($email, '@drmcet.ac.in')) {
+                return response()->json([
+                    'message' => 'Please use your valid institutional email address to register.',
+                ], 422);
+            }
+        }
 
         // Mentor code validation for Staff
         $mentorId = null;

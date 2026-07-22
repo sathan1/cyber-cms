@@ -19,6 +19,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        try {
+            $dbPath = database_path('database.sqlite');
+            if (!file_exists($dbPath)) {
+                @touch($dbPath);
+                @chmod($dbPath, 0777);
+            }
+            if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+                \Illuminate\Support\Facades\Artisan::call('migrate:fresh', [
+                    '--force' => true,
+                    '--seed' => true,
+                ]);
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('AppServiceProvider boot error: ' . $e->getMessage());
+        }
     }
 }

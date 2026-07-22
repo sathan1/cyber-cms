@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { Shield, LogOut, LogIn, UserPlus, AlertCircle, Menu, X } from 'lucide-react';
+import { Shield, LogOut, LogIn, UserPlus, AlertCircle, Menu, X, Sun, Moon } from 'lucide-react';
 import { User } from '@/types';
 import { removeAuthToken, getAuthToken, fetchApi } from '@/lib/api';
 import ProfileModal from './ProfileModal';
@@ -23,6 +23,20 @@ export default function Navbar({ user, onUserChange, onOpenAuth, onOpenOnboardin
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(user || null);
   const [isFetchingUser, setIsFetchingUser] = useState(true);
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  useEffect(() => {
+    const saved = (localStorage.getItem('theme') as 'dark' | 'light') || 'dark';
+    setTheme(saved);
+    document.body.classList.toggle('light', saved === 'light');
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    localStorage.setItem('theme', next);
+    document.body.classList.toggle('light', next === 'light');
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -169,6 +183,15 @@ export default function Navbar({ user, onUserChange, onOpenAuth, onOpenOnboardin
                   </div>
                 )
               )}
+
+              {/* Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 text-gray-400 hover:text-amber-400 bg-gray-800/60 hover:bg-gray-800 rounded-xl transition-all border border-gray-700/50"
+                title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
+              </button>
 
               {/* Mobile Hamburger Toggle Button */}
               <button

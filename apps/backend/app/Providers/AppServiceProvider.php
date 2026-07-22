@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
                 @touch($dbPath);
                 @chmod($dbPath, 0777);
             }
-            if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+            if (!\Illuminate\Support\Facades\Schema::hasTable('users') || \App\Models\Lesson::count() < 3) {
                 \Illuminate\Support\Facades\Artisan::call('migrate:fresh', [
                     '--force' => true,
                     '--seed' => true,

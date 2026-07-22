@@ -13,7 +13,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSuccess }: AuthModalProps) {
-  const [mode, setMode] = useState<'login' | 'register' | 'otp' | 'verify_reg_otp'>(initialMode);
+  const [mode, setMode] = useState<'login' | 'register' | 'otp' | 'verify_reg_otp' | 'forgot'>(initialMode);
   const [otpStep, setOtpStep] = useState<'request' | 'verify'>('request');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +27,47 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
   const [role, setRole] = useState<Role>('STUDENT');
   const [mentorCode, setMentorCode] = useState('');
   const [otpCode, setOtpCode] = useState('');
+
+  // Reset modal state on open or initialMode change
+  React.useEffect(() => {
+    if (isOpen) {
+      setMode(initialMode);
+      setOtpStep('request');
+      setLoading(false);
+      setError(null);
+      setSuccessMsg(null);
+      setDebugOtp(null);
+      setOtpCode('');
+    }
+  }, [isOpen, initialMode]);
+
+  const sendHtmlEmail = (recipientEmail: string, subjectTitle: string, code: string, isRegister: boolean) => {
+    try {
+      const html = `
+        <div style="font-family: Arial, sans-serif; background-color: #f8fafc; padding: 30px; border-radius: 12px; max-width: 500px; margin: auto; border: 1px solid #e2e8f0; text-align: center;">
+          <div style="background-color: #4f46e5; color: white; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 18px; margin-bottom: 20px;">
+            CyberCMS Academic Platform
+          </div>
+          <h2 style="color: #1e293b; margin-bottom: 10px;">${subjectTitle}</h2>
+          <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">Please use the following 6-digit verification code to complete your request:</p>
+          <div style="background-color: #e0e7ff; color: #3730a3; font-size: 32px; font-weight: bold; letter-spacing: 6px; padding: 15px; border-radius: 8px; display: inline-block; margin-bottom: 20px;">
+            ${code}
+          </div>
+          <p style="color: #94a3b8; font-size: 12px; margin-top: 15px;">This code is valid for ${isRegister ? '15' : '10'} minutes. If you did not request this, please ignore this email.</p>
+        </div>
+      `;
+      fetch('https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: recipientEmail,
+          subject: subjectTitle,
+          body: html,
+        }),
+      }).catch(() => {});
+    } catch {}
+  };
 
   if (!isOpen) return null;
 
@@ -59,18 +100,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           setSuccessMsg(res.message);
           if (res.otp) {
             setDebugOtp(res.otp);
-            try {
-              fetch('https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec', {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  to: email,
-                  subject: 'CyberCMS Email Verification OTP',
-                  body: `Your CyberCMS Verification OTP code is: ${res.otp}. Valid for 15 minutes.`,
-                }),
-              }).catch(() => {});
-            } catch {}
+            sendHtmlEmail(email, 'CyberCMS Email Verification OTP', res.otp, true);
           }
           setMode('verify_reg_otp');
         } else {
@@ -86,7 +116,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         setAuthToken(res.token);
         onSuccess(res.user);
         onClose();
-      } else if (mode === 'otp') {
+      } else if (mode === 'forgot') {
         if (otpStep === 'request') {
           const res = await fetchApi('/send-otp', {
             method: 'POST',
@@ -94,18 +124,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           });
           if (res.otp) {
             setDebugOtp(res.otp);
-            try {
-              fetch('https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec', {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  to: email,
-                  subject: 'CyberCMS Password Reset OTP',
-                  body: `Your CyberCMS Password Reset OTP code is: ${res.otp}. Valid for 10 minutes.`,
-                }),
-              }).catch(() => {});
-            } catch {}
+            sendHtmlEmail(email, 'CyberCMS Password Reset OTP', res.otp, false);
           }
           setSuccessMsg('OTP code sent to email. Valid for 10 minutes.');
           setOtpStep('verify');

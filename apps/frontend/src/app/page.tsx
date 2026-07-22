@@ -115,12 +115,29 @@ export default function Home() {
           </p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <button
-              onClick={() => openAuth('register')}
-              className="px-6 py-3 rounded-xl btn-primary text-white font-semibold text-sm flex items-center gap-2 shadow-lg"
-            >
-              Get Started Now <ArrowRight className="w-4 h-4" />
-            </button>
+            {user ? (
+              <a
+                href={
+                  user.role === 'STUDENT'
+                    ? '/dashboard/student'
+                    : user.role === 'PAID_USER'
+                    ? '/dashboard/paid'
+                    : user.role === 'ADMIN'
+                    ? '/dashboard/admin'
+                    : '/dashboard/mentor'
+                }
+                className="px-6 py-3 rounded-xl btn-primary text-white font-semibold text-sm flex items-center gap-2 shadow-lg hover:scale-105 transition-transform"
+              >
+                Go to Portal Dashboard <ArrowRight className="w-4 h-4" />
+              </a>
+            ) : (
+              <button
+                onClick={() => openAuth('register')}
+                className="px-6 py-3 rounded-xl btn-primary text-white font-semibold text-sm flex items-center gap-2 shadow-lg hover:scale-105 transition-transform"
+              >
+                Get Started Now <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
             {user && (
               <button
                 onClick={openRemarks}

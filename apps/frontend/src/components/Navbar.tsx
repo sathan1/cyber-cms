@@ -22,26 +22,32 @@ export default function Navbar({ user, onUserChange, onOpenAuth, onOpenOnboardin
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState<User | null>(user || null);
+  const [isFetchingUser, setIsFetchingUser] = useState(true);
 
   useEffect(() => {
     setMounted(true);
 
     if (user !== undefined && user !== null) {
       setCurrentUser(user);
+      setIsFetchingUser(false);
     } else {
       const token = getAuthToken();
       if (token) {
+        setIsFetchingUser(true);
         fetchApi('/me')
           .then((res) => {
             setCurrentUser(res.user);
+            setIsFetchingUser(false);
             if (onUserChange) onUserChange(res.user);
           })
           .catch(() => {
             setCurrentUser(null);
+            setIsFetchingUser(false);
             if (onUserChange) onUserChange(null);
           });
       } else {
         setCurrentUser(null);
+        setIsFetchingUser(false);
       }
     }
   }, [user, pathname, onUserChange]);
@@ -140,27 +146,28 @@ export default function Navbar({ user, onUserChange, onOpenAuth, onOpenOnboardin
 
                   <button
                     onClick={handleLogout}
-                    className="p-2 text-gray-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition-colors hidden sm:block"
-                    title="Logout"
+                    className="p-2 text-gray-400 hover:text-white bg-gray-800/50 hover:bg-rose-500/20 rounded-xl transition-all group"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-5 h-5 group-hover:text-rose-400 transition-colors" />
                   </button>
                 </div>
               ) : (
-                <div className="hidden sm:flex items-center gap-2">
-                  <button
-                    onClick={() => onOpenAuth && onOpenAuth('login')}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium transition-colors"
-                  >
-                    <LogIn className="w-3.5 h-3.5" /> Sign In
-                  </button>
-                  <button
-                    onClick={() => onOpenAuth && onOpenAuth('register')}
-                    className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg btn-primary text-white text-xs font-semibold"
-                  >
-                    <UserPlus className="w-3.5 h-3.5" /> Register
-                  </button>
-                </div>
+                !isFetchingUser && (
+                  <div className="hidden sm:flex items-center gap-2">
+                    <button
+                      onClick={() => onOpenAuth && onOpenAuth('login')}
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium transition-colors"
+                    >
+                      <LogIn className="w-3.5 h-3.5" /> Sign In
+                    </button>
+                    <button
+                      onClick={() => onOpenAuth && onOpenAuth('register')}
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg btn-primary text-white text-xs font-semibold"
+                    >
+                      <UserPlus className="w-3.5 h-3.5" /> Register
+                    </button>
+                  </div>
+                )
               )}
 
               {/* Mobile Hamburger Toggle Button */}

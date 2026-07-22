@@ -31,7 +31,10 @@ class CmsController extends Controller
         if ($user->role === 'STAFF') {
             $query->where('created_by', $user->id);
         }
-        return response()->json(['courses' => $query->latest()->get()]);
+        return response()->json([
+            'courses' => $query->latest()->get(),
+            'departments' => \App\Models\Department::all(),
+        ]);
     }
 
     public function createCourse(Request $request)

@@ -135,15 +135,11 @@ export default function StaffCmsPage() {
     try {
       const res = await fetchApi('/cms/courses');
       setCourses(res.courses || []);
+      if (res.departments && res.departments.length > 0) {
+        setDepartments(res.departments);
+      }
     } catch (e: any) { setError(e.message); }
     finally { setLoadingCourses(false); }
-  }, []);
-
-  const loadDepts = useCallback(async () => {
-    try {
-      const res = await fetchApi('/mentors');
-      // Mentors endpoint gives mentor list; get departments separately from courses
-    } catch {}
   }, []);
 
   useEffect(() => {
@@ -184,7 +180,13 @@ export default function StaffCmsPage() {
   // ── Course CRUD ────────────────────────────────────────────────────────────
   const openCreateCourse = () => {
     setEditingCourse(null);
-    setCourseForm({ department_id: '', title: '', description: '', price: '', status: 'draft' });
+    setCourseForm({
+      department_id: departments.length > 0 ? String(departments[0].id) : '1',
+      title: '',
+      description: '',
+      price: '',
+      status: 'draft',
+    });
     setShowCourseForm(true);
   };
 
@@ -757,9 +759,30 @@ export default function StaffCmsPage() {
               <h3 className="text-lg font-bold text-white">{editingCourse ? 'Edit Course' : 'Create New Course'}</h3>
               <button onClick={() => setShowCourseForm(false)} className="text-gray-400 hover:text-white"><X className="w-5 h-5" /></button>
             </div>
+            <div>
+              <label className="block text-xs text-gray-400 mb-1">Academic Department *</label>
+              <select
+                value={courseForm.department_id}
+                onChange={(e) => setCourseForm((p) => ({ ...p, department_id: e.target.value }))}
+                className="w-full px-3 py-2 text-xs bg-gray-950/60 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-indigo-500"
+              >
+                {departments.map((dept) => (
+                  <option key={dept.id} value={dept.id}>
+                    {dept.name} ({dept.code})
+                  </option>
+                ))}
+                {departments.length === 0 && (
+                  <>
+                    <option value="1">Computer Science &amp; Engineering (CSE)</option>
+                    <option value="2">Electronics &amp; Communication (ECE)</option>
+                    <option value="3">Information Technology (IT)</option>
+                  </>
+                )}
+              </select>
+            </div>
             {[
-              { label: 'Course Title', key: 'title', type: 'text', placeholder: 'e.g. Cyber Security Fundamentals' },
-              { label: 'Price (USD)', key: 'price', type: 'number', placeholder: '0 for free' },
+              { label: 'Course Title *', key: 'title', type: 'text', placeholder: 'e.g. Cyber Security Fundamentals' },
+              { label: 'Price (USD) *', key: 'price', type: 'number', placeholder: '0 for free' },
             ].map(f => (
               <div key={f.key}>
                 <label className="block text-xs text-gray-400 mb-1">{f.label}</label>

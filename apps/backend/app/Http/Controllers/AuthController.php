@@ -101,10 +101,14 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        if ($user->mentor_id) {
+            $user->load('mentor.department');
+        }
+
         return response()->json([
             'message' => 'Email verified successfully! Welcome to CyberCMS.',
             'token' => $token,
-            'user' => $user->load('mentor.department'),
+            'user' => $user,
         ]);
     }
 
@@ -190,17 +194,26 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        if ($user->mentor_id) {
+            $user->load('mentor.department');
+        }
+
         return response()->json([
             'message' => 'Login successful',
             'token' => $token,
-            'user' => $user->load('mentor.department'),
+            'user' => $user,
         ]);
     }
 
     public function me(Request $request)
     {
+        $user = $request->user();
+        if ($user->mentor_id) {
+            $user->load('mentor.department');
+        }
+
         return response()->json([
-            'user' => $request->user()->load('mentor.department'),
+            'user' => $user,
         ]);
     }
 

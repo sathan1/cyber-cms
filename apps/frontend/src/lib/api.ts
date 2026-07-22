@@ -1,4 +1,4 @@
-const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'https://cyber-cms-production.up.railway.app/api').replace(/\/+$/, '');
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || '/api').replace(/\/+$/, '');
 
 export function getAuthToken(): string | null {
   if (typeof window !== 'undefined') {

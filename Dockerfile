@@ -35,4 +35,4 @@ ENV APP_DEBUG=false
 ENV DB_CONNECTION=sqlite
 ENV DB_DATABASE=/app/database/database.sqlite
 
-CMD ["sh", "-c", "touch /app/database/database.sqlite && php artisan key:generate --force && php artisan config:clear && php artisan route:clear && php artisan migrate:fresh --seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
+CMD ["sh", "-c", "touch /app/database/database.sqlite && php artisan key:generate --force && php artisan config:clear && php artisan route:clear && php artisan migrate:fresh --seed --force && php -d variables_order=EGPCS -S 0.0.0.0:${PORT:-8080} -t public/ public/index.php"]

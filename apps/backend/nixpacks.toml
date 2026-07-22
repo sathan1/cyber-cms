@@ -5,4 +5,4 @@ nixPkgs = ["php83", "php83Extensions.pdo_sqlite", "php83Extensions.sqlite3", "ph
 cmds = ["composer install --no-dev --optimize-autoloader"]
 
 [start]
-cmd = "touch database/database.sqlite && php artisan key:generate --force && php artisan config:clear && php artisan route:clear && php artisan migrate:fresh --seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"
+cmd = "touch database/database.sqlite && php artisan key:generate --force && php artisan config:clear && php artisan route:clear && php artisan migrate:fresh --seed --force && php -d variables_order=EGPCS -S 0.0.0.0:${PORT:-8080} -t public/ public/index.php"

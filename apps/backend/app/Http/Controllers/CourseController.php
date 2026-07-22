@@ -15,6 +15,8 @@ class CourseController extends Controller
 {
     public function index(Request $request)
     {
+        self::ensureNotionCoursesExist();
+
         $courses = Course::with(['department', 'creator', 'lessons'])
             ->where('status', 'published')
             ->get();
@@ -38,6 +40,8 @@ class CourseController extends Controller
 
     public function show(Request $request, $slug)
     {
+        self::ensureNotionCoursesExist();
+
         $course = Course::with(['department', 'creator', 'lessons.quiz', 'assignments'])
             ->where('slug', $slug)
             ->firstOrFail();
@@ -303,5 +307,177 @@ class CourseController extends Controller
                     ? "Incorrect. You have {$retriesRemaining} retries remaining."
                     : 'No retries remaining. Contact your mentor.'),
         ]);
+    }
+
+    private static function ensureNotionCoursesExist()
+    {
+        try {
+            $admin = \App\Models\User::where('role', 'ADMIN')->first();
+            $dept = \App\Models\Department::firstOrCreate(['code' => 'CSE'], ['name' => 'Computer Science & Engineering']);
+            
+            $c1 = \App\Models\Course::updateOrCreate(
+                ['slug' => 'cyber-security-fundamentals'],
+                [
+                    'department_id' => $dept->id,
+                    'title' => 'Cyber Security Fundamentals',
+                    'description' => 'Comprehensive introduction to cybersecurity principles, cryptography, network security, and vulnerability management as outlined in Notion Module 1.',
+                    'price' => 499,
+                    'status' => 'published',
+                    'created_by' => $admin ? $admin->id : 1,
+                ]
+            );
+
+            \App\Models\Lesson::updateOrCreate(
+                ['course_id' => $c1->id, 'position' => 1],
+                [
+                    'title' => 'M1 - Lesson 1.1: Foundations of Cyber Security & Threat Landscapes',
+                    'content' => "# Module 1: Foundations of Cyber Security\n\nWelcome to Module 1. In this lesson, we cover the core pillars of cybersecurity, threat modeling, and modern attack vectors.\n\n### Core Pillars (CIA Triad)\n1. **Confidentiality**: Ensuring data is accessible only to authorized personnel.\n2. **Integrity**: Safeguarding the accuracy and completeness of information.\n3. **Availability**: Ensuring timely and reliable access to data and resources.\n\n```bash\n# Check system listening ports\nnetstat -tuln\n```",
+                    'has_quiz' => false,
+                ]
+            );
+
+            \App\Models\Lesson::updateOrCreate(
+                ['course_id' => $c1->id, 'position' => 2],
+                [
+                    'title' => 'M1 - Lesson 1.2: Web Architecture, HTTP/HTTPS Protocol & Sockets',
+                    'content' => "# Module 1: Web Architecture & Protocols\n\nUnderstand how modern web applications communicate via HTTP/HTTPS request/response cycles.\n\n### Key Concepts\n- **HTTP Request Methods**: GET, POST, PUT, DELETE, OPTIONS\n- **HTTPS Encryption**: TLS/SSL Handshake & Cipher Suites\n- **Session Management**: JWT vs Cookie-based Sessions\n\n```http\nPOST /api/login HTTP/1.1\nHost: cyber-cms.com\nContent-Type: application/json\n\n{\"email\":\"user@mcet.in\",\"password\":\"secret\"}\n```",
+                    'has_quiz' => false,
+                ]
+            );
+
+            \App\Models\Lesson::updateOrCreate(
+                ['course_id' => $c1->id, 'position' => 3],
+                [
+                    'title' => 'M1 - Lesson 1.3: OWASP Top 10 Web Vulnerabilities & Exploitation',
+                    'content' => "# Module 1: OWASP Top 10 Security Risks\n\nAn in-depth analysis of critical web application security risks.\n\n1. **A01: Broken Access Control**: Bypassing authorization checks to access restricted endpoints.\n2. **A02: Cryptographic Failures**: Using weak hash algorithms (MD5/SHA1) or unencrypted transport.\n3. **A03: Injection**: SQLi, Command Injection, and LDAP Injection.\n\n### Vulnerable SQL Code Example\n```sql\nSELECT * FROM users WHERE email = '\" . \$user_email . \"' AND password = '\" . \$user_password . \"';\n```",
+                    'has_quiz' => false,
+                ]
+            );
+
+            $l4 = \App\Models\Lesson::updateOrCreate(
+                ['course_id' => $c1->id, 'position' => 4],
+                [
+                    'title' => 'M1 - Lesson 1.4: Hands-on Lab: Traffic Interception with Burp Suite',
+                    'content' => "# Module 1 Lab: Intercepting Traffic\n\nIn this practical lab, you will configure Burp Suite Proxy to intercept, inspect, and modify HTTP requests in real time.\n\n### Lab Objectives\n- Configure browser proxy settings to `127.0.0.1:8080`\n- Install Burp Suite CA Certificate in Trusted Root Authorities\n- Intercept POST requests and modify parameter payloads before forwarding.",
+                    'has_quiz' => true,
+                    'quiz_question' => 'Which HTTP header is used to convey authentication bearer tokens in REST APIs?',
+                    'quiz_option_a' => 'Authorization: Bearer <token>',
+                    'quiz_option_b' => 'X-API-Key: <token>',
+                    'quiz_option_c' => 'Content-Type: application/jwt',
+                    'quiz_option_d' => 'Host: auth.token',
+                    'quiz_correct_option' => 'A',
+                ]
+            );
+
+            \App\Models\Quiz::updateOrCreate(
+                ['lesson_id' => $l4->id],
+                [
+                    'title' => 'Module 1 Knowledge Check: Traffic Interception & REST Security',
+                    'questions_json' => [
+                        [
+                            'question' => 'Which HTTP header is used to convey authentication bearer tokens in REST APIs?',
+                            'options' => [
+                                'Authorization: Bearer <token>',
+                                'X-API-Key: <token>',
+                                'Content-Type: application/jwt',
+                                'Host: auth.token'
+                            ],
+                            'correct' => 0
+                        ],
+                        [
+                            'question' => 'What is the default listening port for Burp Suite HTTP Proxy?',
+                            'options' => ['8080', '443', '80', '3306'],
+                            'correct' => 0
+                        ]
+                    ],
+                    'pass_score' => 50,
+                    'max_retries' => 3
+                ]
+            );
+
+            $c2 = \App\Models\Course::updateOrCreate(
+                ['slug' => 'ethical-hacking-web-pentesting'],
+                [
+                    'department_id' => $dept->id,
+                    'title' => 'Ethical Hacking & Web Penetration Testing',
+                    'description' => 'Hands-on guide to OWASP Top 10 vulnerabilities, SQL injection, XSS, and security auditing as outlined in Notion Module 1.',
+                    'price' => 999,
+                    'status' => 'published',
+                    'created_by' => $admin ? $admin->id : 1,
+                ]
+            );
+
+            \App\Models\Lesson::updateOrCreate(
+                ['course_id' => $c2->id, 'position' => 1],
+                [
+                    'title' => 'M1 - Lesson 1.1: Web Pentesting Reconnaissance & Subdomain Enumeration',
+                    'content' => "# Module 1: Reconnaissance & Footprinting\n\nGathering intelligence on target web applications using passive and active reconnaissance.\n\n### Tools & Techniques\n- `subfinder -d target.com`\n- `nmap -sV -sC -p 80,443 target.com`\n- Google Dorking for exposed admin panels",
+                    'has_quiz' => false,
+                ]
+            );
+
+            $l2_2 = \App\Models\Lesson::updateOrCreate(
+                ['course_id' => $c2->id, 'position' => 2],
+                [
+                    'title' => 'M1 - Lesson 1.2: Exploiting SQL Injection & Command Injection',
+                    'content' => "# Module 1: Injection Vulnerabilities\n\nDeep dive into manual and automated SQL injection techniques using `sqlmap`.\n\n```bash\nsqlmap -u \"https://target.com/item?id=1\" --dbs --batch\n```",
+                    'has_quiz' => true,
+                    'quiz_question' => 'What tool is widely used for automated SQL injection testing?',
+                    'quiz_option_a' => 'sqlmap',
+                    'quiz_option_b' => 'Wireshark',
+                    'quiz_option_c' => 'Metasploit',
+                    'quiz_option_d' => 'John the Ripper',
+                    'quiz_correct_option' => 'A',
+                ]
+            );
+
+            \App\Models\Quiz::updateOrCreate(
+                ['lesson_id' => $l2_2->id],
+                [
+                    'title' => 'Module 1 Knowledge Check: Web Pentesting & SQL Injection',
+                    'questions_json' => [
+                        [
+                            'question' => 'What tool is widely used for automated SQL injection testing?',
+                            'options' => ['sqlmap', 'Wireshark', 'Metasploit', 'John the Ripper'],
+                            'correct' => 0
+                        ]
+                    ],
+                    'pass_score' => 50,
+                    'max_retries' => 3
+                ]
+            );
+
+            // Course 3: Introduction to Computer Networks (from Notion Module 1)
+            $networkCourse = \App\Data\NetworksCourseData::getCourse();
+            $c3 = \App\Models\Course::updateOrCreate(
+                ['slug' => $networkCourse['slug']],
+                array_merge($networkCourse, [
+                    'department_id' => $dept->id,
+                    'created_by' => $admin ? $admin->id : 1,
+                ])
+            );
+
+            $quizLesson3 = null;
+            foreach (\App\Data\NetworksCourseData::getLessons() as $lessonData) {
+                $pos = $lessonData['position'];
+                unset($lessonData['position']);
+                $l = \App\Models\Lesson::updateOrCreate(
+                    ['course_id' => $c3->id, 'position' => $pos],
+                    $lessonData
+                );
+                if ($l->has_quiz) {
+                    $quizLesson3 = $l;
+                }
+            }
+
+            if ($quizLesson3) {
+                \App\Models\Quiz::updateOrCreate(
+                    ['lesson_id' => $quizLesson3->id],
+                    \App\Data\NetworksCourseData::getQuiz()
+                );
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Course auto-provision error: " . $e->getMessage());
+        }
     }
 }

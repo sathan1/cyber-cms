@@ -178,6 +178,36 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // 5b. Introduction to Computer Networks (Notion Module 1)
+        $networkCourse = \App\Data\NetworksCourseData::getCourse();
+        $c3 = Course::firstOrCreate(
+            ['slug' => $networkCourse['slug']],
+            array_merge($networkCourse, [
+                'department_id' => $cse->id,
+                'created_by' => $admin->id,
+            ])
+        );
+
+        $quizLesson3 = null;
+        foreach (\App\Data\NetworksCourseData::getLessons() as $lessonData) {
+            $pos = $lessonData['position'];
+            unset($lessonData['position']);
+            $l = Lesson::firstOrCreate(
+                ['course_id' => $c3->id, 'position' => $pos],
+                $lessonData
+            );
+            if ($l->has_quiz) {
+                $quizLesson3 = $l;
+            }
+        }
+
+        if ($quizLesson3) {
+            \App\Models\Quiz::firstOrCreate(
+                ['lesson_id' => $quizLesson3->id],
+                \App\Data\NetworksCourseData::getQuiz()
+            );
+        }
+
         // 6. Platform Settings
         PlatformSetting::firstOrCreate(
             ['id' => 1],

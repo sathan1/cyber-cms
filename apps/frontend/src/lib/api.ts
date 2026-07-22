@@ -39,16 +39,26 @@ export async function fetchApi<T = any>(endpoint: string, options: RequestInit =
       headers,
     });
 
-    const data = await response.json();
+    const text = await response.text();
+    let data: any = {};
+
+    try {
+      data = JSON.parse(text);
+    } catch {
+      if (!response.ok) {
+        throw new Error(`Server returned HTML error (${response.status}). Please verify your Railway backend URL in Vercel settings.`);
+      }
+      throw new Error('Invalid JSON server response format.');
+    }
 
     if (!response.ok) {
-      throw new Error(data.message || 'An error occurred while processing your request.');
+      throw new Error(data.message || `API error (${response.status}).`);
     }
 
     return data;
   } catch (err: any) {
     if (err.name === 'TypeError' && err.message.includes('fetch')) {
-      throw new Error('Unable to connect to Railway backend API. Please verify your Railway domain URL.');
+      throw new Error('Unable to connect to backend server. Please verify your Railway backend domain URL.');
     }
     throw err;
   }

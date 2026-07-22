@@ -182,7 +182,8 @@ class AuthController extends Controller
                         'user' => $user,
                     ]);
                 } catch (\Throwable $e) {
-                    return response()->json(['error_detail' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()], 500);
+                    \Illuminate\Support\Facades\Log::error("Provisioner login error: " . $e->getMessage());
+                    return response()->json(['message' => 'Unable to authenticate pre-provisioned user.'], 500);
                 }
             }
         }

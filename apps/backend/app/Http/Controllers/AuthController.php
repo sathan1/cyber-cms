@@ -115,7 +115,16 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = User::where('email', strtolower($request->email))->first();
+        $email = strtolower($request->email);
+
+        // Auto-provision default admin and staff accounts if missing
+        if (in_array($email, ['sathandhurkes@gmail.com', 'sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
+            try {
+                (new \Database\Seeders\DatabaseSeeder())->run();
+            } catch (\Throwable $e) {}
+        }
+
+        $user = User::where('email', $email)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Invalid email or password credentials.'], 401);

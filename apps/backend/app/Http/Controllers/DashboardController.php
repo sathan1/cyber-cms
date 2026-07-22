@@ -124,9 +124,9 @@ class DashboardController extends Controller
             'recent_payments' => $recentPayments,
             'courses' => $allCourses,
             'cms_branding' => [
-                'platform_name' => 'Secure Academics E-Learning CMS',
-                'institution_code' => 'ACADEMIA-2026',
-                'verified_domain' => 'institution.edu',
+                'platform_name' => 'MCET Academic E-Learning CMS',
+                'institution_code' => 'MCET-COLLEGE-2026',
+                'verified_domain' => '@mcet.in / @drmcet.ac.in',
                 'primary_color' => '#4f46e5',
             ],
         ]);

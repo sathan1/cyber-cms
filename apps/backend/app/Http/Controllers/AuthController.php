@@ -73,6 +73,14 @@ class AuthController extends Controller
             'used' => false,
         ]);
 
+        try {
+            \Illuminate\Support\Facades\Mail::raw("Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.", function ($message) use ($email) {
+                $message->to($email)->subject('CyberCMS Email Verification OTP');
+            });
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::info("OTP Mail dispatch for {$email}: {$otp}");
+        }
+
         return response()->json([
             'message' => 'Account created! Please enter the 6-digit OTP sent to your email to complete registration.',
             'require_otp' => true,

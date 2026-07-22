@@ -215,7 +215,7 @@ export default function MentorDashboard() {
 
       <RemarkDrawer
         isOpen={remarkDrawerOpen}
-        user={{ id: 99, name: 'Staff Mentor', email: 'staff@institution.edu', role: 'STAFF', status: 'active' }}
+        user={{ id: 99, name: 'Staff Mentor', email: 'prof.smith@mcet.in', role: 'STAFF', status: 'active' }}
         courses={[]}
         remarks={data?.remarks || []}
         onClose={() => setRemarkDrawerOpen(false)}

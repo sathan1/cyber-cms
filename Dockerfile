@@ -27,12 +27,12 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN touch /app/database/database.sqlite \
     && chmod -R 777 /app/storage /app/bootstrap/cache /app/database
 
-EXPOSE 8000
+EXPOSE 8080
 
-ENV PORT=8000
+ENV PORT=8080
 ENV APP_ENV=production
 ENV APP_DEBUG=false
 ENV DB_CONNECTION=sqlite
 ENV DB_DATABASE=/app/database/database.sqlite
 
-CMD ["sh", "-c", "php artisan config:clear && php artisan migrate --force && php artisan db:seed --force && php -d variables_order=EGPCS -S 0.0.0.0:${PORT} -t public/"]
+CMD ["sh", "-c", "php artisan config:clear && php artisan migrate --force && php artisan db:seed --force && php -d variables_order=EGPCS -S 0.0.0.0:${PORT:-8080} -t public/"]

@@ -87,7 +87,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           setSuccessMsg(res.message);
           setMode('verify_reg_otp');
         } else {
-          setAuthToken(res.token);
+          setAuthToken(res.token, res.user);
           onSuccess(res.user);
           onClose();
         }
@@ -104,7 +104,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           }
           setMode('verify_reg_otp');
         } else {
-          setAuthToken(res.token);
+          setAuthToken(res.token, res.user);
           onSuccess(res.user);
           onClose();
         }
@@ -113,7 +113,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
           method: 'POST',
           body: JSON.stringify({ email, otp: otpCode }),
         });
-        setAuthToken(res.token);
+        setAuthToken(res.token, res.user);
         onSuccess(res.user);
         onClose();
       } else if (mode === 'forgot') {

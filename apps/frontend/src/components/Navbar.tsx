@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { Shield, LogOut, LogIn, UserPlus, AlertCircle, Menu, X, Sun, Moon } from 'lucide-react';
 import { User } from '@/types';
-import { removeAuthToken, getAuthToken, fetchApi } from '@/lib/api';
+import { removeAuthToken, getAuthToken, getStoredUser, setStoredUser, fetchApi } from '@/lib/api';
 import ProfileModal from './ProfileModal';
 
 interface NavbarProps {
@@ -21,7 +21,7 @@ export default function Navbar({ user, onUserChange, onOpenAuth, onOpenOnboardin
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState<User | null>(user || null);
+  const [currentUser, setCurrentUser] = useState<User | null>(user || getStoredUser());
   const [isFetchingUser, setIsFetchingUser] = useState(true);
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
@@ -41,30 +41,41 @@ export default function Navbar({ user, onUserChange, onOpenAuth, onOpenOnboardin
   useEffect(() => {
     setMounted(true);
 
-    if (user !== undefined && user !== null) {
+    const storedUser = getStoredUser();
+    if (storedUser) {
+      setCurrentUser(storedUser);
+      setIsFetchingUser(false);
+      if (!user && onUserChange) onUserChange(storedUser);
+    } else if (user) {
       setCurrentUser(user);
       setIsFetchingUser(false);
-    } else {
-      const token = getAuthToken();
-      if (token) {
-        setIsFetchingUser(true);
-        fetchApi('/me')
-          .then((res) => {
+    }
+
+    const token = getAuthToken();
+    if (token) {
+      fetchApi('/me')
+        .then((res) => {
+          if (res?.user) {
             setCurrentUser(res.user);
+            setStoredUser(res.user);
             setIsFetchingUser(false);
             if (onUserChange) onUserChange(res.user);
-          })
-          .catch(() => {
+          }
+        })
+        .catch((err) => {
+          if (err.message && (err.message.includes('401') || err.message.includes('Unauthenticated'))) {
+            removeAuthToken();
             setCurrentUser(null);
             setIsFetchingUser(false);
             if (onUserChange) onUserChange(null);
-          });
-      } else {
-        setCurrentUser(null);
-        setIsFetchingUser(false);
-      }
+          } else {
+            setIsFetchingUser(false);
+          }
+        });
+    } else {
+      setIsFetchingUser(false);
     }
-  }, [user, pathname, onUserChange]);
+  }, [pathname]);
 
   const handleLogout = () => {
     removeAuthToken();

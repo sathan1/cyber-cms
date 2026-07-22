@@ -10,9 +10,32 @@ export function getAuthToken(): string | null {
   return null;
 }
 
-export function setAuthToken(token: string) {
+export function getStoredUser(): any | null {
+  if (typeof window !== 'undefined') {
+    const raw = localStorage.getItem('auth_user');
+    if (raw) {
+      try { return JSON.parse(raw); } catch {}
+    }
+  }
+  return null;
+}
+
+export function setStoredUser(user: any | null) {
+  if (typeof window !== 'undefined') {
+    if (user) {
+      localStorage.setItem('auth_user', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('auth_user');
+    }
+  }
+}
+
+export function setAuthToken(token: string, user?: any) {
   if (typeof window !== 'undefined') {
     localStorage.setItem('auth_token', token);
+    if (user) {
+      setStoredUser(user);
+    }
   }
 }
 

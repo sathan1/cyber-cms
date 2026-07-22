@@ -67,15 +67,13 @@ class AuthController extends Controller
             'used' => false,
         ]);
 
-        dispatch(function () use ($email, $otp) {
-            try {
-                \Illuminate\Support\Facades\Mail::mailer('smtp')->raw("Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.", function ($message) use ($email) {
-                    $message->to($email)->subject('CyberCMS Email Verification OTP');
-                });
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::error("Gmail OTP Mail error for {$email}: " . $e->getMessage());
-            }
-        })->afterResponse();
+        try {
+            \Illuminate\Support\Facades\Mail::raw("Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.", function ($message) use ($email) {
+                $message->to($email)->subject('CyberCMS Email Verification OTP');
+            });
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("OTP Mail error for {$email}: " . $e->getMessage());
+        }
 
         return response()->json([
             'message' => 'Account created! Please check your email for the 6-digit OTP code to complete registration.',
@@ -215,15 +213,13 @@ class AuthController extends Controller
             'used' => false,
         ]);
 
-        dispatch(function () use ($email, $otp) {
-            try {
-                \Illuminate\Support\Facades\Mail::mailer('smtp')->raw("Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.", function ($message) use ($email) {
-                    $message->to($email)->subject('CyberCMS Password Reset OTP');
-                });
-            } catch (\Throwable $e) {
-                \Illuminate\Support\Facades\Log::error("Gmail Password Reset OTP Mail error for {$email}: " . $e->getMessage());
-            }
-        })->afterResponse();
+        try {
+            \Illuminate\Support\Facades\Mail::raw("Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.", function ($message) use ($email) {
+                $message->to($email)->subject('CyberCMS Password Reset OTP');
+            });
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Password Reset OTP Mail error for {$email}: " . $e->getMessage());
+        }
 
         return response()->json([
             'message' => 'Password reset OTP generated and sent to email.',

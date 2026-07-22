@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'smtp'),
+    'default' => env('MAIL_MAILER', 'log'),
 
     /*
     |--------------------------------------------------------------------------
@@ -46,7 +46,7 @@ return [
             'username' => env('MAIL_USERNAME', 'sathandhurkes@gmail.com'),
             'password' => env('MAIL_PASSWORD', 'qywkwndksnfdmffi'),
             'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
-            'timeout' => 3,
+            'timeout' => 2,
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 

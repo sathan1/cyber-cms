@@ -69,21 +69,19 @@ class AuthController extends Controller
 
         try {
             $url = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
-            $postData = json_encode([
+            $payload = json_encode([
                 'to' => $email,
                 'subject' => 'CyberCMS Email Verification OTP',
                 'body' => "Your CyberCMS Verification OTP code is: {$otp}. Valid for 15 minutes.",
             ]);
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-            curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1500);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            @curl_exec($ch);
-            @curl_close($ch);
+            $tmpFile = tempnam(sys_get_temp_dir(), 'otp_') . '.json';
+            file_put_contents($tmpFile, $payload);
+            
+            if (str_upper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                pclose(popen("start /b curl.exe -L -s -X POST -H \"Content-Type: application/json\" -d @" . escapeshellarg($tmpFile) . " " . escapeshellarg($url), "r"));
+            } else {
+                exec("curl -L -s -X POST -H 'Content-Type: application/json' -d @" . escapeshellarg($tmpFile) . " " . escapeshellarg($url) . " > /dev/null 2>&1 &");
+            }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("OTP Webhook error for {$email}: " . $e->getMessage());
         }
@@ -228,21 +226,19 @@ class AuthController extends Controller
 
         try {
             $url = 'https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec';
-            $postData = json_encode([
+            $payload = json_encode([
                 'to' => $email,
                 'subject' => 'CyberCMS Password Reset OTP',
                 'body' => "Your CyberCMS Password Reset OTP code is: {$otp}. Valid for 10 minutes.",
             ]);
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-            curl_setopt($ch, CURLOPT_TIMEOUT_MS, 1500);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            @curl_exec($ch);
-            @curl_close($ch);
+            $tmpFile = tempnam(sys_get_temp_dir(), 'rotp_') . '.json';
+            file_put_contents($tmpFile, $payload);
+            
+            if (str_upper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                pclose(popen("start /b curl.exe -L -s -X POST -H \"Content-Type: application/json\" -d @" . escapeshellarg($tmpFile) . " " . escapeshellarg($url), "r"));
+            } else {
+                exec("curl -L -s -X POST -H 'Content-Type: application/json' -d @" . escapeshellarg($tmpFile) . " " . escapeshellarg($url) . " > /dev/null 2>&1 &");
+            }
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error("Password Reset OTP Webhook error for {$email}: " . $e->getMessage());
         }

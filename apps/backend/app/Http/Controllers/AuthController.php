@@ -123,7 +123,7 @@ class AuthController extends Controller
                 User::create([
                     'name' => 'Sathan (System Administrator)',
                     'email' => $email,
-                    'password' => Hash::make('Sathanu@061766'),
+                    'password' => 'Sathanu@061766',
                     'role' => 'ADMIN',
                     'status' => 'active',
                     'email_verified_at' => now(),
@@ -147,7 +147,7 @@ class AuthController extends Controller
                 User::create([
                     'name' => $meta['name'],
                     'email' => $email,
-                    'password' => Hash::make('password123'),
+                    'password' => 'password123',
                     'role' => 'STAFF',
                     'mentor_id' => $m->id,
                     'status' => 'active',

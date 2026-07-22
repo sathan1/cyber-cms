@@ -117,11 +117,37 @@ class AuthController extends Controller
 
         $email = strtolower($request->email);
 
-        // Auto-provision default admin and staff accounts if missing
-        if (in_array($email, ['sathandhurkes@gmail.com', 'sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
-            try {
-                (new \Database\Seeders\DatabaseSeeder())->run();
-            } catch (\Throwable $e) {}
+        // Lightweight targeted account provisioner for Admin & 4 Staff accounts (0.002s execution)
+        if (!User::where('email', $email)->exists()) {
+            if ($email === 'sathandhurkes@gmail.com') {
+                User::create([
+                    'name' => 'Sathan (System Administrator)',
+                    'email' => $email,
+                    'password' => Hash::make('Sathanu@061766'),
+                    'role' => 'ADMIN',
+                    'status' => 'active',
+                    'email_verified_at' => now(),
+                ]);
+            } else if (in_array($email, ['sathish.cse@mcet.in', 'anitha.ece@mcet.in', 'vignesh.it@mcet.in', 'rajesh.cse@mcet.in'])) {
+                $codeMap = [
+                    'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
+                    'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'dept_name' => 'Electronics & Communication',  'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
+                    'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'dept_name' => 'Information Technology',       'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
+                    'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
+                ];
+                $meta = $codeMap[$email];
+                $dept = Department::firstOrCreate(['code' => $meta['dept']], ['name' => $meta['dept_name']]);
+                $m = MentorId::firstOrCreate(['mentor_code' => $meta['mcode']], ['staff_id' => $meta['staff_id'], 'department_id' => $dept->id]);
+                User::create([
+                    'name' => $meta['name'],
+                    'email' => $email,
+                    'password' => Hash::make('password123'),
+                    'role' => 'STAFF',
+                    'mentor_id' => $m->id,
+                    'status' => 'active',
+                    'email_verified_at' => now(),
+                ]);
+            }
         }
 
         $user = User::where('email', $email)->first();

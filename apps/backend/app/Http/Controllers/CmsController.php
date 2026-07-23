@@ -45,19 +45,47 @@ class CmsController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'status' => 'in:draft,published,archived',
         ]);
         $slug = Str::slug($request->title) . '-' . Str::random(5);
+        $status = ($user->role === 'ADMIN') ? ($request->status ?? 'published') : 'pending_approval';
+
         $course = Course::create([
             'department_id' => $request->department_id,
             'title' => $request->title,
             'slug' => $slug,
             'description' => $request->description,
             'price' => $request->price,
-            'status' => $request->status ?? 'draft',
+            'status' => $status,
             'created_by' => $user->id,
         ]);
-        return response()->json(['message' => 'Course created.', 'course' => $course->load('department')], 201);
+
+        $msg = ($status === 'pending_approval')
+            ? 'Course created and submitted to Admin for approval.'
+            : 'Course created and published.';
+
+        return response()->json(['message' => $msg, 'course' => $course->load('department')], 201);
+    }
+
+    public function approveCourse(Request $request, $id)
+    {
+        $user = $this->requireStaffOrAdmin($request);
+        if ($user->role !== 'ADMIN') {
+            return response()->json(['message' => 'Only Admin can approve courses.'], 403);
+        }
+        $course = Course::findOrFail($id);
+        $course->update(['status' => 'published']);
+        return response()->json(['message' => 'Course approved and published!', 'course' => $course]);
+    }
+
+    public function rejectCourse(Request $request, $id)
+    {
+        $user = $this->requireStaffOrAdmin($request);
+        if ($user->role !== 'ADMIN') {
+            return response()->json(['message' => 'Only Admin can reject courses.'], 403);
+        }
+        $course = Course::findOrFail($id);
+        $course->update(['status' => 'archived']);
+        return response()->json(['message' => 'Course rejected.', 'course' => $course]);
     }
 
     public function updateCourse(Request $request, $id)

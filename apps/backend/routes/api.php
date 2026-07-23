@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Learning Progress & Quiz Submission
     Route::post('/lessons/{id}/complete', [CourseController::class, 'markLessonComplete']);
     Route::post('/quizzes/{id}/submit', [CourseController::class, 'submitQuiz']);
+    Route::post('/courses/{slug}/enroll', [CourseController::class, 'enrollFree']);
 
     // Legacy Course CRUD (kept for backward compat)
     Route::post('/courses', [CourseController::class, 'store']);
@@ -71,6 +72,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/courses', [CmsController::class, 'createCourse']);
         Route::put('/courses/{id}', [CmsController::class, 'updateCourse']);
         Route::delete('/courses/{id}', [CmsController::class, 'deleteCourse']);
+        Route::post('/courses/{id}/approve', [CmsController::class, 'approveCourse']);
+        Route::post('/courses/{id}/reject', [CmsController::class, 'rejectCourse']);
 
         // Lesson CRUD
         Route::get('/courses/{courseId}/lessons', [CmsController::class, 'listLessons']);

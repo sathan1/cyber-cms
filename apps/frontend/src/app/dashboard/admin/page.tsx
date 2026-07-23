@@ -303,27 +303,80 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === 'courses' && (
-          <div className="glass-card p-8 rounded-2xl border border-indigo-500/30 text-center space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mx-auto">
-              <BookOpen className="w-7 h-7" />
-            </div>
-            <h3 className="text-lg font-bold text-white">Full CMS Staff &amp; Course Builder</h3>
-            <p className="text-xs text-gray-400 max-w-md mx-auto">
-              Create courses with department tags, author modules, attach knowledge-check quizzes with retry limits, manage assignments, and grade student submissions.
-            </p>
-            <div className="space-y-3">
-              <div className="text-left text-xs text-gray-400 space-y-1 glass-card p-4 rounded-xl border border-gray-800 max-w-sm mx-auto">
-                {data?.courses.map((c) => (
-                  <div key={c.id} className="flex justify-between items-center py-1 border-b border-gray-800/60 last:border-0">
-                    <span className="text-white font-medium truncate pr-2">{c.title}</span>
-                    <span className="text-emerald-400 font-bold flex-shrink-0">₹{c.price}</span>
-                  </div>
-                ))}
-                {(data?.courses.length ?? 0) === 0 && <p className="text-center text-gray-500 py-2">No courses in catalog yet.</p>}
+          <div className="space-y-6">
+            <div className="glass-card rounded-2xl border border-indigo-500/30 overflow-hidden">
+              <div className="bg-indigo-950/80 p-4 border-b border-indigo-500/30 flex justify-between items-center">
+                <h3 className="text-white font-bold flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-indigo-400" /> Course Catalog &amp; Staff Submissions ({data?.courses.length})
+                </h3>
+                <a href="/dashboard/staff/cms" className="px-3 py-1.5 rounded-lg btn-primary text-white text-xs font-semibold flex items-center gap-1.5">
+                  <Settings className="w-3.5 h-3.5" /> Open CMS Builder
+                </a>
               </div>
-              <a href="/dashboard/staff/cms" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl btn-primary text-white text-sm font-bold">
-                <Settings className="w-4 h-4" /> Go to CMS Portal <ArrowRight className="w-4 h-4" />
-              </a>
+
+              <table className="w-full text-left text-xs text-gray-300">
+                <thead className="bg-gray-950/80 text-gray-400 uppercase tracking-wider font-semibold border-b border-gray-800">
+                  <tr>
+                    <th className="p-4">Course Title</th>
+                    <th className="p-4">Department</th>
+                    <th className="p-4">Price</th>
+                    <th className="p-4">Status</th>
+                    <th className="p-4">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-800/80">
+                  {data?.courses.map((c: any) => (
+                    <tr key={c.id} className="hover:bg-gray-900/40">
+                      <td className="p-4 font-semibold text-white">{c.title}</td>
+                      <td className="p-4 text-indigo-300">{c.department?.name || 'CSE'}</td>
+                      <td className="p-4 font-bold text-emerald-400">₹{c.price}</td>
+                      <td className="p-4">
+                        <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase border ${
+                          c.status === 'published'
+                            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                            : c.status === 'pending_approval'
+                            ? 'bg-amber-500/10 text-amber-400 border-amber-500/30 animate-pulse'
+                            : 'bg-gray-800 text-gray-400 border-gray-700'
+                        }`}>
+                          {c.status === 'pending_approval' ? 'Pending Admin Approval' : c.status}
+                        </span>
+                      </td>
+                      <td className="p-4 flex gap-2">
+                        {c.status === 'pending_approval' && (
+                          <>
+                            <button
+                              onClick={async () => {
+                                await fetchApi(`/cms/courses/${c.id}/approve`, { method: 'POST' });
+                                loadData();
+                              }}
+                              className="px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
+                            >
+                              Approve &amp; Publish
+                            </button>
+                            <button
+                              onClick={async () => {
+                                await fetchApi(`/cms/courses/${c.id}/reject`, { method: 'POST' });
+                                loadData();
+                              }}
+                              className="px-3 py-1 rounded bg-rose-600 hover:bg-rose-500 text-white font-bold"
+                            >
+                              Reject
+                            </button>
+                          </>
+                        )}
+                        {c.status === 'published' && (
+                          <span className="text-gray-500 italic">Published</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                  {(data?.courses.length ?? 0) === 0 && (
+                    <tr>
+                      <td colSpan={5} className="p-8 text-center text-gray-500">No courses available.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         )}

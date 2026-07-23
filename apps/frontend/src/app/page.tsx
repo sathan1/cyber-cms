@@ -66,11 +66,31 @@ export default function Home() {
         setActiveCourseForPlayer(detailRes.course);
         setCompletedLessonIds(detailRes.completed_lesson_ids || []);
         setQuizAttemptMap(detailRes.quiz_attempt_map || {});
+      } else if (user.role === 'STUDENT') {
+        handleEnrollFree(course);
       } else {
         setSelectedCourseForPayment(course);
       }
     } catch (err: any) {
       alert(err.message || 'Failed to fetch course details');
+    }
+  };
+
+  const handleEnrollFree = async (course: Course) => {
+    if (!user) {
+      openAuth('login');
+      return;
+    }
+
+    try {
+      await fetchApi(`/courses/${course.slug}/enroll`, { method: 'POST' });
+      const detailRes = await fetchApi(`/courses/${course.slug}`);
+      setActiveCourseForPlayer(detailRes.course);
+      setCompletedLessonIds(detailRes.completed_lesson_ids || []);
+      setQuizAttemptMap(detailRes.quiz_attempt_map || {});
+      loadInitialData();
+    } catch (err: any) {
+      alert(err.message || 'Enrollment failed');
     }
   };
 
@@ -199,6 +219,10 @@ export default function Home() {
                     {course.is_enrolled ? (
                       <>
                         <Play className="w-3.5 h-3.5 fill-white" /> Continue
+                      </>
+                    ) : user?.role === 'STUDENT' ? (
+                      <>
+                        <Sparkles className="w-3.5 h-3.5" /> Enroll Free
                       </>
                     ) : (
                       <>

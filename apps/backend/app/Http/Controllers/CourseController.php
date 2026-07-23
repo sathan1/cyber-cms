@@ -17,11 +17,18 @@ class CourseController extends Controller
     {
         self::ensureNotionCoursesExist();
 
-        $courses = Course::with(['department', 'creator', 'lessons'])
-            ->where('status', 'published')
-            ->get();
-
         $user = $request->user() ?? auth('sanctum')->user();
+
+        // Published courses are visible to everyone; STAFF/ADMIN can also see pending_approval
+        $query = Course::with(['department', 'creator', 'lessons']);
+
+        if (!$user || !in_array($user->role, ['ADMIN', 'STAFF'])) {
+            $query->where('status', 'published');
+        } else {
+            $query->whereIn('status', ['published', 'pending_approval']);
+        }
+
+        $courses = $query->get();
 
         if ($user) {
             $userEnrollments = Enrollment::where('user_id', $user->id)
@@ -29,8 +36,7 @@ class CourseController extends Controller
 
             $courses->transform(function ($course) use ($userEnrollments, $user) {
                 $isEnrolled = isset($userEnrollments[$course->id]) 
-                    || $course->price == 0 
-                    || in_array($user->role, ['ADMIN', 'STAFF', 'STUDENT']);
+                    || in_array($user->role, ['ADMIN', 'STAFF']);
                 $course->is_enrolled = $isEnrolled;
                 $course->progress_pct = $userEnrollments[$course->id] ?? ($isEnrolled ? 100 : 0);
                 return $course;
@@ -55,8 +61,6 @@ class CourseController extends Controller
         $quizAttemptMap = [];
 
         if ($user) {
-            $isEnrolled = in_array($user->role, ['ADMIN', 'STAFF', 'STUDENT']) || $course->price == 0;
-
             $enrollment = Enrollment::where('user_id', $user->id)
                 ->where('course_id', $course->id)
                 ->first();
@@ -64,21 +68,8 @@ class CourseController extends Controller
             if ($enrollment) {
                 $isEnrolled = true;
                 $progressPct = (float) $enrollment->progress_pct;
-            } else if ($isEnrolled) {
-                $enrollment = Enrollment::create([
-                    'user_id' => $user->id,
-                    'course_id' => $course->id,
-                    'progress_pct' => 0,
-                ]);
-            }
-
-            // Auto-assign mentor if student doesn't have one yet
-            if ($user->role === 'STUDENT' && !$user->mentor_id) {
-                $courseMentor = \App\Models\MentorId::where('department_id', $course->department_id)->first()
-                    ?? \App\Models\MentorId::first();
-                if ($courseMentor) {
-                    $user->update(['mentor_id' => $courseMentor->id]);
-                }
+            } else if (in_array($user->role, ['ADMIN', 'STAFF'])) {
+                $isEnrolled = true;
             }
 
             $completedLessonIds = LessonProgress::where('user_id', $user->id)
@@ -102,7 +93,7 @@ class CourseController extends Controller
             }
         }
 
-        $canAccess = $isEnrolled || $course->price == 0 || in_array($user?->role, ['ADMIN', 'STAFF']);
+        $canAccess = $isEnrolled || $course->price == 0;
 
         return response()->json([
             'course' => $course,
@@ -110,6 +101,38 @@ class CourseController extends Controller
             'progress_pct' => $progressPct,
             'completed_lesson_ids' => $completedLessonIds,
             'quiz_attempt_map' => $quizAttemptMap,
+        ]);
+    }
+
+    public function enrollFree(Request $request, $slug)
+    {
+        $user = $request->user() ?? auth('sanctum')->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated. Please log in first.'], 401);
+        }
+
+        $course = Course::with(['department', 'creator', 'lessons.quiz', 'assignments'])
+            ->where('slug', $slug)
+            ->firstOrFail();
+
+        $enrollment = Enrollment::firstOrCreate(
+            ['user_id' => $user->id, 'course_id' => $course->id],
+            ['progress_pct' => 0]
+        );
+
+        // Auto-assign mentor for this course to the student if student doesn't have one
+        if ($user->role === 'STUDENT' && !$user->mentor_id) {
+            $courseMentor = \App\Models\MentorId::where('department_id', $course->department_id)->first()
+                ?? \App\Models\MentorId::first();
+            if ($courseMentor) {
+                $user->update(['mentor_id' => $courseMentor->id]);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Successfully enrolled in ' . $course->title,
+            'is_enrolled' => true,
+            'course' => $course,
         ]);
     }
 

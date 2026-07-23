@@ -12,23 +12,25 @@ interface OnboardingModalProps {
   onSuccess: (updatedUser: User) => void;
 }
 
+const DEPARTMENTS = [
+  { code: 'CSE', name: 'CSE - Computer Science & Engineering' },
+  { code: 'IT', name: 'IT - Information Technology' },
+  { code: 'AIML', name: 'AIML - Artificial Intelligence & Machine Learning' },
+  { code: 'AIDS', name: 'AIDS - Artificial Intelligence & Data Science' },
+  { code: 'CYBER', name: 'CYBER - Cyber Security' },
+  { code: 'MECH', name: 'MECH - Mechanical Engineering' },
+  { code: 'EEE', name: 'EEE - Electrical & Electronics Engineering' },
+  { code: 'ECE', name: 'ECE - Electronics & Communication Engineering' },
+  { code: 'VLSI', name: 'VLSI - VLSI Design & Technology' },
+  { code: 'CIVIL', name: 'CIVIL - Civil Engineering' },
+];
+
 export default function OnboardingModal({ isOpen, user, onClose, onSuccess }: OnboardingModalProps) {
-  const [mentorCode, setMentorCode] = useState('');
+  const [departmentCode, setDepartmentCode] = useState('CSE');
   const [year, setYear] = useState<number>(3);
   const [rollNumber, setRollNumber] = useState('');
-  const [mentorsList, setMentorsList] = useState<MentorId[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchApi('/mentors')
-        .then((res) => {
-          if (res.mentors) setMentorsList(res.mentors);
-        })
-        .catch(() => {});
-    }
-  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -41,7 +43,7 @@ export default function OnboardingModal({ isOpen, user, onClose, onSuccess }: On
       const res = await fetchApi('/onboard', {
         method: 'POST',
         body: JSON.stringify({
-          mentor_code: mentorCode,
+          department_code: departmentCode,
           year,
           roll_number: rollNumber,
         }),
@@ -72,7 +74,7 @@ export default function OnboardingModal({ isOpen, user, onClose, onSuccess }: On
           </div>
           <h3 className="text-xl font-bold text-white">Student First-Login Onboarding</h3>
           <p className="text-xs text-gray-400 mt-1">
-            Assign your college mentor, year cohort, and official student roll number to unlock your academic dashboard.
+            Select your academic department, year cohort, and official student roll number to unlock your portal.
           </p>
         </div>
 
@@ -93,16 +95,16 @@ export default function OnboardingModal({ isOpen, user, onClose, onSuccess }: On
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1">Select Department / Mentor (Optional)</label>
+            <label className="block text-xs font-semibold text-gray-300 mb-1">Select Academic Department *</label>
             <select
-              value={mentorCode}
-              onChange={(e) => setMentorCode(e.target.value)}
+              required
+              value={departmentCode}
+              onChange={(e) => setDepartmentCode(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white focus:outline-none focus:border-indigo-500"
             >
-              <option value="">-- Auto-assign department mentor --</option>
-              {mentorsList.map((m) => (
-                <option key={m.id} value={m.mentor_code}>
-                  {m.mentor_code} ({m.department?.name || 'Department'}) - Staff ID: {m.staff_id}
+              {DEPARTMENTS.map((d) => (
+                <option key={d.code} value={d.code}>
+                  {d.name}
                 </option>
               ))}
             </select>

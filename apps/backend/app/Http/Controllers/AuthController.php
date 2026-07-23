@@ -11,22 +11,58 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public static function getDepartmentName(string $code): string
+    {
+        $map = [
+            'CSE' => 'Computer Science & Engineering',
+            'IT' => 'Information Technology',
+            'AIML' => 'Artificial Intelligence & Machine Learning',
+            'AIDS' => 'Artificial Intelligence & Data Science',
+            'CYBER' => 'Cyber Security',
+            'MECH' => 'Mechanical Engineering',
+            'EEE' => 'Electrical & Electronics Engineering',
+            'ECE' => 'Electronics & Communication Engineering',
+            'VLSI' => 'VLSI Design & Technology',
+            'CIVIL' => 'Civil Engineering',
+        ];
+        return $map[strtoupper($code)] ?? "$code Department";
+    }
+
     public static function ensureStaffMentorsExist()
     {
         try {
+            $depts = [
+                'CSE' => 'Computer Science & Engineering',
+                'IT' => 'Information Technology',
+                'AIML' => 'Artificial Intelligence & Machine Learning',
+                'AIDS' => 'Artificial Intelligence & Data Science',
+                'CYBER' => 'Cyber Security',
+                'MECH' => 'Mechanical Engineering',
+                'EEE' => 'Electrical & Electronics Engineering',
+                'ECE' => 'Electronics & Communication Engineering',
+                'VLSI' => 'VLSI Design & Technology',
+                'CIVIL' => 'Civil Engineering',
+            ];
+
+            foreach ($depts as $code => $name) {
+                Department::firstOrCreate(['code' => $code], ['name' => $name]);
+            }
+
             $codeMap = [
-                'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
-                'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'dept_name' => 'Electronics & Communication',  'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
-                'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'dept_name' => 'Information Technology',       'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
-                'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
+                'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
+                'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
+                'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
+                'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
             ];
 
             foreach ($codeMap as $email => $meta) {
-                $dept = Department::firstOrCreate(['code' => $meta['dept']], ['name' => $meta['dept_name']]);
-                MentorId::firstOrCreate(
-                    ['mentor_code' => $meta['mcode']],
-                    ['staff_id' => $meta['staff_id'], 'department_id' => $dept->id]
-                );
+                $dept = Department::where('code', $meta['dept'])->first();
+                if ($dept) {
+                    MentorId::firstOrCreate(
+                        ['mentor_code' => $meta['mcode']],
+                        ['staff_id' => $meta['staff_id'], 'department_id' => $dept->id]
+                    );
+                }
             }
         } catch (\Throwable $e) {}
     }
@@ -269,29 +305,23 @@ class AuthController extends Controller
         self::ensureStaffMentorsExist();
 
         $request->validate([
-            'mentor_code' => 'nullable|string',
+            'department_code' => 'nullable|string',
             'year' => 'required|integer|min:1|max:4',
             'roll_number' => 'required|string|unique:users,roll_number,' . $user->id,
         ]);
 
-        $mentorId = null;
-        if ($request->mentor_code) {
-            $mentor = MentorId::where('mentor_code', $request->mentor_code)
-                ->orWhere('staff_id', $request->mentor_code)
-                ->first();
-            if ($mentor) {
-                $mentorId = $mentor->id;
-            }
-        }
+        $deptCode = strtoupper($request->department_code ?? 'CSE');
+        $dept = Department::firstOrCreate(
+            ['code' => $deptCode],
+            ['name' => self::getDepartmentName($deptCode)]
+        );
 
-        // Auto-assign default mentor if student left it blank
-        if (!$mentorId) {
-            $defaultMentor = MentorId::first();
-            $mentorId = $defaultMentor ? $defaultMentor->id : null;
-        }
+        // Find mentor for this department if available
+        $mentor = MentorId::where('department_id', $dept->id)->first();
 
         $user->update([
-            'mentor_id' => $mentorId,
+            'department_id' => $dept->id,
+            'mentor_id' => $mentor ? $mentor->id : null,
             'year' => $request->year,
             'roll_number' => strtoupper($request->roll_number),
             'email_verified_at' => now(),

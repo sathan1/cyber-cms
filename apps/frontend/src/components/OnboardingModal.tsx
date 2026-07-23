@@ -93,22 +93,18 @@ export default function OnboardingModal({ isOpen, user, onClose, onSuccess }: On
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-gray-300 mb-1">Select Mentor ID / Staff Code</label>
+            <label className="block text-xs font-semibold text-gray-300 mb-1">Select Department / Mentor (Optional)</label>
             <select
-              required
               value={mentorCode}
               onChange={(e) => setMentorCode(e.target.value)}
               className="w-full px-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white focus:outline-none focus:border-indigo-500"
             >
-              <option value="">-- Choose your department mentor code --</option>
+              <option value="">-- Auto-assign department mentor --</option>
               {mentorsList.map((m) => (
                 <option key={m.id} value={m.mentor_code}>
                   {m.mentor_code} ({m.department?.name || 'Department'}) - Staff ID: {m.staff_id}
                 </option>
               ))}
-              <option value="MTR-CSE-101">MTR-CSE-101 (Computer Science & Engineering)</option>
-              <option value="MTR-CSE-102">MTR-CSE-102 (Computer Science & Engineering)</option>
-              <option value="MTR-ECE-201">MTR-ECE-201 (Electronics & Communication)</option>
             </select>
           </div>
 

@@ -269,21 +269,29 @@ class AuthController extends Controller
         self::ensureStaffMentorsExist();
 
         $request->validate([
-            'mentor_code' => 'required|string',
+            'mentor_code' => 'nullable|string',
             'year' => 'required|integer|min:1|max:4',
             'roll_number' => 'required|string|unique:users,roll_number,' . $user->id,
         ]);
 
-        $mentor = MentorId::where('mentor_code', $request->mentor_code)
-            ->orWhere('staff_id', $request->mentor_code)
-            ->first();
+        $mentorId = null;
+        if ($request->mentor_code) {
+            $mentor = MentorId::where('mentor_code', $request->mentor_code)
+                ->orWhere('staff_id', $request->mentor_code)
+                ->first();
+            if ($mentor) {
+                $mentorId = $mentor->id;
+            }
+        }
 
-        if (!$mentor) {
-            return response()->json(['message' => 'The selected mentor code is invalid.'], 422);
+        // Auto-assign default mentor if student left it blank
+        if (!$mentorId) {
+            $defaultMentor = MentorId::first();
+            $mentorId = $defaultMentor ? $defaultMentor->id : null;
         }
 
         $user->update([
-            'mentor_id' => $mentor->id,
+            'mentor_id' => $mentorId,
             'year' => $request->year,
             'roll_number' => strtoupper($request->roll_number),
             'email_verified_at' => now(),

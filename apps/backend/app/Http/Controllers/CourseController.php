@@ -28,7 +28,9 @@ class CourseController extends Controller
                 ->pluck('progress_pct', 'course_id');
 
             $courses->transform(function ($course) use ($userEnrollments, $user) {
-                $isEnrolled = isset($userEnrollments[$course->id]) || $course->price == 0 || in_array($user->role, ['ADMIN', 'STAFF']);
+                $isEnrolled = isset($userEnrollments[$course->id]) 
+                    || $course->price == 0 
+                    || in_array($user->role, ['ADMIN', 'STAFF', 'STUDENT']);
                 $course->is_enrolled = $isEnrolled;
                 $course->progress_pct = $userEnrollments[$course->id] ?? ($isEnrolled ? 100 : 0);
                 return $course;
@@ -53,6 +55,8 @@ class CourseController extends Controller
         $quizAttemptMap = [];
 
         if ($user) {
+            $isEnrolled = in_array($user->role, ['ADMIN', 'STAFF', 'STUDENT']) || $course->price == 0;
+
             $enrollment = Enrollment::where('user_id', $user->id)
                 ->where('course_id', $course->id)
                 ->first();
@@ -60,6 +64,21 @@ class CourseController extends Controller
             if ($enrollment) {
                 $isEnrolled = true;
                 $progressPct = (float) $enrollment->progress_pct;
+            } else if ($isEnrolled) {
+                $enrollment = Enrollment::create([
+                    'user_id' => $user->id,
+                    'course_id' => $course->id,
+                    'progress_pct' => 0,
+                ]);
+            }
+
+            // Auto-assign mentor if student doesn't have one yet
+            if ($user->role === 'STUDENT' && !$user->mentor_id) {
+                $courseMentor = \App\Models\MentorId::where('department_id', $course->department_id)->first()
+                    ?? \App\Models\MentorId::first();
+                if ($courseMentor) {
+                    $user->update(['mentor_id' => $courseMentor->id]);
+                }
             }
 
             $completedLessonIds = LessonProgress::where('user_id', $user->id)

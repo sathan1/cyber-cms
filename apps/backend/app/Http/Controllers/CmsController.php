@@ -27,13 +27,16 @@ class CmsController extends Controller
     public function listCourses(Request $request)
     {
         $user = $this->requireStaffOrAdmin($request);
-        $query = Course::with(['department', 'lessons'])->withCount('lessons');
+        $query = Course::with(['department', 'creator', 'lessons'])->withCount('lessons');
         if ($user->role === 'STAFF') {
             $query->where('created_by', $user->id);
         }
+        $staffMembers = \App\Models\User::whereIn('role', ['STAFF', 'ADMIN'])->get();
+
         return response()->json([
             'courses' => $query->latest()->get(),
             'departments' => \App\Models\Department::all(),
+            'staff_members' => $staffMembers,
         ]);
     }
 
@@ -86,6 +89,26 @@ class CmsController extends Controller
         $course = Course::findOrFail($id);
         $course->update(['status' => 'archived']);
         return response()->json(['message' => 'Course rejected.', 'course' => $course]);
+    }
+
+    public function assignMentor(Request $request, $id)
+    {
+        $user = $this->requireStaffOrAdmin($request);
+        if ($user->role !== 'ADMIN') {
+            return response()->json(['message' => 'Only Admin can re-assign course mentors.'], 403);
+        }
+
+        $course = Course::findOrFail($id);
+        $request->validate([
+            'staff_id' => 'required|exists:users,id',
+        ]);
+
+        $course->update(['created_by' => $request->staff_id]);
+
+        return response()->json([
+            'message' => 'Course instructor/mentor updated successfully.',
+            'course' => $course->load(['department', 'creator']),
+        ]);
     }
 
     public function updateCourse(Request $request, $id)

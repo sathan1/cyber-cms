@@ -319,6 +319,7 @@ export default function AdminDashboard() {
                   <tr>
                     <th className="p-4">Course Title</th>
                     <th className="p-4">Department</th>
+                    <th className="p-4">Assigned Staff / Mentor</th>
                     <th className="p-4">Price</th>
                     <th className="p-4">Status</th>
                     <th className="p-4">Actions</th>
@@ -329,6 +330,10 @@ export default function AdminDashboard() {
                     <tr key={c.id} className="hover:bg-gray-900/40">
                       <td className="p-4 font-semibold text-white">{c.title}</td>
                       <td className="p-4 text-indigo-300">{c.department?.name || 'CSE'}</td>
+                      <td className="p-4 font-medium text-amber-300 flex items-center gap-1.5">
+                        <Award className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                        <span>{c.creator?.name || 'Department Mentor'}</span>
+                      </td>
                       <td className="p-4 font-bold text-emerald-400">₹{c.price}</td>
                       <td className="p-4">
                         <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase border ${
@@ -341,7 +346,7 @@ export default function AdminDashboard() {
                           {c.status === 'pending_approval' ? 'Pending Admin Approval' : c.status}
                         </span>
                       </td>
-                      <td className="p-4 flex gap-2">
+                      <td className="p-4 flex items-center gap-2">
                         {c.status === 'pending_approval' && (
                           <>
                             <button
@@ -365,14 +370,14 @@ export default function AdminDashboard() {
                           </>
                         )}
                         {c.status === 'published' && (
-                          <span className="text-gray-500 italic">Published</span>
+                          <span className="text-emerald-400 font-semibold text-[11px]">Published</span>
                         )}
                       </td>
                     </tr>
                   ))}
                   {(data?.courses.length ?? 0) === 0 && (
                     <tr>
-                      <td colSpan={5} className="p-8 text-center text-gray-500">No courses available.</td>
+                      <td colSpan={6} className="p-8 text-center text-gray-500">No courses available.</td>
                     </tr>
                   )}
                 </tbody>

@@ -16,16 +16,37 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        $enrollments = Enrollment::with('course.lessons')
+        $enrollments = Enrollment::with(['course.lessons', 'course.department', 'course.creator'])
             ->where('user_id', $user->id)
             ->get();
 
         $completedLessonsCount = LessonProgress::where('user_id', $user->id)->count();
 
-        // Calculate simple learning streak (e.g. 5 days active)
-        $streakDays = max(1, min(14, $completedLessonsCount * 2 + 1));
+        // Calculate accurate consecutive-day active learning streak
+        $dates = LessonProgress::where('user_id', $user->id)
+            ->selectRaw('DATE(created_at) as date')
+            ->distinct()
+            ->orderBy('date', 'desc')
+            ->pluck('date');
 
-        $remarks = Remark::with('course')
+        $streakDays = 0;
+        if ($dates->count() > 0) {
+            $today = \Carbon\Carbon::today()->toDateString();
+            $yesterday = \Carbon\Carbon::yesterday()->toDateString();
+
+            if ($dates->contains($today) || $dates->contains($yesterday)) {
+                $checkDate = $dates->contains($today)
+                    ? \Carbon\Carbon::today()
+                    : \Carbon\Carbon::yesterday();
+
+                while ($dates->contains($checkDate->toDateString())) {
+                    $streakDays++;
+                    $checkDate->subDay();
+                }
+            }
+        }
+
+        $remarks = Remark::with(['course', 'mentor.department', 'replier'])
             ->where('student_id', $user->id)
             ->latest()
             ->get();

@@ -74,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/courses/{id}', [CmsController::class, 'deleteCourse']);
         Route::post('/courses/{id}/approve', [CmsController::class, 'approveCourse']);
         Route::post('/courses/{id}/reject', [CmsController::class, 'rejectCourse']);
+        Route::post('/courses/{id}/assign-mentor', [CmsController::class, 'assignMentor']);
 
         // Lesson CRUD
         Route::get('/courses/{courseId}/lessons', [CmsController::class, 'listLessons']);

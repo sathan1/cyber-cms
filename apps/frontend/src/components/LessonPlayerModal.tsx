@@ -8,6 +8,74 @@ import {
 import { fetchApi } from '@/lib/api';
 import { Course, Lesson, Assignment, AssignmentSubmission } from '@/types';
 
+/** Lightweight markdown → HTML converter for lesson content */
+function renderMarkdown(md: string): string {
+  let html = md
+    // Escape HTML entities first
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Code blocks (``` ... ```)
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_m, lang, code) =>
+    `<pre style="background:#1e293b;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-size:13px;margin:16px 0;"><code>${code.trim()}</code></pre>`
+  );
+
+  // Inline code
+  html = html.replace(/`([^`]+)`/g, '<code style="background:#334155;color:#a78bfa;padding:2px 6px;border-radius:4px;font-size:13px;">$1</code>');
+
+  // Images: ![alt](src)
+  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;border-radius:8px;margin:16px 0;display:block;" />');
+
+  // Links: [text](url)
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" style="color:#818cf8;text-decoration:underline;">$1</a>');
+
+  // Tables
+  html = html.replace(/(\|.+\|\n)(\|[\s:|-]+\|\n)((\|.+\|\n?)+)/g, (_match, headerRow, _sep, bodyRows) => {
+    const headers = headerRow.trim().split('|').filter((c: string) => c.trim());
+    const rows = bodyRows.trim().split('\n').map((r: string) => r.split('|').filter((c: string) => c.trim()));
+    let table = '<div style="overflow-x:auto;margin:16px 0;"><table style="width:100%;border-collapse:collapse;font-size:13px;"><thead><tr>';
+    headers.forEach((h: string) => { table += `<th style="padding:10px 12px;text-align:left;border-bottom:2px solid #334155;font-weight:600;">${h.trim().replace(/\*\*/g, '')}</th>`; });
+    table += '</tr></thead><tbody>';
+    rows.forEach((cols: string[]) => {
+      table += '<tr>';
+      cols.forEach((c: string) => { table += `<td style="padding:8px 12px;border-bottom:1px solid #1e293b;">${c.trim().replace(/\*\*/g, '')}</td>`; });
+      table += '</tr>';
+    });
+    table += '</tbody></table></div>';
+    return table;
+  });
+
+  // Headings (process after tables to avoid conflicts)
+  html = html.replace(/^#### (.+)$/gm, '<h4 style="font-size:15px;font-weight:700;margin:20px 0 8px;">$1</h4>');
+  html = html.replace(/^### (.+)$/gm, '<h3 style="font-size:17px;font-weight:700;margin:24px 0 10px;">$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2 style="font-size:20px;font-weight:700;margin:28px 0 12px;padding-bottom:8px;border-bottom:1px solid #334155;">$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1 style="font-size:24px;font-weight:800;margin:0 0 16px;">$1</h1>');
+
+  // Bold and italic
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  // Horizontal rules
+  html = html.replace(/^---$/gm, '<hr style="border:none;border-top:1px solid #334155;margin:24px 0;" />');
+
+  // Unordered lists
+  html = html.replace(/^- (.+)$/gm, '<li style="margin:4px 0;padding-left:4px;">$1</li>');
+  html = html.replace(/(<li[^>]*>.*<\/li>\n?)+/g, (m) => `<ul style="list-style:disc;padding-left:24px;margin:12px 0;">${m}</ul>`);
+
+  // Ordered lists
+  html = html.replace(/^\d+\. (.+)$/gm, '<li style="margin:4px 0;padding-left:4px;">$1</li>');
+
+  // Paragraphs (double newlines)
+  html = html.replace(/\n\n/g, '</p><p style="margin:10px 0;line-height:1.7;">');
+  html = `<p style="margin:10px 0;line-height:1.7;">${html}</p>`;
+
+  // Clean up empty paragraphs
+  html = html.replace(/<p[^>]*>\s*<\/p>/g, '');
+
+  return html;
+}
+
 interface QuizAttemptInfo {
   total_attempts: number;
   passed: boolean;
@@ -237,9 +305,10 @@ export default function LessonPlayerModal({
               {activeTab === 'content' && (
                 <div>
                   <h2 className="text-xl font-bold text-white mb-4">{currentLesson.title}</h2>
-                  <div className="glass-card p-5 rounded-2xl border border-gray-800 text-gray-200 whitespace-pre-line leading-relaxed text-sm">
-                    {currentLesson.content}
-                  </div>
+                  <div
+                    className="glass-card p-5 rounded-2xl border border-gray-800 text-gray-200 leading-relaxed text-sm"
+                    dangerouslySetInnerHTML={{ __html: renderMarkdown(currentLesson.content || '') }}
+                  />
                   {currentLesson.has_quiz && currentLesson.quiz && (
                     <div className="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-3 text-xs text-amber-300">
                       <HelpCircle className="w-5 h-5 shrink-0" />

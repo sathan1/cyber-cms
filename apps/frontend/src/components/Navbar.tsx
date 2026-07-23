@@ -280,6 +280,16 @@ export default function Navbar({ user, onUserChange, onOpenAuth, onOpenOnboardin
 
             {/* Mobile User Profile / Auth Actions */}
             <div className="pt-3 border-t border-gray-800 flex items-center justify-between">
+              {/* Mobile Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors text-gray-300 hover:bg-gray-800"
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-400" />}
+                {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
+              </button>
+            </div>
+            <div className="pt-2 flex items-center justify-between">
               {activeUser ? (
                 <div className="flex items-center justify-between w-full">
                   <button

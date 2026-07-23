@@ -65,12 +65,43 @@
   50% { opacity: 0.5; }
 }
 
-/* Light Theme Overrides */
+/* ======================================================
+   LIGHT THEME — Comprehensive Overrides
+   Applied when body has class "light"
+   ====================================================== */
+
 body.light {
   background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
+/* --- Layout backgrounds (hardcoded dark overrides) --- */
+body.light .bg-\[\#0b0f19\] {
+  background-color: #f8fafc !important;
+}
+body.light .bg-gray-900 {
+  background-color: #ffffff !important;
+}
+body.light .bg-slate-900 {
+  background-color: #ffffff !important;
+}
+body.light .bg-gray-950 {
+  background-color: #f1f5f9 !important;
+}
+body.light .bg-gray-800 {
+  background-color: #f1f5f9 !important;
+}
+body.light .bg-gray-800\/60 {
+  background-color: rgba(241, 245, 249, 0.6) !important;
+}
+body.light .bg-gray-800\/50 {
+  background-color: rgba(241, 245, 249, 0.5) !important;
+}
+body.light .bg-gray-800\/40 {
+  background-color: rgba(241, 245, 249, 0.4) !important;
+}
+
+/* --- Glass panels and cards --- */
 body.light .glass-panel {
   background: rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(16px);
@@ -90,7 +121,9 @@ body.light .glass-card:hover {
   box-shadow: 0 12px 30px -10px rgba(99, 102, 241, 0.15) !important;
 }
 
-body.light h1, body.light h2, body.light h3, body.light h4, body.light h5, body.light h6 {
+/* --- Typography --- */
+body.light h1, body.light h2, body.light h3,
+body.light h4, body.light h5, body.light h6 {
   color: #0f172a !important;
 }
 
@@ -98,7 +131,174 @@ body.light p {
   color: #334155 !important;
 }
 
+body.light .text-white {
+  color: #0f172a !important;
+}
+
+body.light .text-gray-100 {
+  color: #1e293b !important;
+}
+
+body.light .text-gray-200 {
+  color: #334155 !important;
+}
+
+body.light .text-gray-300 {
+  color: #475569 !important;
+}
+
+body.light .text-gray-400 {
+  color: #64748b !important;
+}
+
+body.light .text-gray-500 {
+  color: #64748b !important;
+}
+
+/* Keep colored text as-is (don't override indigo, rose, emerald, amber etc.) */
+
+/* --- Borders --- */
+body.light .border-gray-800 {
+  border-color: #e2e8f0 !important;
+}
+
+body.light .border-gray-800\/60 {
+  border-color: rgba(226, 232, 240, 0.6) !important;
+}
+
+body.light .border-gray-700 {
+  border-color: #e2e8f0 !important;
+}
+
+body.light .border-gray-700\/50 {
+  border-color: rgba(226, 232, 240, 0.5) !important;
+}
+
+body.light .border-gray-600 {
+  border-color: #cbd5e1 !important;
+}
+
+/* --- Header / Navbar --- */
 body.light header {
   background-color: rgba(255, 255, 255, 0.95) !important;
   border-bottom-color: #e2e8f0 !important;
+}
+
+/* --- Form Inputs --- */
+body.light input,
+body.light textarea,
+body.light select {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+body.light input::placeholder,
+body.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+body.light input:focus,
+body.light textarea:focus,
+body.light select:focus {
+  border-color: #6366f1 !important;
+  background-color: #ffffff !important;
+}
+
+/* --- Modals / Overlays --- */
+body.light .bg-black\/50,
+body.light .bg-black\/60,
+body.light .bg-black\/70 {
+  background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+body.light [class*="bg-gray-900/"] {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* --- Tables --- */
+body.light table {
+  color: #0f172a !important;
+}
+
+body.light th {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
+  border-color: #e2e8f0 !important;
+}
+
+body.light td {
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+body.light tr:hover {
+  background-color: #f8fafc !important;
+}
+
+/* --- Sidebar panels --- */
+body.light aside,
+body.light [class*="sidebar"] {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* --- Scrollbar (Webkit) --- */
+body.light ::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+body.light ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+/* --- Gradient badge in light mode --- */
+body.light .gradient-badge {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+/* --- Hover states for light mode --- */
+body.light .hover\:bg-gray-800:hover {
+  background-color: #e2e8f0 !important;
+}
+
+body.light .hover\:bg-gray-700:hover {
+  background-color: #e2e8f0 !important;
+}
+
+/* --- Keep btn-primary text white in light mode --- */
+body.light .btn-primary,
+body.light .btn-primary .text-white,
+body.light .bg-indigo-600,
+body.light .bg-indigo-500,
+body.light .bg-rose-600,
+body.light .bg-emerald-600,
+body.light .bg-emerald-500 {
+  color: #ffffff !important;
+}
+
+/* --- Rings and dividers --- */
+body.light .divide-gray-800 > * + * {
+  border-color: #e2e8f0 !important;
+}
+
+body.light .ring-gray-800 {
+  --tw-ring-color: #e2e8f0 !important;
+}
+
+/* --- Code blocks in lesson content --- */
+body.light pre {
+  background-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+body.light code {
+  background-color: #e2e8f0 !important;
+  color: #7c3aed !important;
+}
+
+body.light pre code {
+  background-color: transparent !important;
+  color: #e2e8f0 !important;
 }

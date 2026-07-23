@@ -1,0 +1,780 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>M1 </title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+/* For default-background callouts, render the border outline. */
+.callout.block-color-default_background {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+figure,
+aside,
+details {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding-inline: 0.125rem;
+	padding-block: 0.375rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+/*
+ * Render emoji icons using a ::before pseudo-element to keep the glyph
+ * out of the DOM textContent traversal. This avoids double-rendering icons
+ * in callouts and page titles.
+ * NOTE(slim/html-export-pseudo-icons): I can't tagref this because it will
+ * flag as a duplicate tag after codegen.
+ */
+.icon[data-emoji]::before {
+	content: attr(data-emoji);
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	margin-right: 0.4em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.tab {
+	margin: 1.25em 0;
+	padding-inline: 1rem;
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style><style>@import url('https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex-swap.min.css')</style></head><body><article id="348c03a8-3f04-80e0-ab91-c6f012f8b4b3" class="page sans"><header><h1 class="page-title" dir="auto">M1 </h1><p class="page-description" dir="auto"></p></header><div class="page-body"><h1 id="348c03a8-3f04-8019-9298-dbdb1819dabc" class="" dir="auto"><strong>Introduction to Computer Networks</strong></h1><h2 id="348c03a8-3f04-80fa-bcef-e3fd721420ad" class="" dir="auto"><strong>Introduction</strong></h2><p id="348c03a8-3f04-80ae-b7f1-eca38671c39f" class="" dir="auto">Welcome to Module 1: Introduction to Computer Networks. This is the first and most important module in your networking journey. Before you can understand cybersecurity, ethical hacking, or any advanced networking topic, you need a very solid foundation and that starts here.</p><p id="348c03a8-3f04-8003-82f4-e16ff46d4dad" class="" dir="auto">In this module, you will learn what a computer network actually is, why it was invented, how data travels from one machine to another, and all the different types and shapes of networks you encounter every single day even without realizing it.</p><p id="348c03a8-3f04-807c-82aa-dd2a1eb4e266" class="" dir="auto">Think of a computer network like a road system in a city. Roads connect buildings (computers). Vehicles carry passengers and goods (data). Traffic rules keep things orderly (protocols). Just as roads allow a city to function, networks allow computers to communicate and share resources.</p><h4 id="348c03a8-3f04-808c-bf11-f1a3934dd053" class="" dir="auto"><strong>Why is this important for Cybersecurity?</strong></h4><ul id="348c03a8-3f04-80ad-a61a-da7d97ac03e3" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Every attack travels over a network. Hackers exploit networks to gain unauthorized access to systems.</li></ul><ul id="348c03a8-3f04-80e2-a968-c291315a5733" class="bulleted-list" dir="auto"><li style="list-style-type:disc">You cannot defend what you do not understand. A cybersecurity professional must deeply understand how data moves across networks.</li></ul><ul id="348c03a8-3f04-80b6-8a77-ea11022e633c" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Tools like Wireshark, Nmap, and Metasploit all operate at the network level. You will use them later in this course.</li></ul><ul id="348c03a8-3f04-803e-a895-d84dab436b82" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Certifications like CompTIA Security+, CEH, and OSCP all test networking fundamentals heavily.</li></ul><p id="348c03a8-3f04-80c3-96a4-e36d42749abe" class="" dir="auto">
+</p><hr id="348c03a8-3f04-80b1-b101-fbac9748d91c" dir="auto"/><h3 id="348c03a8-3f04-80e0-9642-c9cfa44e7a44" class="" dir="auto"><strong>What is a Computer Network?</strong></h3><p id="348c03a8-3f04-802e-b469-eaedb580585d" class="" dir="auto">A <strong>Computer Network</strong> is a collection of two or more computing devices called <strong>nodes</strong> that are connected together through <strong>communication links</strong> so they can share data, resources, and services with each other.</p><p id="348c03a8-3f04-805f-9b42-f42d892091b1" class="" dir="auto"><strong>Formula:</strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="348c03a8-3f04-8042-bfd6-e4fd6369dc7d" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">Network = Nodes + Communication Links + Rules (Protocols)</code></pre><p id="348c03a8-3f04-808c-81b3-f5fbb38f25db" class="" dir="auto">A computer network is a set of nodes connected by communication links. The link carries information from one node to another.</p><figure id="34ac03a8-3f04-807a-b8c0-d7d405d60958" class="image" data-notion-image="image.png" dir="ltr"><a href="image.png"><img style="width:704px" src="image.png"/></a></figure><h3 id="348c03a8-3f04-804c-bff2-e57e2e02a957" class="" dir="auto"><strong>What are Nodes?</strong></h3><p id="348c03a8-3f04-802f-9c51-cfcddeaff056" class="" dir="auto">A node is any device that can send, receive, or process data on a network. If a device can send data or receive data or both, we can call that device a node.</p><h4 id="348c03a8-3f04-80d5-af2b-d1591e82aea6" class="" dir="auto"><strong>Examples of Nodes:</strong></h4><table id="348c03a8-3f04-80f9-b84e-ca320d9ca3a2" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-809b-9a43-dfc3af52cf60" dir="ltr"><th id="@}xw" class="simple-table-header-color simple-table-header"><strong>Type</strong></th><th id="xwmQ" class="simple-table-header-color simple-table-header" style="width:496px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-805e-9bec-e40a60b5e266" dir="ltr"><td id="@}xw" class="">Computers and Laptops</td><td id="xwmQ" class="" style="width:496px">The most common nodes that users interact with directly</td></tr><tr id="348c03a8-3f04-801f-b7fe-cf778e9b11d2" dir="ltr"><td id="@}xw" class="">Servers</td><td id="xwmQ" class="" style="width:496px">Machines that provide services like websites, email, and file storage</td></tr><tr id="348c03a8-3f04-8029-8dc9-d4d2ca53a91e" dir="ltr"><td id="@}xw" class="">Routers and Switches</td><td id="xwmQ" class="" style="width:496px">Devices that direct and manage the flow of data across a network</td></tr><tr id="348c03a8-3f04-80f5-9d46-c48187e5d8dc" dir="ltr"><td id="@}xw" class="">Smartphones and Tablets</td><td id="xwmQ" class="" style="width:496px">Mobile devices that connect to networks via Wi Fi or cellular</td></tr><tr id="348c03a8-3f04-80c0-8b03-d248b345cc08" dir="ltr"><td id="@}xw" class="">IoT Devices</td><td id="xwmQ" class="" style="width:496px">Smart TVs, cameras, thermostats. Anything connected to the internet</td></tr><tr id="348c03a8-3f04-8061-b2e8-e18ab0f606fd" dir="ltr"><td id="@}xw" class="">Printers and Scanners</td><td id="xwmQ" class="" style="width:496px">Peripheral devices shared over a network by multiple users</td></tr><tr id="348c03a8-3f04-802e-a16f-d12885d94d1d" dir="ltr"><td id="@}xw" class="">Security Cameras</td><td id="xwmQ" class="" style="width:496px">Surveillance devices connected to the network</td></tr></tbody></table><figure id="34ac03a8-3f04-802c-b08c-f884d8c38109" class="image" data-notion-image="image%201.png" dir="ltr"><a href="image%201.png"><img style="width:703.989990234375px" src="image%201.png"/></a></figure><h3 id="348c03a8-3f04-808c-8d32-ef9f40237114" class="" dir="auto"><strong>What are Communication Links?</strong></h3><p id="348c03a8-3f04-80ec-ae4a-d06b3591435b" class="" dir="auto">Communication links are the pathways through which data travels between nodes. A communication link can be a wired link or a wireless link. The important point to note about a link is that this link only carries the information.</p><h4 id="348c03a8-3f04-8078-b4ba-c8dad2a9cc9a" class="" dir="auto"><strong>Types of Links:</strong></h4><ul id="348c03a8-3f04-802e-8102-c56d24d2124b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Wired Links:</strong> Physical cables like Ethernet (twisted pair), Fiber optic, Coaxial cable</li></ul><ul id="348c03a8-3f04-8071-a8a8-fb02ef1a2ae4" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Wireless Links:</strong> Radio waves (Wi Fi), Infrared, Bluetooth, Satellite, Cellular (4G/5G)</li></ul><figure id="34ac03a8-3f04-8090-a468-d2221ed7a353" class="image" data-notion-image="image%202.png" dir="ltr"><a href="image%202.png"><img style="width:704px" src="image%202.png"/></a></figure><h3 id="348c03a8-3f04-80b1-b52e-f689bfdb8f03" class="" dir="auto"><strong>Purpose of a Computer Network</strong></h3><p id="348c03a8-3f04-809f-8377-fe7ba6a64c75" class="" dir="auto">A computer network is mainly used for resource sharing. Networks save a lot of infrastructure cost.</p><table id="348c03a8-3f04-80f4-b5ea-e9a084e57b5c" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-809b-9def-e4c18cfa55b5" dir="ltr"><th id="`oCK" class="simple-table-header-color simple-table-header"><strong>Purpose</strong></th><th id="Yrh}" class="simple-table-header-color simple-table-header" style="width:494px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8053-ad57-ca14a00e2f64" dir="ltr"><td id="`oCK" class="">Resource Sharing</td><td id="Yrh}" class="" style="width:494px">Multiple users can share one printer, one internet connection, or one storage server. Saving cost and increasing efficiency</td></tr><tr id="348c03a8-3f04-8011-94c8-c637e0cc8dd9" dir="ltr"><td id="`oCK" class="">Communication</td><td id="Yrh}" class="" style="width:494px">Email, video calls, instant messaging. All made possible because computers are connected via networks</td></tr><tr id="348c03a8-3f04-8041-b15c-dcc6f78f65c6" dir="ltr"><td id="`oCK" class="">Centralized Management</td><td id="Yrh}" class="" style="width:494px">Administrators can manage all computers from one place. Pushing updates, monitoring activity, enforcing policies</td></tr><tr id="348c03a8-3f04-80ce-9902-ead61c6ec5e9" dir="ltr"><td id="`oCK" class="">Data Storage and Backup</td><td id="Yrh}" class="" style="width:494px">Centralized servers hold and back up data for all users on the network automatically</td></tr><tr id="348c03a8-3f04-807d-9a60-f2e22e887d09" dir="ltr"><td id="`oCK" class="">Cost Efficiency</td><td id="Yrh}" class="" style="width:494px">Reduce operational and infrastructure costs through shared resources and centralized systems</td></tr><tr id="348c03a8-3f04-80a3-82f8-c512867db027" dir="ltr"><td id="`oCK" class="">Reliability and Availability</td><td id="Yrh}" class="" style="width:494px">Improve system reliability using backup paths and fault tolerant mechanisms</td></tr><tr id="348c03a8-3f04-803b-a604-e695000418ef" dir="ltr"><td id="`oCK" class="">Scalability and Growth</td><td id="Yrh}" class="" style="width:494px">Support easy expansion by adding new devices and services as demand increases</td></tr><tr id="348c03a8-3f04-80f1-b17d-e263f373b101" dir="ltr"><td id="`oCK" class="">Security and Control</td><td id="Yrh}" class="" style="width:494px">Protect data and network resources using authentication, access control, and monitoring</td></tr></tbody></table><figure id="34ac03a8-3f04-80a3-8873-c21dcf5988a0" class="image" data-notion-image="image%203.png" dir="ltr"><a href="image%203.png"><img style="width:703.989990234375px" src="image%203.png"/></a></figure><hr id="348c03a8-3f04-8099-af2b-e70603eb4575" dir="auto"/><h2 id="348c03a8-3f04-80ee-8089-c86e70d5d99c" class="" dir="auto"><strong>Basic Characteristics of a Network</strong></h2><p id="348c03a8-3f04-80a9-abae-e07f6e6a74da" class="" dir="auto">A good computer network does not just connect devices. It must have specific qualities to be truly useful and reliable. There are four basic characteristics any computer network should possess: Fault tolerance, Scalability, Quality of Service (QoS), and Security.</p><h3 id="348c03a8-3f04-808e-ab04-f21bb2283cba" class="" dir="auto"><strong>Fault Tolerance</strong></h3><p id="348c03a8-3f04-8041-a6c1-ea995b25f001" class="" dir="auto"><strong>What it means:</strong> The network should continue working even when one or more parts of it fail. Fault tolerance is the ability of the computer network to continue working despite failures and it should ensure there is no loss of service.</p><p id="348c03a8-3f04-8013-b919-c32633a3b7dc" class="" dir="auto">Imagine a city road system. If one road is blocked, cars re route through another road and still reach the destination. A fault tolerant network does exactly this. Data finds another path when one route is broken.</p><ul id="348c03a8-3f04-807e-9886-e25ba4d11bce" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Achieved by having <strong>redundant (backup) paths</strong> between devices</li></ul><ul id="348c03a8-3f04-80f1-a7c7-c039e89161f9" class="bulleted-list" dir="auto"><li style="list-style-type:disc">If a switch or router fails, traffic automatically reroutes through another device</li></ul><ul id="348c03a8-3f04-80dd-ae35-ecc16f53462f" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Protocols like <strong>Spanning Tree Protocol (STP)</strong> and <strong>OSPF</strong> help implement this</li></ul><figure id="34ac03a8-3f04-804e-bdc5-fba7bf4270ab" class="image" data-notion-image="image%204.png" dir="ltr"><a href="image%204.png"><img style="width:704px" src="image%204.png"/></a></figure><p id="348c03a8-3f04-803b-9fff-c1b62b890c8d" class="" dir="auto"><strong>Example:</strong></p><p id="348c03a8-3f04-80d8-9847-c3b89b804197" class="" dir="auto">Suppose two entities are communicating through a path. If there is a failure in a link or a router goes down, the router forwards the data through an alternative path so that communication is not affected.</p><h3 id="348c03a8-3f04-8019-9afa-c07c972fc985" class="" dir="auto"><strong>Scalability</strong></h3><p id="348c03a8-3f04-8041-9b67-e661fadbc1d2" class="" dir="auto"><strong>What it means:</strong> The network should be able to grow in size. Adding more devices and users without losing performance or requiring a complete redesign. It is the ability to grow based on the needs and have good performance even after growth.</p><figure id="34ac03a8-3f04-809b-8438-e3030b326e9b" class="image" data-notion-image="image%205.png" dir="ltr"><a href="image%205.png"><img style="width:703.989990234375px" src="image%205.png"/></a></figure><ul id="348c03a8-3f04-8071-b8b3-ff47e2c17c69" class="bulleted-list" dir="auto"><li style="list-style-type:disc">A school network that starts with 50 computers must be able to grow to 500 without replacing all equipment</li></ul><ul id="348c03a8-3f04-805b-b3c4-d37deea67f4f" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Cloud services like AWS and Google Cloud are prime examples of highly scalable networks</li></ul><ul id="348c03a8-3f04-806e-bf2f-c2f1e429da71" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Poor scalability leads to <strong>bottlenecks</strong>. Points where the network slows down under load</li></ul><ul id="348c03a8-3f04-80af-af87-f0cb6142873d" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>The Internet is the best example of a scalable network.</strong> Even at this moment, many new devices are connecting to the internet and communicating with each other. The Internet handles this perfectly and always gives scope for newcomers</li></ul><h3 id="348c03a8-3f04-80f1-b8cf-dc58a6c4a520" class="" dir="auto"><strong>Quality of Service (QoS)</strong></h3><p id="348c03a8-3f04-80cb-a9f8-d15339c89009" class="" dir="auto"><strong>What it means:</strong> The ability of the network to prioritize certain types of traffic to ensure smooth performance for critical applications. It is the ability to set priorities and manage data traffic to reduce data loss and delays.</p><ul id="348c03a8-3f04-80d3-8294-e2b022f82962" class="bulleted-list" dir="auto"><li style="list-style-type:disc">A video call requires very low delay (latency). QoS can prioritize video packets over regular downloads</li></ul><ul id="348c03a8-3f04-8075-a2ba-f6de045343e4" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Without QoS, all traffic is treated equally. Your video call may freeze while someone downloads a large file</li></ul><ul id="348c03a8-3f04-8004-b269-cfa96a6682b2" class="bulleted-list" dir="auto"><li style="list-style-type:disc">QoS mechanisms include <strong>traffic shaping, prioritization queues, and bandwidth reservation</strong></li></ul><figure id="34ac03a8-3f04-80c5-a3de-ca9f3310f71e" class="image" data-notion-image="image%206.png" dir="ltr"><a href="image%206.png"><img style="width:703.989990234375px" src="image%206.png"/></a></figure><p id="348c03a8-3f04-8004-8d30-fe382ad611f4" class="" dir="auto"><strong>Example:</strong></p><p id="348c03a8-3f04-8044-9393-db3b10526b84" class="" dir="auto">Consider a router receiving email traffic and voice traffic (real time communication) simultaneously. The router will process voice over IP phone data first because it is real time communication. In real time communication, delays are not accepted, whereas a delay of one second in email communication does not hurt the communication. The router gives priority to real time communication over normal communication.</p><h3 id="348c03a8-3f04-80e4-894c-d3788cd2f7d3" class="" dir="auto"><strong>Security (CIA Triad)</strong></h3><p id="348c03a8-3f04-800f-89d3-cc1e0c4e3d6d" class="" dir="auto"><strong>What it means:</strong> The ability to prevent unauthorized access, misuse, or forgery. Network security is built around three principles known as the <strong>CIA Triad</strong>.</p><table id="348c03a8-3f04-8060-b267-e7040e28ce91" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80dc-9e43-fa35f9984203" dir="ltr"><th id="tZR@" class="simple-table-header-color simple-table-header"><strong>Principle</strong></th><th id="fwRq" class="simple-table-header-color simple-table-header"><strong>Description</strong></th><th id="Swq^" class="simple-table-header-color simple-table-header"><strong>Implementation</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8013-980c-dd9a8efbc5d4" dir="ltr"><td id="tZR@" class="">Confidentiality</td><td id="fwRq" class="">Only authorized people can read the data</td><td id="Swq^" class="">Encryption (HTTPS, VPN)</td></tr><tr id="348c03a8-3f04-80f4-88bc-e643573c7f71" dir="ltr"><td id="tZR@" class="">Integrity</td><td id="fwRq" class="">Data must not be altered during transmission</td><td id="Swq^" class="">Checksums and hash functions (SHA 256)</td></tr><tr id="348c03a8-3f04-80dc-beae-e0892fb05681" dir="ltr"><td id="tZR@" class="">Availability</td><td id="fwRq" class="">Network resources must be accessible when needed</td><td id="Swq^" class="">Protection against DDoS attacks and hardware failure</td></tr></tbody></table><h4 id="348c03a8-3f04-8007-96bb-cefdbf1ddb7e" class="" dir="auto"><strong>Cybersecurity Connection:</strong></h4><p id="348c03a8-3f04-80da-b0c9-dba057138732" class="" dir="auto">The CIA Triad is the backbone of every cybersecurity framework. When you hear about a data breach, ransomware, or DDoS attack. Each one violates at least one part of the CIA Triad.</p><figure id="34ac03a8-3f04-8027-83ba-edf4ae1ca6ef" class="image" data-notion-image="image%207.png" dir="ltr"><a href="image%207.png"><img style="width:704px" src="image%207.png"/></a></figure><hr id="348c03a8-3f04-80ad-be57-fd4b268ec578" dir="auto"/><h2 id="348c03a8-3f04-8004-81fe-f7afd688e5f3" class="" dir="auto"><strong>Data Communication Fundamentals</strong></h2><h3 id="348c03a8-3f04-8099-a01c-ca1e90338c55" class="" dir="auto"><strong>Bits and Bytes: The Language of Computers</strong></h3><p id="348c03a8-3f04-80b5-a5c3-ee4ae33d5efa" class="" dir="auto">Computers and networks only work with binary digits, zeros and ones. Each bit can only have one of two possible values, 0 or 1. The term bit is an abbreviation of &quot;binary digit&quot; and represents the smallest piece of data. Humans interpret words and pictures, computers interpret only patterns of bits.</p><p id="348c03a8-3f04-8081-9d11-d01289b7d5b7" class="" dir="auto">All data. Photos, videos, text messages, passwords. Is stored and transmitted as <strong>binary numbers</strong> (zeros and ones). Every input device (mouse, keyboard, voice activated receiver) translates human interaction into binary code. Every output device (printer, speakers, monitors) takes binary data and translates it back into human recognizable form.</p><table id="348c03a8-3f04-8080-93fc-f5b7cfbb3575" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80d9-bed7-c31eb15aa8af" dir="ltr"><th id="^&lt;gz" class="simple-table-header-color simple-table-header"><strong>Unit</strong></th><th id="a=zQ" class="simple-table-header-color simple-table-header"><strong>Size</strong></th><th id="E_=G" class="simple-table-header-color simple-table-header"><strong>Example</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-801a-9fb2-d6044d5c845f" dir="ltr"><td id="^&lt;gz" class="">1 Bit</td><td id="a=zQ" class="">Smallest unit. 0 or 1</td><td id="E_=G" class="">On/Off signal</td></tr><tr id="348c03a8-3f04-8023-a13f-e3c5f240c280" dir="ltr"><td id="^&lt;gz" class="">1 Byte</td><td id="a=zQ" class="">8 bits</td><td id="E_=G" class="">One character like &#x27;A&#x27;</td></tr><tr id="348c03a8-3f04-8085-a40e-ddebc5043258" dir="ltr"><td id="^&lt;gz" class="">1 Kilobyte (KB)</td><td id="a=zQ" class="">1,024 Bytes</td><td id="E_=G" class="">A short text message</td></tr><tr id="348c03a8-3f04-80e0-aa16-c7e7a1de2027" dir="ltr"><td id="^&lt;gz" class="">1 Megabyte (MB)</td><td id="a=zQ" class="">1,024 KB</td><td id="E_=G" class="">A small photo</td></tr><tr id="348c03a8-3f04-804b-a23e-ed83b00bed68" dir="ltr"><td id="^&lt;gz" class="">1 Gigabyte (GB)</td><td id="a=zQ" class="">1,024 MB</td><td id="E_=G" class="">A full HD movie</td></tr><tr id="348c03a8-3f04-8017-972b-d5f29d001e6e" dir="ltr"><td id="^&lt;gz" class="">1 Terabyte (TB)</td><td id="a=zQ" class="">1,024 GB</td><td id="E_=G" class="">Thousands of movies</td></tr></tbody></table><h4 id="348c03a8-3f04-8026-ac37-e9cc5e6dade9" class="" dir="auto"><strong>ASCII Code Example:</strong></h4><p id="348c03a8-3f04-8030-8deb-f7bd9ac0363a" class="" dir="auto">Computers use binary codes to represent and interpret letters, numbers and special characters. A commonly used code is the American Standard Code for Information Interchange (ASCII). With ASCII, each character is represented by eight bits.</p><ul id="348c03a8-3f04-8054-8129-eb339a3266da" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Capital letter: A = 01000001</li></ul><ul id="348c03a8-3f04-805f-9ca1-e3da98e83e4e" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Number: 9 = 00111001</li></ul><ul id="348c03a8-3f04-8063-8af8-dc6af22c965a" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Special character: # = 00100011</li></ul><h3 id="348c03a8-3f04-804c-919d-d34af4c4a7ce" class="" dir="auto"><strong>Analog vs. Digital Signals</strong></h3><h4 id="348c03a8-3f04-8065-a2f4-fe592d92add3" class="" dir="auto"><strong>Analog Signals</strong></h4><p id="348c03a8-3f04-801b-9f76-dc22524a20dc" class="" dir="auto">Continuous waves that vary smoothly over time. Like a human voice or radio waves. Susceptible to <strong>noise and interference</strong>. Old telephone systems used analog. All real life signals are analog in nature. The colors we see, the heat or temperature we feel, the sounds we produce or hear. All these signals are analog in nature.</p><h4 id="348c03a8-3f04-807b-b663-d6e5d16074f7" class="" dir="auto"><strong>Digital Signals</strong></h4><p id="348c03a8-3f04-80d5-b3f5-f1caa1abaf66" class="" dir="auto">Discrete values. Only 0s and 1s. Less affected by noise. Easier to store and process. Used in all modern computer networks and the Internet.</p><h4 id="348c03a8-3f04-80ae-9874-eda3b5230df4" class="" dir="auto"><strong>Analogy:</strong></h4><p id="348c03a8-3f04-80e5-9c54-ca1f977e2ec6" class="" dir="auto">Analog is like a dimmer light switch. It can be at any brightness level between off and fully on. Digital is like a regular on/off switch. It is either fully OFF (0) or fully ON (1). Computers prefer digital because it is clear and unambiguous.</p><figure id="34ac03a8-3f04-8025-832c-fe00dda65eed" class="image" data-notion-image="image%208.png" dir="ltr"><a href="image%208.png"><img style="width:709.989990234375px" src="image%208.png"/></a></figure><h3 id="348c03a8-3f04-80e5-81fc-f373ec400026" class="" dir="auto"><strong>Transmission Methods</strong></h3><p id="348c03a8-3f04-8006-b066-e2f4121d9c72" class="" dir="auto">Data must be converted into signals that can be sent across the network media to its destination. Media refers to the physical medium on which the signals are transmitted. There are three common methods of signal transmission used in networks:</p><table id="348c03a8-3f04-80db-9b28-c4a9b1fb9e31" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-8085-a0a5-d909d73aeb0c" dir="ltr"><th id="eSBm" class="simple-table-header-color simple-table-header"><strong>Method</strong></th><th id="itBI" class="simple-table-header-color simple-table-header"><strong>Description</strong></th><th id="zUEy" class="simple-table-header-color simple-table-header"><strong>Advantages</strong></th><th id="V}Kz" class="simple-table-header-color simple-table-header"><strong>Disadvantages</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8053-92bb-eca720e5ecd4" dir="ltr"><td id="eSBm" class="">Electrical (Copper Cables)</td><td id="itBI" class="">Data travels as electrical pulses through copper wire. Used in Ethernet cables</td><td id="zUEy" class="">Cheap, easy to install</td><td id="V}Kz" class="">Limited distance (up to 100m) and speed, affected by EMI/RFI</td></tr><tr id="348c03a8-3f04-80e5-945f-db152ab3c732" dir="ltr"><td id="eSBm" class="">Light (Fiber Optic)</td><td id="itBI" class="">Data travels as pulses of light through glass or plastic fibers</td><td id="zUEy" class="">Extremely fast, long distances (up to 100,000m), immune to electromagnetic interference</td><td id="V}Kz" class="">Expensive, requires special installation skills</td></tr><tr id="348c03a8-3f04-806c-bc11-c024d74d9233" dir="ltr"><td id="eSBm" class="">Wireless (Radio Waves)</td><td id="itBI" class="">Data travels as electromagnetic radio waves through the air. Used in Wi Fi, Bluetooth, 4G/5G, satellite</td><td id="zUEy" class="">Convenient, mobility</td><td id="V}Kz" class="">Affected by walls, interference, and distance, security concerns</td></tr></tbody></table><figure id="34ac03a8-3f04-80f1-86ae-d694498d5f56" class="image" data-notion-image="image%209.png" dir="ltr"><a href="image%209.png"><img style="width:710px" src="image%209.png"/></a></figure><h3 id="348c03a8-3f04-8012-ac39-d284f0fc9062" class="" dir="auto"><strong>Bandwidth vs. Throughput</strong></h3><table id="348c03a8-3f04-805c-ae66-c14c7cb7b438" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80b0-a021-fecb72bc193e" dir="ltr"><th id="YqZ;" class="simple-table-header-color simple-table-header"><strong>Concept</strong></th><th id="LX&lt;?" class="simple-table-header-color simple-table-header"><strong>Definition</strong></th><th id="G}F:" class="simple-table-header-color simple-table-header"><strong>Analogy</strong></th><th id="qX`R" class="simple-table-header-color simple-table-header"><strong>Measured In</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80f2-8a7f-e1f4b63c3bd2" dir="ltr"><td id="YqZ;" class="">Bandwidth</td><td id="LX&lt;?" class="">Maximum possible data rate a connection can carry (theoretical max)</td><td id="G}F:" class="">Width of a highway. How many cars CAN travel</td><td id="qX`R" class="">Mbps, Gbps</td></tr><tr id="348c03a8-3f04-80a5-9855-e7a0bfadf755" dir="ltr"><td id="YqZ;" class="">Throughput</td><td id="LX&lt;?" class="">Actual data rate achieved in practice (real speed)</td><td id="G}F:" class="">Actual cars traveling right now. Affected by traffic jams</td><td id="qX`R" class="">Mbps, Gbps</td></tr></tbody></table><figure id="34ac03a8-3f04-80fd-aac1-cc2c46011522" class="image" data-notion-image="image%2010.png" dir="ltr"><a href="image%2010.png"><img style="width:709.989990234375px" src="image%2010.png"/></a></figure><h4 id="348c03a8-3f04-8093-a3a3-c1a1a0eb2427" class="" dir="auto"><strong>Important Note:</strong></h4><p id="348c03a8-3f04-800f-964b-ecf308fff3ad" class="" dir="auto">Your ISP says &quot;100 Mbps bandwidth&quot; but you often get 60 to 80 Mbps throughput. The difference is due to network congestion, protocol overhead, and hardware limitations. This gap between bandwidth and throughput is real and measurable.</p><p id="348c03a8-3f04-80fc-8aaa-d77bfacdc228" class="" dir="auto">Many factors influence throughput including:</p><ul id="348c03a8-3f04-8058-bab4-f7dd9367070d" class="bulleted-list" dir="auto"><li style="list-style-type:disc">The amount of data being sent and received over the connection</li></ul><ul id="348c03a8-3f04-80c1-aa51-c8a028a607b7" class="bulleted-list" dir="auto"><li style="list-style-type:disc">The types of data being transmitted</li></ul><ul id="348c03a8-3f04-8042-9c82-caa188559b3d" class="bulleted-list" dir="auto"><li style="list-style-type:disc">The latency created by the number of network devices encountered between source and destination</li></ul><p id="348c03a8-3f04-8061-9978-d2358f91d20d" class="" dir="auto">In an internetwork or network with multiple segments, throughput cannot be faster than the slowest link of the path from sending device to the receiving device. Even if all or most of the segments have high bandwidth, it will only take one segment in the path with lower bandwidth to create a slowdown of the throughput of the entire network.</p><p id="34ac03a8-3f04-8052-893e-d35b69a5150e" class="" dir="auto">
+</p><h3 id="348c03a8-3f04-8038-a0fd-f8c8d2e5cf98" class="" dir="auto"><strong>Latency</strong></h3><p id="348c03a8-3f04-807d-a7bb-ea88e90beda2" class="" dir="auto"><strong>Latency</strong> is the time it takes for a data packet to travel from the source to the destination. Also called <strong>&quot;ping&quot; or delay</strong>. It refers to the amount of time, including delays, for data to travel from one given point to another.</p><ul id="348c03a8-3f04-80b8-aa66-c5d0444b0277" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Measured in <strong>milliseconds (ms)</strong></li></ul><ul id="348c03a8-3f04-80ef-b0cc-e197e171bf96" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Low latency = fast response (good for gaming and video calls. Ideally less than 50ms)</li></ul><ul id="348c03a8-3f04-801c-9d43-d36408d612f3" class="bulleted-list" dir="auto"><li style="list-style-type:disc">High latency = slow response (bad user experience. 200ms+ feels sluggish)</li></ul><ul id="348c03a8-3f04-8030-8b09-cd4ad72c1199" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Causes of high latency: long physical distance, many router hops, network congestion</li></ul><figure id="34ac03a8-3f04-809d-bf48-f69da3a796d2" class="image" data-notion-image="image%2011.png" dir="ltr"><a href="image%2011.png"><img style="width:709.989990234375px" src="image%2011.png"/></a></figure><p id="348c03a8-3f04-806e-9409-d12288d3d1bb" class="" dir="auto"><strong>Terminal: Measuring Latency</strong></p><pre id="348c03a8-3f04-8025-b091-c134076d2b2f" class="code code-wrap"><code style="white-space:pre-wrap;word-break:break-all">$ ping google.com
+PING google.com (142.250.80.46): 56 data bytes
+64 bytes from 142.250.80.46: icmp_seq=0 ttl=117 time=12.4 ms
+64 bytes from 142.250.80.46: icmp_seq=1 ttl=117 time=11.9 ms
+64 bytes from 142.250.80.46: icmp_seq=2 ttl=117 time=12.1 ms
+
+# &#x27;time=12.4 ms&#x27; this is the latency (round trip time)
+# Lower = faster = better network response</code></pre><hr id="348c03a8-3f04-8025-87f2-c7478c0d2cb5" dir="auto"/><h2 id="348c03a8-3f04-80de-9df8-c63e3694fdd7" class="" dir="auto"><strong>Data Flow Modes</strong></h2><p id="348c03a8-3f04-8046-a82b-cad08f936f0a" class="" dir="auto">When two devices communicate, the flow of data can happen in different ways. There are <strong>three modes</strong> of data flow: Simplex, Half Duplex, and Full Duplex.</p><h3 id="348c03a8-3f04-8078-8341-dbcd7de8bc9e" class="" dir="auto"><strong>Simplex</strong></h3><p id="348c03a8-3f04-809f-8424-ebc8cef0ed85" class="" dir="auto">Data flows in <strong>only ONE direction</strong>. From sender to receiver. The receiver can never send back. It is always a unidirectional communication.</p><figure id="34ac03a8-3f04-8089-b9d2-c3e8aa114b59" class="image" data-notion-image="image%2012.png" dir="ltr"><a href="image%2012.png"><img style="width:709.989990234375px" src="image%2012.png"/></a></figure><h4 id="348c03a8-3f04-801b-8ef4-d9e8dbf9cdeb" class="" dir="auto"><strong>Real Examples:</strong></h4><ul id="348c03a8-3f04-80f3-9654-e4d3e7057ce6" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Keyboard to Computer (keyboard only sends, never receives)</li></ul><ul id="348c03a8-3f04-80ed-b646-f24445ecfc4f" class="bulleted-list" dir="auto"><li style="list-style-type:disc">TV Broadcast (station sends, your TV only receives)</li></ul><ul id="348c03a8-3f04-8097-bab6-d2777a4cb715" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Baby Monitor (one way audio transmission)</li></ul><ul id="348c03a8-3f04-803a-a33f-c82c76e1846a" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Traditional monitors (not touch monitors)</li></ul><h3 id="348c03a8-3f04-80e1-a0e2-f4a426fa013f" class="" dir="auto"><strong>Half Duplex</strong></h3><p id="348c03a8-3f04-8055-acc9-efe5ccf8def9" class="" dir="auto">Data flows in <strong>both directions, but NOT at the same time</strong>. Only one device can transmit at a time. You must wait for the other to finish before you respond.</p><figure id="34ac03a8-3f04-803a-a0ea-cab06a0a93d9" class="image" data-notion-image="image%2013.png" dir="ltr"><a href="image%2013.png"><img style="width:710px" src="image%2013.png"/></a></figure><p id="348c03a8-3f04-80f5-a3cf-e5ac44130b76" class="" dir="auto"><strong>Real Examples:</strong></p><ul id="348c03a8-3f04-80f3-bf81-c16fc0e9047c" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Walkie Talkie:</strong> &quot;Over and out&quot;. You press to talk, release to listen. Both directions, but never simultaneously.</li></ul><ul id="348c03a8-3f04-80c2-ad5d-f3fc09061f93" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Old Ethernet hubs and early wireless networks.</li></ul><h3 id="348c03a8-3f04-805d-a4dd-e547f132fea7" class="" dir="auto"><strong>Full Duplex</strong></h3><p id="348c03a8-3f04-8047-bfd8-f4ec36f53fb9" class="" dir="auto">Data flows in <strong>both directions SIMULTANEOUSLY</strong>. Both devices can send and receive at the same time. The most efficient mode.</p><figure id="34ac03a8-3f04-8082-a325-f63884e64b52" class="image" data-notion-image="image%2014.png" dir="ltr"><a href="image%2014.png"><img style="width:709.989990234375px" src="image%2014.png"/></a></figure><p id="348c03a8-3f04-8028-abe6-fb0efdfec558" class="" dir="auto"><strong>Real Examples:</strong></p><ul id="348c03a8-3f04-8089-b072-c2a6a9406ac2" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Phone Call / Video Call:</strong> Both people can talk and listen at the same time.</li></ul><ul id="348c03a8-3f04-8032-a316-ffa2c29a463c" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Modern Ethernet switches, mobile phones, modern Wi Fi networks.</li></ul><ul id="348c03a8-3f04-8001-a795-db0a14928135" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Telephone Line.</li></ul><h3 id="34fc03a8-3f04-80e8-87fd-deeb43b2e437" class="" dir="auto">Final Comparison: Simplex vs Half Duplex vs Full Duplex</h3><table id="348c03a8-3f04-80d3-950f-cd117ca339a0" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80cf-bea0-fad727cbdd47" dir="ltr"><th id="`MwP" class="simple-table-header-color simple-table-header"><strong>Mode</strong></th><th id="X?V|" class="simple-table-header-color simple-table-header"><strong>Direction</strong></th><th id="x\:}" class="simple-table-header-color simple-table-header"><strong>Simultaneous?</strong></th><th id="Qk]U" class="simple-table-header-color simple-table-header"><strong>Example</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8038-ac9a-ddb18ede2210" dir="ltr"><td id="`MwP" class="">Simplex</td><td id="X?V|" class="">One way only</td><td id="x\:}" class="">No</td><td id="Qk]U" class="">Keyboard, TV Broadcast, Traditional Monitor</td></tr><tr id="348c03a8-3f04-80ab-822f-dfb4b775503c" dir="ltr"><td id="`MwP" class="">Half Duplex</td><td id="X?V|" class="">Both ways, one at a time</td><td id="x\:}" class="">No</td><td id="Qk]U" class="">Walkie Talkie, Old Ethernet</td></tr><tr id="348c03a8-3f04-80d5-81a8-e67975d5b7c5" dir="ltr"><td id="`MwP" class="">Full Duplex</td><td id="X?V|" class="">Both ways, at the same time</td><td id="x\:}" class="">Yes</td><td id="Qk]U" class="">Phone Call, Modern Ethernet, Telephone Line</td></tr></tbody></table><figure id="34ac03a8-3f04-8050-ad49-dd010b731b6b" class="image" data-notion-image="image%2015.png" dir="ltr"><a href="image%2015.png"><img style="width:710px" src="image%2015.png"/></a></figure><hr id="348c03a8-3f04-8086-8713-fccf8ef83e29" dir="auto"/><h2 id="348c03a8-3f04-8098-842f-c71b5f1e82de" class="" dir="auto"><strong>Types of Communication</strong></h2><p id="348c03a8-3f04-80de-921d-fbc7c4980d88" class="" dir="auto">When a device sends data on a network, it can address that data in different ways. To one specific device, to a group, or to everyone. These are called <strong>communication types</strong>.</p><h3 id="348c03a8-3f04-80ed-93fe-d9f295fc7d7b" class="" dir="auto"><strong>Unicast</strong></h3><p id="348c03a8-3f04-8007-9294-ffd45dbd19e9" class="" dir="auto"><strong>One to One</strong> communication. Data is sent from one source to exactly one destination. Most network traffic is unicast. A unicast packet has a destination IP address that is a unicast address which goes to a single recipient. A source IP address can only be a unicast address, because the packet can only originate from a single source.</p><figure id="34ac03a8-3f04-807c-9921-f3cb76f89b60" class="image" data-notion-image="image%2016.png" dir="ltr"><a href="image%2016.png"><img style="width:710px" src="image%2016.png"/></a></figure><p id="348c03a8-3f04-8001-a580-f2a842f3a46d" class="" dir="auto"><strong>Example:</strong></p><p id="348c03a8-3f04-809c-bd93-ed443c4d535b" class="" dir="auto">Visiting a website. Your computer requests data from ONE server, and that server responds to only YOUR computer.</p><p id="348c03a8-3f04-8035-a25f-db0cc4abe14b" class="" dir="auto"><strong>IPv4 unicast host addresses are in the address range:</strong> 1.1.1.1 to 223.255.255.255. However, within this range are many addresses that are reserved for special purposes.</p><h3 id="348c03a8-3f04-80ca-b083-de9a69bbda33" class="" dir="auto"><strong>Multicast</strong></h3><p id="348c03a8-3f04-8027-b254-d7309d2a04c3" class="" dir="auto"><strong>One to Many (selective)</strong> communication. Data is sent to a specific GROUP of devices that have subscribed to receive it. Multicast transmission reduces traffic by allowing a host to send a single packet to a selected set of hosts that subscribe to a multicast group.</p><figure id="34ac03a8-3f04-80e0-ae96-c16da96ec0dd" class="image" data-notion-image="image%2017.png" dir="ltr"><a href="image%2017.png"><img style="width:709.989990234375px" src="image%2017.png"/></a></figure><p id="348c03a8-3f04-80d8-88ee-fa4297218936" class="" dir="auto"><strong>Example:</strong></p><p id="348c03a8-3f04-809a-a2bc-cc102e189cde" class="" dir="auto">Live video streaming. The streaming server sends one stream to all viewers who have joined. Video conferencing, IPTV. Each multicast group is represented by a single IPv4 multicast destination address. When an IPv4 host subscribes to a multicast group, the host processes packets addressed to this multicast address, and packets addressed to its uniquely allocated unicast address.</p><p id="348c03a8-3f04-80e4-9787-c4f467c443e8" class="" dir="auto"><strong>IPv4 multicast address range:</strong> 224.0.0.0 to 239.255.255.255.</p><h3 id="348c03a8-3f04-802c-b077-ec273fe740cc" class="" dir="auto"><strong>Broadcast</strong></h3><p id="348c03a8-3f04-80da-a15a-e1925264febf" class="" dir="auto"><strong>One to All</strong> communication. Data is sent to ALL devices on the network simultaneously. Broadcast transmission refers to a device sending a message to all the devices on a network in one to all communications.</p><figure id="34ac03a8-3f04-80ae-a2ae-d5fe3267a598" class="image" data-notion-image="image%2018.png" dir="ltr"><a href="image%2018.png"><img style="width:709.989990234375px" src="image%2018.png"/></a></figure><p id="348c03a8-3f04-8005-8891-db8e0c9ee7d0" class="" dir="auto"><strong>Example:</strong></p><p id="348c03a8-3f04-80e5-9a41-e9d41dc15c4a" class="" dir="auto">When your router assigns IP addresses using DHCP. It broadcasts to ask &quot;Who needs an IP?&quot; All devices hear it, only the right one responds. A broadcast packet has a destination IP address with all ones (1s) in the host portion, or 32 one (1) bits.</p><h4 id="348c03a8-3f04-8068-964b-c920439b147b" class="" dir="auto"><strong>Cybersecurity Note:</strong></h4><p id="348c03a8-3f04-80d0-968e-fb23c375d01f" class="" dir="auto">Attackers exploit <strong>broadcast</strong> traffic in attacks like ARP spoofing and DHCP starvation. Understanding these communication types helps you identify and defend against such attacks.</p><h4 id="348c03a8-3f04-80d2-bf35-cbb3abbbbc94" class="" dir="auto"><strong>Types of Broadcast:</strong></h4><ul id="348c03a8-3f04-802f-8fea-e9a6ac13055b" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Directed broadcast:</strong> Sent to all hosts on a specific network. Example: 172.16.4.255</li></ul><ul id="348c03a8-3f04-8082-ac78-c7a2b425abf1" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Limited broadcast:</strong> Sent to 255.255.255.255. By default, routers do not forward broadcasts.</li></ul><p id="348c03a8-3f04-804d-902c-e758ffbf659f" class="" dir="auto"><strong>Note:</strong> IPv4 uses broadcast packets. However, there are no broadcast packets with IPv6. IPv6 replaces broadcast with multicast.</p><h3 id="34fc03a8-3f04-808d-91e9-ed158d923146" class="" dir="auto">Final Comparison: Unicast vs Multicast vs Broadcast</h3><table id="348c03a8-3f04-80ff-9df9-c8836e157541" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-803a-a3d4-e9355e8728ed" dir="ltr"><th id="cxp{" class="simple-table-header-color simple-table-header"><strong>Type</strong></th><th id="{U?v" class="simple-table-header-color simple-table-header"><strong>Sender</strong></th><th id="YbF?" class="simple-table-header-color simple-table-header"><strong>Receivers</strong></th><th id="T?a]" class="simple-table-header-color simple-table-header"><strong>IP Address Example</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80d1-8583-ebccb4de9eff" dir="ltr"><td id="cxp{" class="">Unicast</td><td id="{U?v" class="">1 device</td><td id="YbF?" class="">1 specific device</td><td id="T?a]" class="">192.168.1.10</td></tr><tr id="348c03a8-3f04-80cc-9691-ef1a3425a307" dir="ltr"><td id="cxp{" class="">Multicast</td><td id="{U?v" class="">1 device</td><td id="YbF?" class="">Subscribed group</td><td id="T?a]" class="">224.0.0.1 (multicast range)</td></tr><tr id="348c03a8-3f04-80a4-bde5-e97b92fb79b5" dir="ltr"><td id="cxp{" class="">Broadcast</td><td id="{U?v" class="">1 device</td><td id="YbF?" class="">All devices on subnet</td><td id="T?a]" class="">192.168.1.255</td></tr></tbody></table><figure id="34ac03a8-3f04-80ba-8ef9-ca14bc5c2f81" class="image" data-notion-image="image%2019.png" dir="ltr"><a href="image%2019.png"><img style="width:709.989990234375px" src="image%2019.png"/></a></figure><hr id="348c03a8-3f04-805f-9df3-c486ab9207a6" dir="auto"/><h2 id="348c03a8-3f04-8095-b0d1-eab8f8762805" class="" dir="auto"><strong>Network Architectures</strong></h2><p id="348c03a8-3f04-8045-822e-fc5ac9c5c7d3" class="" dir="auto">Network architecture defines how computers are organized and how they interact with each other. The two fundamental models are <strong>Client Server</strong> and <strong>Peer to Peer (P2P)</strong>.</p><h3 id="348c03a8-3f04-804b-bb10-e4bf3fff5646" class="" dir="auto"><strong>Client Server Model</strong></h3><p id="348c03a8-3f04-8031-b2e2-f2b277b5fd45" class="" dir="auto">In this model, there is a clear division of roles: <strong>Servers provide services</strong>, and <strong>Clients request those services</strong>. It is also called a request response model.</p><ul id="348c03a8-3f04-80d6-a290-de8108488e84" class="bulleted-list" dir="auto"><li style="list-style-type:disc">The <strong>server</strong> is a powerful, dedicated machine that runs services 24/7 (web server, database, email server)</li></ul><ul id="348c03a8-3f04-80d8-a877-c87763fa74fe" class="bulleted-list" dir="auto"><li style="list-style-type:disc">The <strong>client</strong> is any device (laptop, phone, PC) that sends requests to the server</li></ul><ul id="348c03a8-3f04-8050-8205-ec90e2e07ac0" class="bulleted-list" dir="auto"><li style="list-style-type:disc">All communication goes through the server. Clients do not communicate directly with each other</li></ul><ul id="348c03a8-3f04-802d-91f7-d77844763c74" class="bulleted-list" dir="auto"><li style="list-style-type:disc">The client server model works on a request response flow where a client requests a service/data and the server processes that request and returns a response</li></ul><figure id="34ac03a8-3f04-80e2-bd69-f1daad73741c" class="image" data-notion-image="image%2020.png" dir="ltr"><a href="image%2020.png"><img style="width:709.989990234375px" src="image%2020.png"/></a></figure><p id="348c03a8-3f04-80f1-b227-e13d129e4c5a" class="" dir="auto"><strong>Real Example:</strong></p><p id="348c03a8-3f04-80d1-80fe-d936b640efd7" class="" dir="auto">You open <strong><a href="https://google.com/">google.com</a></strong> in your browser. Your browser is the CLIENT. It sends a request. Google&#x27;s server is the SERVER. It processes your request and sends back the webpage. This is client server in action.</p><table id="348c03a8-3f04-80be-9462-d02d323347c8" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-8097-b697-e7d1c37a13d0" dir="ltr"><th id="wiUg" class="simple-table-header-color simple-table-header"><strong>Advantages</strong></th><th id="mTbw" class="simple-table-header-color simple-table-header" style="width:372px"><strong>Disadvantages</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8007-ba73-e12bfd5b3a4d" dir="ltr"><td id="wiUg" class="">Centralized management</td><td id="mTbw" class="" style="width:372px">If the server goes down, all clients lose access</td></tr><tr id="348c03a8-3f04-8023-8222-e5f509246140" dir="ltr"><td id="wiUg" class="">Better security</td><td id="mTbw" class="" style="width:372px">Server hardware is expensive</td></tr><tr id="348c03a8-3f04-806b-84bb-daafecaa829f" dir="ltr"><td id="wiUg" class="">Easier to back up</td><td id="mTbw" class="" style="width:372px">Can become a bottleneck when many clients send requests simultaneously</td></tr><tr id="348c03a8-3f04-80e5-b3ee-dc90ac3170ed" dir="ltr"><td id="wiUg" class="">Scalable</td><td id="mTbw" class="" style="width:372px">Requires network connectivity</td></tr><tr id="348c03a8-3f04-80f7-9c96-d488cbde3126" dir="ltr"><td id="wiUg" class="">Supports multiple clients simultaneously</td><td id="mTbw" class="" style="width:372px">Complex to scale properly (load balancing, replication, backups needed)</td></tr></tbody></table><h4 id="348c03a8-3f04-806a-a39c-cf98db97fe26" class="" dir="auto"><strong>Types of Client Server Architecture:</strong></h4><ol type="1" id="348c03a8-3f04-80e1-b7f8-f42c1b9aaa8e" class="numbered-list" start="1" dir="auto"><li><strong>2 Tier Architecture:</strong> Client communicates directly with the server, which handles both processing and data storage. Suitable for small applications and limited users.</li></ol><ol type="1" id="348c03a8-3f04-80f4-9cb1-cbecdbede2a3" class="numbered-list" start="2" dir="auto"><li><strong>3 Tier Architecture:</strong> Divided into presentation layer (client), application layer (business logic), and data layer (database server). The client interacts with the application server instead of communicating directly with the database. Widely used in web applications and enterprise systems.</li></ol><h3 id="348c03a8-3f04-8004-b038-f5ae3e710f2e" class="" dir="auto"><strong>Peer to Peer (P2P) Model</strong></h3><p id="348c03a8-3f04-8079-87e2-ea64742d5eed" class="" dir="auto">In P2P, <strong>every device acts as BOTH a client AND a server</strong>. There is no central authority. Peers connect directly to each other. In a P2P system, every node has an equal role to play and the same functionalities, which means that the loads are well shared.</p><ul id="348c03a8-3f04-80a6-9ea3-f6de48567fd3" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Each peer can share files, resources, or services directly with other peers</li></ul><ul id="348c03a8-3f04-80a8-8794-ecb928b52b8f" class="bulleted-list" dir="auto"><li style="list-style-type:disc">No single point of failure. If one peer goes offline, others continue</li></ul><ul id="348c03a8-3f04-80c9-9cd0-e74f194cca83" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Harder to secure and manage than client server</li></ul><ul id="348c03a8-3f04-809e-83b3-fa7edc04694f" class="bulleted-list" dir="auto"><li style="list-style-type:disc">All nodes are with equal rights. There is nobody superior and there is nobody inferior</li></ul><ul id="348c03a8-3f04-8010-a8ea-d890cea7c623" class="bulleted-list" dir="auto"><li style="list-style-type:disc">There is no centralized administration</li></ul><figure id="34ac03a8-3f04-80db-99d5-f84e279b3988" class="image" data-notion-image="image%2021.png" dir="ltr"><a href="image%2021.png"><img style="width:709.989990234375px" src="image%2021.png"/></a></figure><p id="348c03a8-3f04-80e7-9f0c-d4bd1231dded" class="" dir="auto"><strong>Real Examples:</strong></p><ul id="348c03a8-3f04-8080-a6de-d2fe37f4cd1e" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>BitTorrent:</strong> Each user downloading also uploads to others</li></ul><ul id="348c03a8-3f04-8007-85ab-eeb00b344c00" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Blockchain/Bitcoin:</strong> All nodes store and validate transactions</li></ul><ul id="348c03a8-3f04-80e5-b734-ff3794767e4a" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Small home networks:</strong> Two computers sharing files directly</li></ul><ul id="348c03a8-3f04-80bd-ac34-f3d27d84f762" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Napster, Gnutella, eDonkey, Kazaa, Skype</strong></li></ul><table id="348c03a8-3f04-80ad-93d2-fabdc083e825" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80da-b93f-d123dd93ea49" dir="ltr"><th id="`fRn" class="simple-table-header-color simple-table-header" style="width:203.21250915527344px"><strong>Advantages</strong></th><th id="@_x@" class="simple-table-header-color simple-table-header" style="width:491px"><strong>Disadvantages</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80de-b19d-ff854dd5b592" dir="ltr"><td id="`fRn" class="" style="width:203.21250915527344px">Easy to set up</td><td id="@_x@" class="" style="width:491px">No centralized administration</td></tr><tr id="348c03a8-3f04-8080-adfe-e37a3c884424" dir="ltr"><td id="`fRn" class="" style="width:203.21250915527344px">Less complex</td><td id="@_x@" class="" style="width:491px">Not as secure</td></tr><tr id="348c03a8-3f04-80a3-82a7-cf0fb08bc326" dir="ltr"><td id="`fRn" class="" style="width:203.21250915527344px">Lower cost (no dedicated servers needed)</td><td id="@_x@" class="" style="width:491px">Not scalable</td></tr><tr id="348c03a8-3f04-8034-be4b-f902b0bbbb01" dir="ltr"><td id="`fRn" class="" style="width:203.21250915527344px">Can be used for simple tasks (transferring files, sharing printers)</td><td id="@_x@" class="" style="width:491px">All devices may act as both clients and servers which can slow their performance</td></tr><tr id="348c03a8-3f04-8053-a2f1-d4a2e24448aa" dir="ltr"><td id="`fRn" class="" style="width:203.21250915527344px">Easy to add and remove nodes</td><td id="@_x@" class="" style="width:491px">Data is vulnerable because of no central server and backup</td></tr><tr id="348c03a8-3f04-80d2-acfb-d151588b202e" dir="ltr"><td id="`fRn" class="" style="width:203.21250915527344px">Less network traffic than client server</td><td id="@_x@" class="" style="width:491px">Files hard to locate (not centrally stored)</td></tr></tbody></table><h4 id="348c03a8-3f04-808c-b647-f764164eda15" class="" dir="auto"><strong>Types of P2P Networks:</strong></h4><ol type="1" id="348c03a8-3f04-80af-890f-e69a36173574" class="numbered-list" start="1" dir="auto"><li><strong>Unstructured P2P Networks:</strong> Each device makes an equal contribution. Easy to build but difficult to find content. Examples: Napster, Gnutella.</li></ol><ol type="1" id="348c03a8-3f04-80aa-b15f-d94757d711ca" class="numbered-list" start="2" dir="auto"><li><strong>Structured P2P Networks:</strong> Designed using software that creates a virtual layer to put nodes in a specific structure. Not easy to set up but gives easy access to content. Examples: P Grid, Kademlia.</li></ol><ol type="1" id="348c03a8-3f04-802c-ac79-ce3b5d945ba9" class="numbered-list" start="3" dir="auto"><li><strong>Hybrid P2P Networks:</strong> Combines features of both P2P networks and client server architecture. Uses a central server to find a node.</li></ol><p id="34fc03a8-3f04-80bc-93b7-c5ab3a272d87" class="" dir="auto">
+</p><h3 id="34ac03a8-3f04-806f-a754-c40b0e04d90c" class="" dir="auto">Final Comparison: <strong>Client Server vs Peer to Peer</strong></h3><table id="348c03a8-3f04-8001-b2ef-e533116f018b" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80ce-895e-cbae201533f4" dir="ltr"><th id="PeMH" class="simple-table-header-color simple-table-header"><strong>Feature</strong></th><th id="a|&gt;h" class="simple-table-header-color simple-table-header"><strong>Client Server</strong></th><th id="=VU}" class="simple-table-header-color simple-table-header"><strong>Peer to Peer</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-809f-878e-c40a2df21769" dir="ltr"><td id="PeMH" class="">Control</td><td id="a|&gt;h" class="">Centralized (server)</td><td id="=VU}" class="">Decentralized (no center)</td></tr><tr id="348c03a8-3f04-804d-835f-c5593f38b014" dir="ltr"><td id="PeMH" class="">Security</td><td id="a|&gt;h" class="">Easier to secure</td><td id="=VU}" class="">Harder to secure</td></tr><tr id="348c03a8-3f04-80d8-bd15-dfbe0f6fc6ec" dir="ltr"><td id="PeMH" class="">Scalability</td><td id="a|&gt;h" class="">Scales with server upgrades</td><td id="=VU}" class="">Scales naturally as peers join</td></tr><tr id="348c03a8-3f04-8063-bfb5-f321bb05334a" dir="ltr"><td id="PeMH" class="">Cost</td><td id="a|&gt;h" class="">High (dedicated servers needed)</td><td id="=VU}" class="">Low (use existing hardware)</td></tr><tr id="348c03a8-3f04-801f-8d86-e7e14e751de5" dir="ltr"><td id="PeMH" class="">Used In</td><td id="a|&gt;h" class="">Websites, enterprise networks, email</td><td id="=VU}" class="">BitTorrent, Blockchain, gaming, small home networks</td></tr></tbody></table><figure id="34ac03a8-3f04-8092-92c3-e7449e28f8cc" class="image" data-notion-image="image%2022.png" dir="ltr"><a href="image%2022.png"><img style="width:709.989990234375px" src="image%2022.png"/></a></figure><hr id="348c03a8-3f04-8067-b9b5-e2b7894a11cf" dir="auto"/><h2 id="34fc03a8-3f04-806f-80bc-ecb5c1280a1f" class="" dir="auto"><strong>Network Types by Scale</strong></h2><p id="348c03a8-3f04-800c-98ff-d4c806648654" class="" dir="auto">Networks are categorized by their <strong>physical size and geographic coverage</strong>. The smaller the area, the faster and more controlled the network typically is.</p><h2 id="348c03a8-3f04-80f8-9f63-d0babdbb05fe" class="" dir="auto"><strong>PAN: Personal Area Network</strong></h2><p id="348c03a8-3f04-805e-a7ef-c3066ed7fe1d" class="" dir="auto">A Personal Area Network is the smallest type of network, designed to connect devices within the immediate vicinity of an individual person. Think of it as your personal device ecosystem operating within arm&#x27;s reach.</p><figure id="34ac03a8-3f04-80e5-940e-dd91db05466d" class="image" data-notion-image="image%2023.png" dir="ltr"><a href="image%2023.png"><img style="width:710px" src="image%2023.png"/></a></figure><table id="348c03a8-3f04-8037-9175-d54bb1695e8a" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-8034-bfe8-e82372815eb7" dir="ltr"><th id="H~t~" class="simple-table-header-color simple-table-header"><strong>Characteristic</strong></th><th id="hTmR" class="simple-table-header-color simple-table-header" style="width:545px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8055-a36b-e25325a70b4d" dir="ltr"><td id="H~t~" class="">Range</td><td id="hTmR" class="" style="width:545px">A few centimeters to approximately 10 meters (around one person)</td></tr><tr id="348c03a8-3f04-808f-b506-eef4e5800902" dir="ltr"><td id="H~t~" class="">Technology</td><td id="hTmR" class="" style="width:545px">Bluetooth (IEEE 802.15.1), USB, NFC (Near Field Communication), Infrared (IrDA), Zigbee, Z Wave</td></tr><tr id="348c03a8-3f04-8047-8985-e4034888b0c7" dir="ltr"><td id="H~t~" class="">Speed</td><td id="hTmR" class="" style="width:545px">Bluetooth 5.0: Up to 2 Mbps; Bluetooth Low Energy: Up to 1 Mbps; NFC: Up to 424 Kbps; USB 3.0: Up to 5 Gbps</td></tr><tr id="348c03a8-3f04-8075-89c5-d0e21bbd9826" dir="ltr"><td id="H~t~" class="">Topology</td><td id="hTmR" class="" style="width:545px">Usually star or point to point</td></tr><tr id="348c03a8-3f04-806d-bab2-d4cd74470dd2" dir="ltr"><td id="H~t~" class="">Examples</td><td id="hTmR" class="" style="width:545px">Connecting AirPods to your phone, smartwatch to phone, wireless keyboard to laptop, fitness tracker syncing, contactless payments, wireless mouse</td></tr><tr id="348c03a8-3f04-800c-b414-dfe4e710629d" dir="ltr"><td id="H~t~" class="">Managed by</td><td id="hTmR" class="" style="width:545px">The individual user</td></tr><tr id="348c03a8-3f04-804a-a89c-d69d7bd5c3be" dir="ltr"><td id="H~t~" class="">Key Protocols</td><td id="hTmR" class="" style="width:545px">Bluetooth protocols (L2CAP, RFCOMM), OBEX (Object Exchange), HID (Human Interface Device)</td></tr></tbody></table><h3 id="348c03a8-3f04-8045-8fc5-de116f8cb633" class="" dir="auto"><strong>Advantages and Limitations of PAN</strong></h3><table id="348c03a8-3f04-80f9-a3bf-f60e5a73bd7e" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-809a-ab5e-d3dd09620486" dir="ltr"><th id="hVFP" class="simple-table-header-color simple-table-header"><strong>Advantages</strong></th><th id="ZECJ" class="simple-table-header-color simple-table-header" style="width:429px"><strong>Limitations</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8035-9106-e8c7c98a1f19" dir="ltr"><td id="hVFP" class="">Extremely low power consumption (especially BLE)</td><td id="ZECJ" class="" style="width:429px">Very limited range</td></tr><tr id="348c03a8-3f04-800f-8ba2-ef2d4f761e22" dir="ltr"><td id="hVFP" class="">Simple to set up and use</td><td id="ZECJ" class="" style="width:429px">Low data rates compared to LAN/WAN</td></tr><tr id="348c03a8-3f04-80cf-bbb1-f559e99503ea" dir="ltr"><td id="hVFP" class="">Low cost or no additional hardware required</td><td id="ZECJ" class="" style="width:429px">Susceptible to interference in crowded 2.4 GHz band</td></tr><tr id="348c03a8-3f04-806c-b596-f7b2775be4a9" dir="ltr"><td id="hVFP" class="">Enables personal device ecosystem</td><td id="ZECJ" class="" style="width:429px">Security concerns with wireless technologies</td></tr><tr id="348c03a8-3f04-800c-a13d-f05da8a78146" dir="ltr"><td id="hVFP" class="">Automatic device discovery and pairing</td><td id="ZECJ" class="" style="width:429px">Limited number of simultaneous connections</td></tr></tbody></table><h2 id="348c03a8-3f04-807e-a695-d8b114ea7722" class="" dir="auto"><strong>LAN: Local Area Network</strong></h2><p id="348c03a8-3f04-80f8-8204-e47a59e141fb" class="" dir="auto">A Local Area Network connects computers and devices within a limited geographical area, typically a single building, floor, or small campus. LANs form the foundation of most organizational and home networks.</p><figure id="34ac03a8-3f04-80e9-80be-c9aad08c09f6" class="image" data-notion-image="image%2024.png" dir="ltr"><a href="image%2024.png"><img style="width:709.989990234375px" src="image%2024.png"/></a></figure><table id="348c03a8-3f04-80f0-b3fb-e06824601295" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-8093-8037-d2a29d9b7489" dir="ltr"><th id="TrsD" class="simple-table-header-color simple-table-header"><strong>Characteristic</strong></th><th id="shff" class="simple-table-header-color simple-table-header" style="width:477px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8010-b002-cdbde2e3a01b" dir="ltr"><td id="TrsD" class="">Range</td><td id="shff" class="" style="width:477px">Single building or campus. Up to approximately 1 km (can be extended with repeaters or fiber)</td></tr><tr id="348c03a8-3f04-8024-95e7-f1b31bd732b5" dir="ltr"><td id="TrsD" class="">Technology</td><td id="shff" class="" style="width:477px">Ethernet (IEEE 802.3), Wi Fi (IEEE 802.11), Token Ring (legacy), FDDI (legacy)</td></tr><tr id="348c03a8-3f04-8034-a657-fc5f569b82d2" dir="ltr"><td id="TrsD" class="">Speed</td><td id="shff" class="" style="width:477px">Very high. 100 Mbps (Fast Ethernet) to 10 Gbps (10 Gigabit Ethernet), with 25/40/100 Gbps in data centers</td></tr><tr id="348c03a8-3f04-803c-bd93-cdd328e35655" dir="ltr"><td id="TrsD" class="">Examples</td><td id="shff" class="" style="width:477px">Home network, office network, school computer lab, coffee shop Wi Fi</td></tr><tr id="348c03a8-3f04-805c-8165-c6480659217d" dir="ltr"><td id="TrsD" class="">Key Devices</td><td id="shff" class="" style="width:477px">Switch, Router, Access Point, Network Interface Card (NIC), Hub (legacy), Bridge (legacy)</td></tr><tr id="348c03a8-3f04-80fd-a730-dfd5972d010e" dir="ltr"><td id="TrsD" class="">Ownership</td><td id="shff" class="" style="width:477px">Private (owned and managed by the organization or individual)</td></tr><tr id="348c03a8-3f04-80c3-ba2d-f3c1f74d8aec" dir="ltr"><td id="TrsD" class="">Topology</td><td id="shff" class="" style="width:477px">Star (most common), Bus (legacy), Ring (legacy), Mesh (data centers)</td></tr></tbody></table><h4 id="348c03a8-3f04-80ed-8748-d839e59cec4f" class="" dir="auto"><strong>Types of LAN:</strong></h4><ul id="348c03a8-3f04-80a2-a054-ef81eb24c3a9" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Wired LAN:</strong> Uses Ethernet cables (straight through or crossover)</li></ul><ul id="348c03a8-3f04-8060-8b17-e4a95c0a9077" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Wireless LAN (WLAN):</strong> Uses Wi Fi technology</li></ul><h2 id="348c03a8-3f04-808b-b545-e583daa5f7e5" class="" dir="auto"><strong>CAN: Campus Area Network</strong></h2><p id="348c03a8-3f04-8074-969e-f4ed7a92ba69" class="" dir="auto">A Campus Area Network connects multiple LANs within a defined geographical area, typically a university campus, corporate headquarters, hospital complex, or military base. CANs bridge the gap between LAN and MAN.</p><figure id="34ac03a8-3f04-800c-9031-fc89ca9ea786" class="image" data-notion-image="image%2025.png" dir="ltr"><a href="image%2025.png"><img style="width:709.989990234375px" src="image%2025.png"/></a></figure><table id="348c03a8-3f04-80d1-affc-dc81d1b9c055" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-8008-8d0d-e6a2735de664" dir="ltr"><th id="|IOb" class="simple-table-header-color simple-table-header"><strong>Characteristic</strong></th><th id="MrTZ" class="simple-table-header-color simple-table-header" style="width:575px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8033-8ba7-e3d7639c6161" dir="ltr"><td id="|IOb" class="">Range</td><td id="MrTZ" class="" style="width:575px">Multiple buildings on the same campus. Up to a few kilometers (typically 1 5 km)</td></tr><tr id="348c03a8-3f04-80e8-a134-cf67363c7e5e" dir="ltr"><td id="|IOb" class="">Technology</td><td id="MrTZ" class="" style="width:575px">Ethernet (fiber backbone), Fiber Optics (single mode and multi mode), 10 Gigabit Ethernet, Wi Fi (outdoor mesh)</td></tr><tr id="348c03a8-3f04-803f-94d4-d9cd81cda0d5" dir="ltr"><td id="|IOb" class="">Speed</td><td id="MrTZ" class="" style="width:575px">Up to 1 Gbps to 100 Gbps on backbone links</td></tr><tr id="348c03a8-3f04-8003-82b8-c0beba08465a" dir="ltr"><td id="|IOb" class="">Examples</td><td id="MrTZ" class="" style="width:575px">University campus network connecting academic buildings, dormitories, libraries, and administrative offices; corporate campus connecting multiple office buildings; hospital network connecting main hospital, clinics, and research facilities</td></tr><tr id="348c03a8-3f04-8073-be1a-ce31243813bb" dir="ltr"><td id="|IOb" class="">Key Devices</td><td id="MrTZ" class="" style="width:575px">Core switches, distribution switches, routers, fiber optic transceivers, wireless bridges</td></tr><tr id="348c03a8-3f04-8043-8792-cf0e60cfb42b" dir="ltr"><td id="|IOb" class="">Ownership</td><td id="MrTZ" class="" style="width:575px">Single organization (university, corporation)</td></tr><tr id="348c03a8-3f04-80e9-b7bf-e1ac4b298ba3" dir="ltr"><td id="|IOb" class="">Topology</td><td id="MrTZ" class="" style="width:575px">Hierarchical (core, distribution, access), often with redundant fiber rings</td></tr></tbody></table><h2 id="348c03a8-3f04-80d0-a9e2-e9a9d745b82b" class="" dir="auto"><strong>MAN: Metropolitan Area Network</strong></h2><p id="348c03a8-3f04-80de-9524-ddd12cb9d830" class="" dir="auto">A Metropolitan Area Network spans a city or large urban area, connecting multiple LANs and CANs across distances up to approximately 50 kilometers. MANs are typically operated by telecommunications companies, ISPs, or large enterprises with multiple city locations.</p><figure id="34ac03a8-3f04-805f-83f2-c4b23f2815c7" class="image" data-notion-image="image%2026.png" dir="ltr"><a href="image%2026.png"><img style="width:709.989990234375px" src="image%2026.png"/></a></figure><table id="348c03a8-3f04-80b0-a2fb-c6de250ca0fe" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-8057-a3b8-f1da5f7ca9ac" dir="ltr"><th id="\nAe" class="simple-table-header-color simple-table-header"><strong>Characteristic</strong></th><th id="=l:@" class="simple-table-header-color simple-table-header" style="width:624px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80e3-bff4-eb9784b51c05" dir="ltr"><td id="\nAe" class="">Range</td><td id="=l:@" class="" style="width:624px">A city or large urban area. Up to approximately 50 km</td></tr><tr id="348c03a8-3f04-8055-a7c3-df0dbab1d415" dir="ltr"><td id="\nAe" class="">Technology</td><td id="=l:@" class="" style="width:624px">Fiber optic cables (SONET/SDH, DWDM), Metro Ethernet, MPLS, Microwave links, Free Space Optics (FSO)</td></tr><tr id="348c03a8-3f04-80db-8237-ecb68b3322cc" dir="ltr"><td id="\nAe" class="">Speed</td><td id="=l:@" class="" style="width:624px">Up to 10 Gbps to 100 Gbps (with DWDM reaching multiple Tbps)</td></tr><tr id="348c03a8-3f04-80b9-b064-ead69c85f6a2" dir="ltr"><td id="\nAe" class="">Examples</td><td id="=l:@" class="" style="width:624px">City wide Wi Fi networks, cable TV networks, a bank&#x27;s network connecting all branches in a city, municipal government networks, ISP metro networks</td></tr><tr id="348c03a8-3f04-80cc-8319-c92dc4e57aa2" dir="ltr"><td id="\nAe" class="">Key Devices</td><td id="=l:@" class="" style="width:624px">Metro switches, optical transport equipment, DWDM multiplexers, edge routers</td></tr><tr id="348c03a8-3f04-8011-969c-e9bac5d8c5b1" dir="ltr"><td id="\nAe" class="">Ownership</td><td id="=l:@" class="" style="width:624px">Typically operated by telecom companies, ISPs, cable providers, or city governments</td></tr><tr id="348c03a8-3f04-80fc-aaca-df844f8c666a" dir="ltr"><td id="\nAe" class="">Topology</td><td id="=l:@" class="" style="width:624px">Ring (most common for redundancy), Mesh, Point to Point</td></tr></tbody></table><h2 id="348c03a8-3f04-80a4-a279-c2b36d441584" class="" dir="auto"><strong>WAN: Wide Area Network</strong></h2><p id="348c03a8-3f04-8010-a583-d0ecc9100a75" class="" dir="auto">A Wide Area Network spans large geographical areas, connecting networks across countries, continents, and the globe. WANs form the backbone of global communications and the Internet itself.</p><figure id="34ac03a8-3f04-8090-b667-fdbdb4a32a44" class="image" data-notion-image="image%2027.png" dir="ltr"><a href="image%2027.png"><img style="width:709.989990234375px" src="image%2027.png"/></a></figure><table id="348c03a8-3f04-8008-a317-c625f6c53fac" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-806b-880d-eadbe30900bf" dir="ltr"><th id="Jwhh" class="simple-table-header-color simple-table-header"><strong>Characteristic</strong></th><th id="SZ}E" class="simple-table-header-color simple-table-header" style="width:598px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8048-956b-debb38c82c02" dir="ltr"><td id="Jwhh" class="">Range</td><td id="SZ}E" class="" style="width:598px">Countries and continents. Unlimited global coverage</td></tr><tr id="348c03a8-3f04-8068-bcd9-e807e28bc662" dir="ltr"><td id="Jwhh" class="">Technology</td><td id="SZ}E" class="" style="width:598px">Leased lines (T1/E1, T3/E3), MPLS, Frame Relay (legacy), ATM (legacy), Satellite (GEO, MEO, LEO), Submarine fiber optic cables, SD WAN</td></tr><tr id="348c03a8-3f04-806e-a34e-c9ec46cc18ff" dir="ltr"><td id="Jwhh" class="">Speed</td><td id="SZ}E" class="" style="width:598px">Varies widely from Kbps (satellite backup) to multiple Tbps (submarine cables). Slower than LAN due to distance and multiple hops</td></tr><tr id="348c03a8-3f04-80c4-91e1-d61b10b44114" dir="ltr"><td id="Jwhh" class="">Examples</td><td id="SZ}E" class="" style="width:598px">The Internet (world&#x27;s largest WAN), multinational company&#x27;s global network connecting offices worldwide, ATM networks, ISP backbone networks</td></tr><tr id="348c03a8-3f04-8069-a85a-cc2cdd7aa2ff" dir="ltr"><td id="Jwhh" class="">Key Devices</td><td id="SZ}E" class="" style="width:598px">Core routers, edge routers, optical transport equipment, satellite ground stations, SD WAN edge devices</td></tr><tr id="348c03a8-3f04-8009-9263-d8ee46044c5f" dir="ltr"><td id="Jwhh" class="">Ownership</td><td id="SZ}E" class="" style="width:598px">ISPs, telecommunications carriers, consortiums (for submarine cables)</td></tr><tr id="348c03a8-3f04-80b5-9293-d4b4f5249bd4" dir="ltr"><td id="Jwhh" class="">Topology</td><td id="SZ}E" class="" style="width:598px">Mesh, Hierarchical, Ring, Hybrid</td></tr></tbody></table><h2 id="34fc03a8-3f04-80c5-9fdd-cbc6d0ce8e03" class="" dir="auto">Final Comparison : PAN vs LAN vs CAN vs MAN vs WAN</h2><table id="348c03a8-3f04-80d3-a3b2-f9caca9b368b" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80b9-868a-c653d69bebb2" dir="ltr"><th id="mWpe" class="simple-table-header-color simple-table-header"><strong>Feature</strong></th><th id="Qj{}" class="simple-table-header-color simple-table-header"><strong>LAN</strong></th><th id="&lt;c}d" class="simple-table-header-color simple-table-header"><strong>CAN</strong></th><th id="}yhu" class="simple-table-header-color simple-table-header"><strong>MAN</strong></th><th id="B[A&lt;" class="simple-table-header-color simple-table-header"><strong>WAN</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80e4-bb92-c6a016feb6f9" dir="ltr"><td id="mWpe" class="">Scope</td><td id="Qj{}" class="">Building</td><td id="&lt;c}d" class="">Campus</td><td id="}yhu" class="">City</td><td id="B[A&lt;" class="">Global</td></tr><tr id="348c03a8-3f04-80ee-bc72-ff42e2594221" dir="ltr"><td id="mWpe" class="">Distance</td><td id="Qj{}" class="">&lt;1 km</td><td id="&lt;c}d" class="">1 5 km</td><td id="}yhu" class="">5 50 km</td><td id="B[A&lt;" class="">Unlimited</td></tr><tr id="348c03a8-3f04-80a1-bfdb-f610dc40752b" dir="ltr"><td id="mWpe" class="">Speed</td><td id="Qj{}" class="">100 Mbps 100 Gbps</td><td id="&lt;c}d" class="">1 100 Gbps</td><td id="}yhu" class="">100 Mbps 100 Gbps</td><td id="B[A&lt;" class="">Varies widely</td></tr><tr id="348c03a8-3f04-8091-8bdc-ff33de8624a9" dir="ltr"><td id="mWpe" class="">Latency</td><td id="Qj{}" class="">&lt;1 ms</td><td id="&lt;c}d" class="">1 5 ms</td><td id="}yhu" class="">5 20 ms</td><td id="B[A&lt;" class="">20 500+ ms</td></tr><tr id="348c03a8-3f04-80cf-af8c-f766cc49ded4" dir="ltr"><td id="mWpe" class="">Owner</td><td id="Qj{}" class="">Organization</td><td id="&lt;c}d" class="">Organization</td><td id="}yhu" class="">ISP/Telecom</td><td id="B[A&lt;" class="">Multiple ISPs/Carriers</td></tr><tr id="348c03a8-3f04-8036-9407-d42964fa17f4" dir="ltr"><td id="mWpe" class="">Primary Tech</td><td id="Qj{}" class="">Ethernet, Wi Fi</td><td id="&lt;c}d" class="">Fiber Ethernet</td><td id="}yhu" class="">SONET/DWDM, Metro Ethernet</td><td id="B[A&lt;" class="">MPLS, Submarine Fiber, Satellite</td></tr><tr id="348c03a8-3f04-8059-9c97-edac5268ff33" dir="ltr"><td id="mWpe" class="">Cost</td><td id="Qj{}" class="">Low per port</td><td id="&lt;c}d" class="">Medium</td><td id="}yhu" class="">High</td><td id="B[A&lt;" class="">Highest (per Mbps)</td></tr><tr id="348c03a8-3f04-8018-a030-d06ac32ceb6e" dir="ltr"><td id="mWpe" class="">Redundancy</td><td id="Qj{}" class="">Optional</td><td id="&lt;c}d" class="">Common</td><td id="}yhu" class="">Standard</td><td id="B[A&lt;" class="">Multiple layers</td></tr><tr id="348c03a8-3f04-805b-b04c-fa30453c88d2" dir="ltr"><td id="mWpe" class="">Security Control</td><td id="Qj{}" class="">Full</td><td id="&lt;c}d" class="">Full</td><td id="}yhu" class="">Limited (carrier managed)</td><td id="B[A&lt;" class="">Minimal (public internet)</td></tr></tbody></table><figure id="34ac03a8-3f04-80c3-9c99-fde1ca20df05" class="image" data-notion-image="image%2028.png" dir="ltr"><a href="image%2028.png"><img style="width:709.97998046875px" src="image%2028.png"/></a></figure><hr id="348c03a8-3f04-80b8-bdc0-e0cb634834b4" dir="auto"/><h2 id="348c03a8-3f04-80c1-8b72-c639274e51a4" class="" dir="auto"><strong>Internet, Intranet, and Extranet</strong></h2><p id="348c03a8-3f04-8012-96a4-ceb107bd2df6" class="" dir="auto">These three terms are often confused. They all describe networks, but with very different levels of access and purpose.</p><h3 id="348c03a8-3f04-80e0-9216-c3f87787a34d" class="" dir="auto"><strong>Internet</strong></h3><p id="348c03a8-3f04-8050-9438-c9f113f8999b" class="" dir="auto">The <strong>global public network</strong> that connects billions of devices worldwide. Anyone in the world can access public websites and services. Uses IP protocols. You are using the Internet right now to view this page.</p><p id="348c03a8-3f04-801e-ba69-e1b999a80320" class="" dir="auto">The internet is not owned by any individual or group. The internet is a worldwide collection of interconnected networks (internetwork or internet for short), cooperating with each other to exchange information using common standards. Through telephone wires, fiber optic cables, wireless transmissions, and satellite links, internet users can exchange information in a variety of forms.</p><figure id="34ac03a8-3f04-8070-b81f-c433d4578e85" class="image" data-notion-image="image%2029.png" dir="ltr"><a href="image%2029.png"><img style="width:710px" src="image%2029.png"/></a></figure><h3 id="348c03a8-3f04-8077-979a-e298cdbf490d" class="" dir="auto"><strong>Intranet</strong></h3><p id="348c03a8-3f04-8008-8307-e41d31c79f64" class="" dir="auto">A <strong>private, internal network</strong> used within an organization. Uses the same web technologies (HTTP, HTML) as the Internet but is only accessible to employees.</p><table id="348c03a8-3f04-80c9-8e6b-ead6510beeaf" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80a1-94ca-f3d86370be62" dir="ltr"><th id="T]?Y" class="simple-table-header-color simple-table-header"><strong>Feature</strong></th><th id="@KHg" class="simple-table-header-color simple-table-header" style="width:531px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8059-9153-da1abf4319ef" dir="ltr"><td id="T]?Y" class="">Ownership</td><td id="@KHg" class="" style="width:531px">Owned and controlled by a single organization</td></tr><tr id="348c03a8-3f04-800a-b151-fb8afdbf7cbf" dir="ltr"><td id="T]?Y" class="">Access</td><td id="@KHg" class="" style="width:531px">Restricted using login credentials</td></tr><tr id="348c03a8-3f04-80d8-be05-da10a3d8ac7e" dir="ltr"><td id="T]?Y" class="">Purpose</td><td id="@KHg" class="" style="width:531px">Internal communication and collaboration</td></tr><tr id="348c03a8-3f04-8010-8c4c-fd61d52d1bd5" dir="ltr"><td id="T]?Y" class="">Uses</td><td id="@KHg" class="" style="width:531px">Employee portals, internal emails and messaging, sharing company policies and documents, internal applications (HR, payroll, project management)</td></tr><tr id="348c03a8-3f04-80c2-af09-ef6f4772076b" dir="ltr"><td id="T]?Y" class="">Examples</td><td id="@KHg" class="" style="width:531px">Corporate internal website, university campus portal, government department internal systems</td></tr></tbody></table><figure id="34ac03a8-3f04-800b-99be-d8bef979e22f" class="image" data-notion-image="image%2030.png" dir="ltr"><a href="image%2030.png"><img style="width:709.989990234375px" src="image%2030.png"/></a></figure><h3 id="348c03a8-3f04-80da-8f3d-fdc085b25e66" class="" dir="auto"><strong>Extranet</strong></h3><p id="348c03a8-3f04-80ee-85a6-fa5d0f52a57f" class="" dir="auto">An extension of the Intranet that is <strong>partially accessible to authorized outsiders</strong>. Like partners, suppliers, or customers. More restricted than Internet, less restricted than Intranet.</p><figure id="34ac03a8-3f04-80ab-951d-eecaf978146f" class="image" data-notion-image="image%2031.png" dir="ltr"><a href="image%2031.png"><img style="width:709.989990234375px" src="image%2031.png"/></a></figure><table id="348c03a8-3f04-80ed-b8b3-cdac57c2df34" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-8002-9e09-e19698813ef9" dir="ltr"><th id="JGya" class="simple-table-header-color simple-table-header"><strong>Feature</strong></th><th id="&lt;}v=" class="simple-table-header-color simple-table-header" style="width:498px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80de-884b-df62a0b8bcb7" dir="ltr"><td id="JGya" class="">Access</td><td id="&lt;}v=" class="" style="width:498px">Provided to partners, vendors, suppliers, or customers</td></tr><tr id="348c03a8-3f04-80b5-a412-dbfeb9b5ed40" dir="ltr"><td id="JGya" class="">Security</td><td id="&lt;}v=" class="" style="width:498px">Requires authentication and authorization</td></tr><tr id="348c03a8-3f04-80a6-ba2d-ced83dd295cc" dir="ltr"><td id="JGya" class="">Implementation</td><td id="&lt;}v=" class="" style="width:498px">Often implemented using VPN or secure web access</td></tr><tr id="348c03a8-3f04-80d8-af70-e98a356dc4ca" dir="ltr"><td id="JGya" class="">Uses</td><td id="&lt;}v=" class="" style="width:498px">Business to business (B2B) communication, supply chain management, customer portals, partner collaboration platforms</td></tr><tr id="348c03a8-3f04-80ed-8860-e9854952e969" dir="ltr"><td id="JGya" class="">Examples</td><td id="&lt;}v=" class="" style="width:498px">Supplier management system, online banking portals, vendor access portals</td></tr></tbody></table><table id="348c03a8-3f04-8079-97ea-c5b9c691b422" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-802c-bef6-c1d87826822c" dir="ltr"><th id="S\Oc" class="simple-table-header-color simple-table-header"><strong>Feature</strong></th><th id="vl|d" class="simple-table-header-color simple-table-header"><strong>Internet</strong></th><th id="nAIt" class="simple-table-header-color simple-table-header"><strong>Intranet</strong></th><th id="~x@m" class="simple-table-header-color simple-table-header"><strong>Extranet</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80bf-94c9-d3b3701ec40f" dir="ltr"><td id="S\Oc" class="">Access</td><td id="vl|d" class="">Anyone worldwide</td><td id="nAIt" class="">Internal employees only</td><td id="~x@m" class="">Authorized external users</td></tr><tr id="348c03a8-3f04-80de-abc3-f764d4c9b0a3" dir="ltr"><td id="S\Oc" class="">Security</td><td id="vl|d" class="">Public (less secure)</td><td id="nAIt" class="">High (private)</td><td id="~x@m" class="">Medium (controlled access)</td></tr><tr id="348c03a8-3f04-806a-bd4e-dabc6728bac9" dir="ltr"><td id="S\Oc" class="">Authentication</td><td id="vl|d" class="">Usually not required</td><td id="nAIt" class="">Login required</td><td id="~x@m" class="">Login + VPN or certificates</td></tr><tr id="348c03a8-3f04-80de-bab9-e6566b75a316" dir="ltr"><td id="S\Oc" class="">Example Use</td><td id="vl|d" class="">Browsing websites</td><td id="nAIt" class="">Company HR portal</td><td id="~x@m" class="">Supplier portal, partner access</td></tr></tbody></table><h2 id="34fc03a8-3f04-8014-82e3-f397a09da18d" class="" dir="auto">Final Comparison: Internet vs Intranet vs Extranet</h2><h4 id="348c03a8-3f04-805f-8387-fba7cde7820f" class="" dir="auto"><strong>Analogy:</strong></h4><p id="348c03a8-3f04-8027-9ed5-fafab0c3bcc4" class="" dir="auto">Think of a large hospital. The <strong>Internet</strong> is the public parking lot. Anyone can enter. The <strong>Intranet</strong> is the staff area. Only hospital employees with ID badges can enter. The <strong>Extranet</strong> is the special access area for approved vendors and insurance companies. Outsiders, but with special permission.</p><figure id="34ac03a8-3f04-8035-aa49-e395acd89882" class="image" data-notion-image="image%2032.png" dir="ltr"><a href="image%2032.png"><img style="width:709.989990234375px" src="image%2032.png"/></a></figure><hr id="348c03a8-3f04-805f-9787-c8245e12703c" dir="auto"/><h2 id="348c03a8-3f04-807f-9d10-e0d07dc1b25f" class="" dir="auto"><strong>Network Topologies</strong></h2><p id="348c03a8-3f04-80d3-9533-e0437c4f23e1" class="" dir="auto">A <strong>network topology</strong> describes the physical or logical arrangement of devices and connections in a network. Topology means arrangement of nodes of a computer network so that communication can be established among all nodes. The topology you choose affects performance, cost, and fault tolerance.</p><p id="348c03a8-3f04-802f-aaac-e9512fcf6a9f" class="" dir="auto">Topology can be viewed as:</p><ul id="348c03a8-3f04-80ae-9bae-fbb31f67a839" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Physical topology:</strong> Where devices are placed physically</li></ul><ul id="348c03a8-3f04-80dc-8c40-f39c3c6dc453" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Logical topology:</strong> How data flows from one node to another</li></ul><h2 id="348c03a8-3f04-80cd-84ea-e70763ac834a" class="" dir="auto"><strong>Bus Topology</strong></h2><p id="348c03a8-3f04-806c-87f7-c4c551e5ea07" class="" dir="auto">All devices are connected to a <strong>single central cable</strong> called the &quot;bus&quot; or &quot;backbone.&quot; Data travels along this cable and every device receives it. But only the intended recipient accepts it.</p><figure id="34ac03a8-3f04-805c-9e58-c92fc3c99f0a" class="image" data-notion-image="image%2033.png" dir="ltr"><a href="image%2033.png"><img style="width:709.989990234375px" src="image%2033.png"/></a></figure><table id="348c03a8-3f04-8073-99ee-c524ad8ea7b4" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-8032-b634-d048e9a41f93" dir="ltr"><th id="}Byl" class="simple-table-header-color simple-table-header"><strong>Aspect</strong></th><th id="A~vL" class="simple-table-header-color simple-table-header" style="width:598px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80ca-affc-cfaa000c4b14" dir="ltr"><td id="}Byl" class="">Data Flow</td><td id="A~vL" class="" style="width:598px">Bidirectional (data can flow in both directions on the bus)</td></tr><tr id="348c03a8-3f04-806c-9953-df0f9533fcd8" dir="ltr"><td id="}Byl" class="">Advantages</td><td id="A~vL" class="" style="width:598px">Simple to set up, low cost, requires less cable, easy to connect or remove devices without affecting others</td></tr><tr id="348c03a8-3f04-80e4-9d63-d9320b05c9d3" dir="ltr"><td id="}Byl" class="">Disadvantages</td><td id="A~vL" class="" style="width:598px">If the main cable breaks, the entire network fails. Difficult to troubleshoot. Performance degrades with more devices. Not fault tolerant. Cable length limited. No security (everyone receives a copy of the signal)</td></tr><tr id="348c03a8-3f04-80b9-bb59-e9c2c75a32ae" dir="ltr"><td id="}Byl" class="">Used in</td><td id="A~vL" class="" style="width:598px">Old Ethernet networks (coaxial cable), legacy systems</td></tr></tbody></table><h2 id="348c03a8-3f04-8035-8c0c-edeae90048c5" class="" dir="auto"><strong>Ring Topology</strong></h2><p id="348c03a8-3f04-80ad-b24f-c597e82fd586" class="" dir="auto">All devices are connected in a <strong>closed loop (ring)</strong>. Data travels in one direction (or both in dual ring) around the ring, passing through each device until it reaches the destination. A ring topology is a bus topology but in a closed loop.</p><figure id="34ac03a8-3f04-80c5-b86a-cefae7ff9de2" class="image" data-notion-image="image%2034.png" dir="ltr"><a href="image%2034.png"><img style="width:710px" src="image%2034.png"/></a></figure><table id="348c03a8-3f04-8027-9951-c1a41001bb11" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80bd-be7a-dfcff786fab4" dir="ltr"><th id="FZoi" class="simple-table-header-color simple-table-header"><strong>Aspect</strong></th><th id="=TBI" class="simple-table-header-color simple-table-header" style="width:553px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-8088-8916-d89ad4852d1f" dir="ltr"><td id="FZoi" class="">Data Flow</td><td id="=TBI" class="" style="width:553px">Unidirectional (data flows in one direction around the ring)</td></tr><tr id="348c03a8-3f04-80a2-930c-e76079e52f9c" dir="ltr"><td id="FZoi" class="">Communication Method</td><td id="=TBI" class="" style="width:553px">Uses a token. Whoever holds the token has the turn to send data. This is called Token Ring topology</td></tr><tr id="348c03a8-3f04-8082-a1a1-c8a82ef71ff0" dir="ltr"><td id="FZoi" class="">Advantages</td><td id="=TBI" class="" style="width:553px">Equal access for all devices, easy to install, handles heavy traffic better than bus, better performance than bus topology</td></tr><tr id="348c03a8-3f04-80d8-aba5-e4da6fa34e8e" dir="ltr"><td id="FZoi" class="">Disadvantages</td><td id="=TBI" class="" style="width:553px">If one device or cable fails, the entire ring can break. Adding/removing devices disrupts the network. Unidirectional communication is slower for nearby nodes. No security (data crosses many intermediary nodes)</td></tr><tr id="348c03a8-3f04-80e9-b37b-d99f0050e79d" dir="ltr"><td id="FZoi" class="">Used in</td><td id="=TBI" class="" style="width:553px">IBM Token Ring networks, SONET/SDH fiber backbone rings (dual ring for redundancy)</td></tr></tbody></table><h2 id="348c03a8-3f04-800e-a85e-d8a8a781c5d6" class="" dir="auto"><strong>Star Topology</strong></h2><p id="348c03a8-3f04-809e-bc70-f87862b978f0" class="" dir="auto">All devices connect to a <strong>central hub or switch</strong>. All data passes through the central device. This is the most widely used topology today.</p><figure id="34ac03a8-3f04-808a-9f85-d7b7d0c70bde" class="image" data-notion-image="image%2035.png" dir="ltr"><a href="image%2035.png"><img style="width:709.989990234375px" src="image%2035.png"/></a></figure><table id="348c03a8-3f04-809a-bdf8-ce147a2b7274" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80e0-89ed-dae52c72b04d" dir="ltr"><th id="lokg" class="simple-table-header-color simple-table-header"><strong>Aspect</strong></th><th id="a?G^" class="simple-table-header-color simple-table-header" style="width:577px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-802a-bdc6-f8831e41b7bc" dir="ltr"><td id="lokg" class="">Data Flow</td><td id="a?G^" class="" style="width:577px">All traffic must pass through the central hub or switch</td></tr><tr id="348c03a8-3f04-808c-be75-c3331fd6a8b8" dir="ltr"><td id="lokg" class="">Advantages</td><td id="a?G^" class="" style="width:577px">Easy to add/remove devices without disrupting others. One device failure does not affect the rest. Easy troubleshooting. Easy to design and implement. Centralized administration. Scalable network</td></tr><tr id="348c03a8-3f04-804f-923c-d83e0e5275c0" dir="ltr"><td id="lokg" class="">Disadvantages</td><td id="a?G^" class="" style="width:577px">If the central hub/switch fails, the ENTIRE network goes down. Requires more cable than bus topology. More expensive due to hub/switch cost. Bottlenecks possible due to overloaded hub/switch</td></tr><tr id="348c03a8-3f04-8053-942b-d05b8f44db5e" dir="ltr"><td id="lokg" class="">Used in</td><td id="a?G^" class="" style="width:577px">Almost all modern home and office Ethernet networks, Wi Fi (AP as center), school networks</td></tr></tbody></table><h4 id="348c03a8-3f04-803d-8748-ed8fa571923b" class="" dir="auto"><strong>Types of Star Topology:</strong></h4><ul id="348c03a8-3f04-8099-af6b-f42c78c7d0ba" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Active Star Topology:</strong> The central hub regenerates the signal when it passes through it. It works as a connector and also boosts the signal.</li></ul><ul id="348c03a8-3f04-80b7-b4f1-ecc358924fc0" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Passive Star Topology:</strong> The central hub simply connects the devices but does not regenerate signals. Recommended for smaller setups.</li></ul><h2 id="348c03a8-3f04-80e8-88d0-c03aa1ce30a1" class="" dir="auto"><strong>Mesh Topology</strong></h2><p id="348c03a8-3f04-80d2-9d72-cca3f0756877" class="" dir="auto">In a mesh topology, <strong>each device has a direct connection to multiple (or all) other devices</strong>. This provides maximum redundancy.</p><p id="348c03a8-3f04-80c0-8e53-fba9404e2a57" class="" dir="auto"><strong>Full Mesh:</strong></p><p id="348c03a8-3f04-8034-b024-dbf32d93add0" class="" dir="auto">Every device is connected to every other device. Provides <strong>maximum fault tolerance</strong>. If any path fails, data reroutes through another.</p><figure id="34ac03a8-3f04-807f-867e-fbad2c60ec12" class="image" data-notion-image="image%2036.png" dir="ltr"><a href="image%2036.png"><img style="width:710px" src="image%2036.png"/></a></figure><p id="348c03a8-3f04-802a-a5b2-cf911b44d17d" class="" dir="auto"><strong>Formula for number of connections:</strong> n(n 1)/2 where n = number of devices.</p><table id="348c03a8-3f04-80a7-82fe-cba7df3b99bd" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-80dc-9025-f60121333960" dir="ltr"><th id="fWiQ" class="simple-table-header-color simple-table-header"><strong>Aspect</strong></th><th id="\Zds" class="simple-table-header-color simple-table-header" style="width:466px"><strong>Description</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80d5-a89a-dbaab8d9efa6" dir="ltr"><td id="fWiQ" class="">Advantages</td><td id="\Zds" class="" style="width:466px">Highest fault tolerance, no single point of failure, multiple paths for data, very reliable</td></tr><tr id="348c03a8-3f04-8028-9219-e98a9045a98f" dir="ltr"><td id="fWiQ" class="">Disadvantages</td><td id="\Zds" class="" style="width:466px">Very expensive (lots of cables/ports), complex to manage and configure, impractical for large networks (1000+ computers), broadcasting issues</td></tr><tr id="348c03a8-3f04-80df-be0b-f70a92672905" dir="ltr"><td id="fWiQ" class="">Used in</td><td id="\Zds" class="" style="width:466px">Internet backbone routers, military networks, critical infrastructure</td></tr></tbody></table><p id="348c03a8-3f04-80d5-b6ab-d71164e11cdb" class="" dir="auto"><strong>Partial Mesh:</strong></p><p id="348c03a8-3f04-80a8-b144-c238a28549c1" class="" dir="auto">Only <strong>some devices</strong> have multiple connections. Critical devices (core routers) have many connections; less important ones have fewer. Balances cost and redundancy. Used in most real world networks like the Internet&#x27;s backbone.</p><h2 id="348c03a8-3f04-80bf-b3cf-f1cac1382bff" class="" dir="auto"><strong>Hybrid Topology</strong></h2><p id="348c03a8-3f04-800d-95cf-ee241edd9fb3" class="" dir="auto">A <strong>combination of two or more topologies</strong> in a single network. This is the most common type used in large real world networks because it balances cost, performance, and fault tolerance.</p><ul id="348c03a8-3f04-804c-a3b9-dbba7cc8c8f6" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Example: A large company might have <strong>Star topology in each department</strong> (connecting PCs to a switch), with those switches connected in a <strong>Ring or Mesh topology</strong> at the core</li></ul><ul id="348c03a8-3f04-805c-b2d6-e422f472cfb6" class="bulleted-list" dir="auto"><li style="list-style-type:disc">The Internet itself is a massive hybrid topology</li></ul><ul id="348c03a8-3f04-80cd-80dd-c7d95e49f571" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Provides the benefits of each individual topology while reducing their weaknesses</li></ul><figure id="34ac03a8-3f04-8061-a00c-fb4745240a82" class="image" data-notion-image="image%2037.png" dir="ltr"><a href="image%2037.png"><img style="width:709.989990234375px" src="image%2037.png"/></a></figure><h3 id="34fc03a8-3f04-8006-a4ba-e52a242feba0" class="" dir="auto">Final Comparison: Bus  vs Ring vs Star  vs Mesh vs Hybrid</h3><table id="348c03a8-3f04-80da-a431-f606be6b743b" class="simple-table" dir="ltr"><thead class="simple-table-header"><tr id="348c03a8-3f04-8082-a62e-fb88445e9af0" dir="ltr"><th id="EIz}" class="simple-table-header-color simple-table-header"><strong>Topology</strong></th><th id="D&lt;U~" class="simple-table-header-color simple-table-header"><strong>Fault Tolerance</strong></th><th id="Te~e" class="simple-table-header-color simple-table-header"><strong>Cost</strong></th><th id="lRjP" class="simple-table-header-color simple-table-header"><strong>Difficulty</strong></th><th id="gzRY" class="simple-table-header-color simple-table-header"><strong>Used In</strong></th></tr></thead><tbody><tr id="348c03a8-3f04-80c8-8892-fd0e00cdeb1b" dir="ltr"><td id="EIz}" class="">Bus</td><td id="D&lt;U~" class="">Low</td><td id="Te~e" class="">Low</td><td id="lRjP" class="">Easy</td><td id="gzRY" class="">Legacy systems</td></tr><tr id="348c03a8-3f04-8049-a09f-cb89e24ad835" dir="ltr"><td id="EIz}" class="">Ring</td><td id="D&lt;U~" class="">Medium</td><td id="Te~e" class="">Medium</td><td id="lRjP" class="">Medium</td><td id="gzRY" class="">Token Ring, SONET</td></tr><tr id="348c03a8-3f04-8008-9ddb-d2d9962cdccb" dir="ltr"><td id="EIz}" class="">Star</td><td id="D&lt;U~" class="">Medium</td><td id="Te~e" class="">Medium</td><td id="lRjP" class="">Easy</td><td id="gzRY" class="">Home/Office LAN</td></tr><tr id="348c03a8-3f04-8053-9c29-d15ca3dffd08" dir="ltr"><td id="EIz}" class="">Full Mesh</td><td id="D&lt;U~" class="">Very High</td><td id="Te~e" class="">Very High</td><td id="lRjP" class="">Complex</td><td id="gzRY" class="">Internet Backbone, Military</td></tr><tr id="348c03a8-3f04-809e-92e3-ce3718b54804" dir="ltr"><td id="EIz}" class="">Partial Mesh</td><td id="D&lt;U~" class="">High</td><td id="Te~e" class="">High</td><td id="lRjP" class="">Complex</td><td id="gzRY" class="">WAN, Enterprise core</td></tr><tr id="348c03a8-3f04-802b-8ae1-e39a0eed0cc6" dir="ltr"><td id="EIz}" class="">Hybrid</td><td id="D&lt;U~" class="">High</td><td id="Te~e" class="">Varies</td><td id="lRjP" class="">Complex</td><td id="gzRY" class="">Enterprise, Campus</td></tr></tbody></table><figure id="34ac03a8-3f04-8063-b14a-ee855cbc4a63" class="image" data-notion-image="image%2038.png" dir="ltr"><a href="image%2038.png"><img style="width:709.989990234375px" src="image%2038.png"/></a></figure><p id="34ac03a8-3f04-8059-b8e1-c30b1d081ecd" class="" dir="auto">
+</p><p id="34ac03a8-3f04-804b-86e2-f3f5ec6b60b5" class="" dir="auto">
+</p><h2 id="34ac03a8-3f04-80d1-8249-f43e5105a2ee" class="" dir="auto"><strong>Key Points: Quick Revision</strong></h2><ul id="34ac03a8-3f04-8002-ab33-c0325e1ec004" class="bulleted-list" dir="auto"><li style="list-style-type:disc">A computer network is two or more devices (nodes) connected by communication links (wired/wireless) to share data and resources.</li></ul><ul id="34ac03a8-3f04-80b4-9135-dd3070964518" class="bulleted-list" dir="auto"><li style="list-style-type:disc">The four key network characteristics are: <strong>Fault Tolerance, Scalability, QoS, and Security (CIA Triad)</strong>.</li></ul><ul id="34ac03a8-3f04-8056-894d-e23be0e92c38" class="bulleted-list" dir="auto"><li style="list-style-type:disc">The CIA Triad stands for <strong>Confidentiality, Integrity, and Availability</strong>. The three pillars of cybersecurity.</li></ul><ul id="34ac03a8-3f04-80f5-b973-d70958a014ae" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Data is measured in bits and bytes: 1 Byte = 8 bits. The order is Bit → Byte → KB → MB → GB → TB.</li></ul><ul id="34ac03a8-3f04-8070-8e64-e63c0b59cf8c" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Bandwidth</strong> = maximum capacity. <strong>Throughput</strong> = actual speed achieved. <strong>Latency</strong> = delay (measured in ms).</li></ul><ul id="34ac03a8-3f04-8098-9a85-dbd669453ace" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Data flow modes: <strong>Simplex</strong> (one-way only), <strong>Half-Duplex</strong> (both ways, one at a time), <strong>Full-Duplex</strong> (both ways simultaneously).</li></ul><ul id="34ac03a8-3f04-8075-a9f8-e508b6ea495c" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Communication types: <strong>Unicast</strong> (1→1), <strong>Multicast</strong> (1→group), <strong>Broadcast</strong> (1→all).</li></ul><ul id="34ac03a8-3f04-80f1-a660-d4c678259f2d" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Network architectures: <strong>Client-Server</strong> (centralized, servers provide services) and <strong>P2P</strong> (decentralized, peers share directly).</li></ul><ul id="34ac03a8-3f04-80dd-8e97-cb314634c950" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Network sizes: PAN (less than 10m) → LAN (building) → CAN (campus) → MAN (city) → WAN (global).</li></ul><ul id="34ac03a8-3f04-80f0-8a92-d694869cf341" class="bulleted-list" dir="auto"><li style="list-style-type:disc">Internet = public global network. Intranet = private organization network. Extranet = controlled access to internal resources for outsiders.</li></ul><ul id="34ac03a8-3f04-806b-8b53-fd71ab6948ff" class="bulleted-list" dir="auto"><li style="list-style-type:disc"><strong>Star topology</strong> is the most common in modern networks. <strong>Mesh topology</strong> provides the highest fault tolerance. <strong>Hybrid</strong> is used in large enterprises.</li></ul><figure id="34ac03a8-3f04-808d-8df4-c7238f993060" class="image" data-notion-image="image%2039.png" dir="ltr"><a href="image%2039.png"><img style="width:710px" src="image%2039.png"/></a></figure><h2 id="34ac03a8-3f04-809e-8dac-c5246b19c9e7" class="" dir="auto"><strong>Module Quiz</strong></h2><p id="34ac03a8-3f04-806c-9165-d32159008ce4" class="" dir="auto">Test your knowledge with these questions.</p><h3 id="34ac03a8-3f04-8020-b7ae-dca53c206ffd" class="" dir="auto"><strong>Question 1</strong></h3><p id="34ac03a8-3f04-807a-bc14-c0b084fbb90c" class="" dir="auto">Which of the following best defines a Computer Network?</p><p id="34ac03a8-3f04-803b-ba5a-c491cfe9a502" class="" dir="auto">A) A single computer connected to the internet</p><p id="34ac03a8-3f04-8084-95a2-c5f2f479b718" class="" dir="auto">B) Two or more nodes connected by communication links to share data and resources</p><p id="34ac03a8-3f04-80db-ac26-f1f23644ecf3" class="" dir="auto">C) A software application for communication</p><p id="34ac03a8-3f04-80ac-8dcc-ea49154220b6" class="" dir="auto">D) A type of operating system</p><h3 id="34ac03a8-3f04-8075-b7ca-cb328dc04825" class="" dir="auto"><strong>Question 2</strong></h3><p id="34ac03a8-3f04-80a2-b5a0-c2f329e601a5" class="" dir="auto">What does the &quot;I&quot; in the CIA Triad stand for?</p><p id="34ac03a8-3f04-80da-a29d-f70639acb499" class="" dir="auto">A) Internet</p><p id="34ac03a8-3f04-8052-9ec8-e8620bb15dfb" class="" dir="auto">B) Interface</p><p id="34ac03a8-3f04-80bf-ab3f-f075f15e354a" class="" dir="auto">C) Integrity</p><p id="34ac03a8-3f04-80e3-9a27-dde14f7a9452" class="" dir="auto">D) Information</p><h3 id="34ac03a8-3f04-8007-8c2c-cccb7dfc1856" class="" dir="auto"><strong>Question 3</strong></h3><p id="34ac03a8-3f04-808b-80cf-f0cad6269aa9" class="" dir="auto">In which data flow mode can BOTH devices send and receive data at the SAME time?</p><p id="34ac03a8-3f04-8074-b3c0-f7b380503b40" class="" dir="auto">A) Simplex</p><p id="34ac03a8-3f04-80b5-b1fe-dbd791c089b0" class="" dir="auto">B) Half Duplex</p><p id="34ac03a8-3f04-80c2-8091-ce6c10d85e94" class="" dir="auto">C) Full-Duplex</p><p id="34ac03a8-3f04-8020-9c1c-de8818bc9a96" class="" dir="auto">D) Uni-Duplex</p><h3 id="34ac03a8-3f04-8026-94d6-e35e89dbf150" class="" dir="auto"><strong>Question 4</strong></h3><p id="34ac03a8-3f04-8032-9c0d-fbd65ce9fc85" class="" dir="auto">A network that spans an entire city and is often operated by a telecom provider is called a:</p><p id="34ac03a8-3f04-805c-8895-d134b126d285" class="" dir="auto">A) LAN</p><p id="34ac03a8-3f04-809c-88ee-e7bdb6fd3aa8" class="" dir="auto">B) PAN</p><p id="34ac03a8-3f04-802b-9841-f4debe5209a7" class="" dir="auto">C) MAN</p><p id="34ac03a8-3f04-804e-a1cb-d59d4450985d" class="" dir="auto">D) CAN</p><h3 id="34ac03a8-3f04-80c5-9185-e9d1eb086142" class="" dir="auto"><strong>Question 5</strong></h3><p id="34ac03a8-3f04-80e7-93fe-dc712efd93c1" class="" dir="auto">Which network topology has ALL devices connected to a single central switch or hub?</p><p id="34ac03a8-3f04-80f3-a137-e496a208612b" class="" dir="auto">A) Bus</p><p id="34ac03a8-3f04-8098-b2fd-c1d6f9ae6cdd" class="" dir="auto">B) Ring</p><p id="34ac03a8-3f04-801e-b15c-c83f7064ff32" class="" dir="auto">C) Star</p><p id="34ac03a8-3f04-8021-bb49-f5bfe77e36b7" class="" dir="auto">D) Mesh</p><h3 id="34ac03a8-3f04-8040-a406-cfade3b1ff28" class="" dir="auto"><strong>Question 6</strong></h3><p id="34ac03a8-3f04-8016-81df-f1a78abf8d65" class="" dir="auto">Which type of communication sends data to a SPECIFIC GROUP of subscribed devices?</p><p id="34ac03a8-3f04-8077-8c0e-d2a237107f86" class="" dir="auto">A) Unicast</p><p id="34ac03a8-3f04-8007-9c9c-c42ad5b6d5d1" class="" dir="auto">B) Multicast</p><p id="34ac03a8-3f04-8054-9388-ee5edef74193" class="" dir="auto">C) Broadcast</p><p id="34ac03a8-3f04-8055-9428-ce9b5e239ee1" class="" dir="auto">D) Anycast</p><h3 id="34ac03a8-3f04-80a4-ba10-d3701b693d6e" class="" dir="auto"><strong>Question 7</strong></h3><p id="34ac03a8-3f04-80bc-b449-fe38c4c18da1" class="" dir="auto">What is the difference between Bandwidth and Throughput?</p><p id="34ac03a8-3f04-806c-940f-ce1f68ebbea3" class="" dir="auto">A) Bandwidth is actual speed, Throughput is theoretical maximum</p><p id="34ac03a8-3f04-8080-b1a2-d17ca555a4c5" class="" dir="auto">B) Bandwidth is theoretical maximum, Throughput is actual speed achieved</p><p id="34ac03a8-3f04-80e5-93f0-ddf0235a2bc7" class="" dir="auto">C) They are the same thing</p><p id="34ac03a8-3f04-8011-9b03-e4e7a997faa6" class="" dir="auto">D) Bandwidth is measured in ms, Throughput in Mbps</p><h3 id="34ac03a8-3f04-8069-b0fc-c5801b339cbe" class="" dir="auto"><strong>Question 8</strong></h3><p id="34ac03a8-3f04-80be-a6ed-d94f387cf414" class="" dir="auto">An Extranet is best described as:</p><p id="34ac03a8-3f04-80c3-92aa-c9464ff08d5b" class="" dir="auto">A) The global public network</p><p id="34ac03a8-3f04-80e4-b23b-ecd06de2da5f" class="" dir="auto">B) A private internal network used within an organization</p><p id="34ac03a8-3f04-803c-8d77-ce6cce47e161" class="" dir="auto">C) An extension of Intranet partially accessible to authorized outsiders</p><p id="34ac03a8-3f04-80d9-aaf0-ca4248dbe3d3" class="" dir="auto">D) A personal area network</p><h3 id="34ac03a8-3f04-8098-99bf-cfc9df32483e" class="" dir="auto"><strong>Question 9</strong></h3><p id="34ac03a8-3f04-8006-89be-e3174dccfbdb" class="" dir="auto">In a Peer-to-Peer (P2P) network, which of the following is TRUE?</p><p id="34ac03a8-3f04-8057-8751-d46280031cba" class="" dir="auto">A) There is a centralized server managing all resources</p><p id="34ac03a8-3f04-8023-863f-cea4b7b5e027" class="" dir="auto">B) Each device acts as both a client and a server</p><p id="34ac03a8-3f04-80d0-85a0-c7ffac39471a" class="" dir="auto">C) It is more secure than Client-Server</p><p id="34ac03a8-3f04-80db-a8ea-db89f3cebd82" class="" dir="auto">D) It is highly scalable for large enterprises</p><h3 id="34ac03a8-3f04-80a5-985a-c1094da414ec" class="" dir="auto"><strong>Question 10</strong></h3><p id="34ac03a8-3f04-8051-9f14-d31f848f7a69" class="" dir="auto">Which network topology provides the HIGHEST fault tolerance because every device has a direct connection to every other device?</p><p id="34ac03a8-3f04-80b2-8089-f59d314dba99" class="" dir="auto">A) Bus</p><p id="34ac03a8-3f04-80ed-836a-c909e8a59cc3" class="" dir="auto">B) Ring</p><p id="34ac03a8-3f04-80db-859a-e7efb5402f86" class="" dir="auto">C) Star</p><p id="34ac03a8-3f04-8049-b76d-f50eec007c98" class="" dir="auto">D) Full Mesh</p><p id="34ac03a8-3f04-8018-92eb-f26110bdc7ee" class="" dir="auto"><strong>Question 11</strong></p><p id="34ac03a8-3f04-80d8-8deb-c80159c0bcf1" class="" dir="auto">Which of the following is NOT a node in a computer network?</p><p id="34ac03a8-3f04-8092-8257-cd90964d7a13" class="" dir="auto">A) Router</p><p id="34ac03a8-3f04-80ea-8a79-d789fec77488" class="" dir="auto">B) Printer</p><p id="34ac03a8-3f04-804a-8360-d24562607746" class="" dir="auto">C) Monitor (non-touch, traditional)</p><p id="34ac03a8-3f04-8083-94ad-e3e787447b22" class="" dir="auto">D) Switch</p><hr id="34ac03a8-3f04-806b-a57f-dee1ccf61196" dir="auto"/><p id="34ac03a8-3f04-80cf-b4f9-e52e60357876" class="" dir="auto"><strong>Question 12</strong></p><p id="34ac03a8-3f04-80be-9b45-cf0b1563c849" class="" dir="auto">What is the primary purpose of Quality of Service (QoS) in a network?</p><p id="34ac03a8-3f04-802a-9c45-c37d0600e9c2" class="" dir="auto">A) To increase bandwidth for all traffic equally</p><p id="34ac03a8-3f04-802b-b760-e6acd75711b3" class="" dir="auto">B) To prioritize certain types of traffic to ensure smooth performance for critical applications</p><p id="34ac03a8-3f04-807c-9f8f-e18921c3f4f0" class="" dir="auto">C) To encrypt all data traveling across the network</p><p id="34ac03a8-3f04-80c0-b042-e4bfb78d91db" class="" dir="auto">D) To create redundant paths for fault tolerance</p><hr id="34ac03a8-3f04-805d-be3f-ec594a15bee3" dir="auto"/><p id="34ac03a8-3f04-803b-9faf-cfff83dd45ca" class="" dir="auto"><strong>Question 13</strong></p><p id="34ac03a8-3f04-801a-8601-e6d6d913a149" class="" dir="auto">Which of the following correctly orders the data size units from smallest to largest?</p><p id="34ac03a8-3f04-80bb-b883-dfdd4ea149ea" class="" dir="auto">A) Byte → Bit → Megabyte → Gigabyte → Kilobyte → Terabyte</p><p id="34ac03a8-3f04-80e6-8738-ef907ca9d546" class="" dir="auto">B) Bit → Byte → Kilobyte → Megabyte → Gigabyte → Terabyte</p><p id="34ac03a8-3f04-809e-928b-e185f0ebe5d3" class="" dir="auto">C) Bit → Kilobyte → Byte → Megabyte → Terabyte → Gigabyte</p><p id="34ac03a8-3f04-8050-805c-fea06f214f23" class="" dir="auto">D) Byte → Kilobyte → Bit → Gigabyte → Megabyte → Terabyte</p><hr id="34ac03a8-3f04-80b0-a95d-ce6e8bbf716f" dir="auto"/><p id="34ac03a8-3f04-804c-94e8-ee111d2c5d04" class="" dir="auto"><strong>Question 14</strong></p><p id="34ac03a8-3f04-80e5-82c7-f1ab51e71c8d" class="" dir="auto">A signal that is continuous and varies smoothly over time is called:</p><p id="34ac03a8-3f04-80f7-9c5a-c9dfa418f3a5" class="" dir="auto">A) Digital signal</p><p id="34ac03a8-3f04-8004-bcb9-c3b0127a9beb" class="" dir="auto">B) Binary signal</p><p id="34ac03a8-3f04-8093-8670-d2c32a75e484" class="" dir="auto">C) Analog signal</p><p id="34ac03a8-3f04-80f1-bc04-fbfc2f943c3d" class="" dir="auto">D) Discrete signal</p><hr id="34ac03a8-3f04-80ca-95a2-ec17677e05e4" dir="auto"/><p id="34ac03a8-3f04-8013-aa0c-c5e57bc232a1" class="" dir="auto"><strong>Question 15</strong></p><p id="34ac03a8-3f04-8000-8da9-dbd568b56ad4" class="" dir="auto">Which transmission method uses pulses of light through glass or plastic fibers and is immune to electromagnetic interference?</p><p id="34ac03a8-3f04-8010-ac39-cde531338328" class="" dir="auto">A) Copper cable (Electrical)</p><p id="34ac03a8-3f04-8065-a66a-ca9be4f7f547" class="" dir="auto">B) Fiber optic</p><p id="34ac03a8-3f04-80fc-b33a-e27870834505" class="" dir="auto">C) Wireless (Radio waves)</p><p id="34ac03a8-3f04-806c-9c8e-c855a3e3871f" class="" dir="auto">D) Coaxial cable</p><hr id="34ac03a8-3f04-8094-a723-d7d520904d02" dir="auto"/><p id="34ac03a8-3f04-80e8-9694-ee6968994e73" class="" dir="auto"><strong>Question 16</strong></p><p id="34ac03a8-3f04-8081-9a32-fb458a93f5e1" class="" dir="auto">The time it takes for a data packet to travel from source to destination is called:</p><p id="34ac03a8-3f04-80b9-93a6-c14afd9da203" class="" dir="auto">A) Bandwidth</p><p id="34ac03a8-3f04-8080-9d05-cad1e1842f94" class="" dir="auto">B) Throughput</p><p id="34ac03a8-3f04-80f0-b562-e45d771cd8a0" class="" dir="auto">C) Latency</p><p id="34ac03a8-3f04-80fc-a302-f48410e19f33" class="" dir="auto">D) Jitter</p><hr id="34ac03a8-3f04-80c5-83a7-d0f9d99d56b5" dir="auto"/><p id="34ac03a8-3f04-800a-968f-c4539d1ec3ba" class="" dir="auto"><strong>Question 17</strong></p><p id="34ac03a8-3f04-8040-a8bb-d1e20ac14913" class="" dir="auto">In the Client-Server model, which statement is TRUE?</p><p id="34ac03a8-3f04-805a-b54c-cb063cc7a582" class="" dir="auto">A) Clients provide services to servers</p><p id="34ac03a8-3f04-8097-abcc-c9e82ef8211d" class="" dir="auto">B) All devices act as both clients and servers simultaneously</p><p id="34ac03a8-3f04-808c-a857-fa5bc03e7de4" class="" dir="auto">C) Servers provide services and clients request those services</p><p id="34ac03a8-3f04-806a-9701-c209bcd23bf5" class="" dir="auto">D) There is no centralized management</p><hr id="34ac03a8-3f04-808e-8ffa-f86378bdb7c7" dir="auto"/><p id="34ac03a8-3f04-8053-8666-c359afccb27b" class="" dir="auto"><strong>Question 18</strong></p><p id="34ac03a8-3f04-809a-b1c2-f39a113a37ea" class="" dir="auto">Which network type is the smallest in terms of geographical area?</p><p id="34ac03a8-3f04-80a2-a830-f708f93307a0" class="" dir="auto">A) LAN</p><p id="34ac03a8-3f04-80c0-afe3-d5fbaec14778" class="" dir="auto">B) PAN</p><p id="34ac03a8-3f04-80fa-ad59-d6dc07e270f2" class="" dir="auto">C) CAN</p><p id="34ac03a8-3f04-805e-9c72-f862ba85f44a" class="" dir="auto">D) MAN</p><hr id="34ac03a8-3f04-805d-9115-c531ba79e3fb" dir="auto"/><p id="34ac03a8-3f04-80fe-a00f-cbf691ea23fc" class="" dir="auto"><strong>Question 19</strong></p><p id="34ac03a8-3f04-801e-8a5b-d8521f2be7c9" class="" dir="auto">The CIA Triad consists of which three principles?</p><p id="34ac03a8-3f04-801c-8cc5-d8e61310b36f" class="" dir="auto">A) Confidentiality, Integrity, Availability</p><p id="34ac03a8-3f04-8089-8664-d60c1c03aca3" class="" dir="auto">B) Control, Inspection, Authentication</p><p id="34ac03a8-3f04-809d-bb9f-c6207ca6eebd" class="" dir="auto">C) Cipher, Integrity, Authorization</p><p id="34ac03a8-3f04-8053-8245-fd5108dd7a14" class="" dir="auto">D) Confidentiality, Identification, Access</p><hr id="34ac03a8-3f04-808e-8c84-f293b91ca4dc" dir="auto"/><p id="34ac03a8-3f04-8004-bfb5-caede107604e" class="" dir="auto"><strong>Question 20</strong></p><p id="34ac03a8-3f04-80e3-ac72-ecf9e59960d4" class="" dir="auto">A network that is privately owned and operated within a single building or campus is typically a:</p><p id="34ac03a8-3f04-80c4-a5b9-f953294b4f8b" class="" dir="auto">A) WAN</p><p id="34ac03a8-3f04-8024-b3f7-d31157e10103" class="" dir="auto">B) MAN</p><p id="34ac03a8-3f04-8001-bafd-e4859f774171" class="" dir="auto">C) LAN</p><p id="34ac03a8-3f04-80c4-a0a9-fd0b8b1c68bb" class="" dir="auto">D) PAN</p><hr id="34ac03a8-3f04-80df-bdb2-f43e8925bd6a" dir="auto"/><p id="34ac03a8-3f04-8068-bf79-c98c6e263cf4" class="" dir="auto"><strong>Answers:</strong></p><p id="34ac03a8-3f04-803c-a2a5-d111a11d1f03" class="" dir="auto">1-B, 2-C, 3-C, 4-C, 5-C, 6-B, 7-B, 8-C, 9-B, 10-D</p><p id="34ac03a8-3f04-8076-9480-f3f60ca817b3" class="" dir="auto">11-C, 12-B, 13-B, 14-C, 15-B, 16-C, 17-C, 18-B, 19-A, 20-C</p><p id="350c03a8-3f04-80bd-bcb3-f90d0fdc7ca2" class="" dir="auto">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

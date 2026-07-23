@@ -10,7 +10,7 @@ class NetworksCourseData
             'slug' => 'introduction-to-computer-networks',
             'title' => 'Introduction to Computer Networks',
             'description' => 'Comprehensive Module 1 covering computer network fundamentals including what networks are, data communication, network characteristics, architectures, topologies, and foundational concepts essential for cybersecurity.',
-            'price' => 499,
+            'price' => 1,
             'status' => 'published',
         ];
     }
@@ -103,6 +103,8 @@ A **Computer Network** is a collection of two or more computing devices called *
 Network = Nodes + Communication Links + Rules (Protocols)
 ```
 
+![Network Definition](/course-images/m1/image.png)
+
 A computer network is a set of nodes connected by communication links. The link carries information from one node to another.
 
 ## What are Nodes?
@@ -121,6 +123,8 @@ A node is any device that can send, receive, or process data on a network. If a 
 | Printers and Scanners | Peripheral devices shared over a network by multiple users |
 | Security Cameras | Surveillance devices connected to the network |
 
+![Network Nodes](/course-images/m1/image%201.png)
+
 ## What are Communication Links?
 
 Communication links are the pathways through which data travels between nodes. A communication link can be a wired link or a wireless link. The important point to note about a link is that this link only carries the information.
@@ -129,6 +133,8 @@ Communication links are the pathways through which data travels between nodes. A
 
 - **Wired Links:** Physical cables like Ethernet (twisted pair), Fiber optic, Coaxial cable
 - **Wireless Links:** Radio waves (Wi-Fi), Infrared, Bluetooth, Satellite, Cellular (4G/5G)
+
+![Communication Links](/course-images/m1/image%202.png)
 
 ## Purpose of a Computer Network
 
@@ -144,6 +150,8 @@ A computer network is mainly used for resource sharing. Networks save a lot of i
 | Reliability and Availability | Improve system reliability using backup paths and fault tolerant mechanisms |
 | Scalability and Growth | Support easy expansion by adding new devices and services as demand increases |
 | Security and Control | Protect data and network resources using authentication, access control, and monitoring |
+
+![Network Purposes](/course-images/m1/image%203.png)
 MD;
     }
 
@@ -167,6 +175,8 @@ Imagine a city road system. If one road is blocked, cars re-route through anothe
 **Example:**
 Suppose two entities are communicating through a path. If there is a failure in a link or a router goes down, the router forwards the data through an alternative path so that communication is not affected.
 
+![Fault Tolerance](/course-images/m1/image%204.png)
+
 ## Scalability
 
 **What it means:** The network should be able to grow in size. Adding more devices and users without losing performance or requiring a complete redesign. It is the ability to grow based on the needs and have good performance even after growth.
@@ -175,6 +185,8 @@ Suppose two entities are communicating through a path. If there is a failure in 
 - Cloud services like AWS and Google Cloud are prime examples of highly scalable networks
 - Poor scalability leads to **bottlenecks** — points where the network slows down under load
 - **The Internet is the best example of a scalable network.** Even at this moment, many new devices are connecting to the internet and communicating with each other. The Internet handles this perfectly and always gives scope for newcomers
+
+![Scalability](/course-images/m1/image%205.png)
 
 ## Quality of Service (QoS)
 
@@ -186,6 +198,8 @@ Suppose two entities are communicating through a path. If there is a failure in 
 
 **Example:**
 Consider a router receiving email traffic and voice traffic (real time communication) simultaneously. The router will process voice over IP phone data first because it is real time communication. In real time communication, delays are not accepted, whereas a delay of one second in email communication does not hurt the communication. The router gives priority to real time communication over normal communication.
+
+![Quality of Service](/course-images/m1/image%206.png)
 
 ## Security (CIA Triad)
 
@@ -200,6 +214,8 @@ Consider a router receiving email traffic and voice traffic (real time communica
 ### Cybersecurity Connection:
 
 The CIA Triad is the backbone of every cybersecurity framework. When you hear about a data breach, ransomware, or DDoS attack — each one violates at least one part of the CIA Triad.
+
+![CIA Triad](/course-images/m1/image%207.png)
 MD;
     }
 
@@ -239,6 +255,8 @@ Continuous waves that vary smoothly over time. Like a human voice or radio waves
 ### Digital Signals
 Discrete values — only 0s and 1s. Less affected by noise. Easier to store and process. Used in all modern computer networks and the Internet.
 
+![Analog vs Digital Signals](/course-images/m1/image%208.png)
+
 **Analogy:** Analog is like a dimmer light switch — it can be at any brightness level between off and fully on. Digital is like a regular on/off switch — it is either fully OFF (0) or fully ON (1). Computers prefer digital because it is clear and unambiguous.
 
 ## Transmission Methods
@@ -251,6 +269,8 @@ Data must be converted into signals that can be sent across the network media to
 | Light (Fiber Optic) | Data travels as pulses of light through glass or plastic fibers | Extremely fast, long distances (up to 100,000m), immune to electromagnetic interference | Expensive, requires special installation skills |
 | Wireless (Radio Waves) | Data travels as electromagnetic radio waves through the air. Used in Wi-Fi, Bluetooth, 4G/5G, satellite | Convenient, mobility | Affected by walls, interference, and distance, security concerns |
 
+![Transmission Methods](/course-images/m1/image%209.png)
+
 ## Bandwidth vs. Throughput
 
 | **Concept** | **Definition** | **Analogy** | **Measured In** |
@@ -259,6 +279,8 @@ Data must be converted into signals that can be sent across the network media to
 | Throughput | Actual data rate achieved in practice (real speed) | Actual cars traveling right now — affected by traffic jams | Mbps, Gbps |
 
 **Important Note:** Your ISP says "100 Mbps bandwidth" but you often get 60 to 80 Mbps throughput. The difference is due to network congestion, protocol overhead, and hardware limitations.
+
+![Bandwidth vs Throughput](/course-images/m1/image%2010.png)
 
 Many factors influence throughput including:
 - The amount of data being sent and received over the connection
@@ -275,6 +297,8 @@ In an internetwork or network with multiple segments, throughput cannot be faste
 - Low latency = fast response (good for gaming and video calls — ideally less than 50ms)
 - High latency = slow response (bad user experience — 200ms+ feels sluggish)
 - Causes of high latency: long physical distance, many router hops, network congestion
+
+![Latency](/course-images/m1/image%2011.png)
 
 **Terminal: Measuring Latency**
 
@@ -308,6 +332,8 @@ Data flows in **only ONE direction**. From sender to receiver. The receiver can 
 - Baby Monitor (one way audio transmission)
 - Traditional monitors (not touch monitors)
 
+![Simplex Mode](/course-images/m1/image%2012.png)
+
 ## Half Duplex
 
 Data flows in **both directions, but NOT at the same time**. Only one device can transmit at a time. You must wait for the other to finish before you respond.
@@ -315,6 +341,8 @@ Data flows in **both directions, but NOT at the same time**. Only one device can
 ### Real Examples:
 - **Walkie Talkie:** "Over and out". You press to talk, release to listen. Both directions, but never simultaneously.
 - Old Ethernet hubs and early wireless networks.
+
+![Half Duplex Mode](/course-images/m1/image%2013.png)
 
 ## Full Duplex
 
@@ -325,6 +353,8 @@ Data flows in **both directions SIMULTANEOUSLY**. Both devices can send and rece
 - Modern Ethernet switches, mobile phones, modern Wi-Fi networks.
 - Telephone Line.
 
+![Full Duplex Mode](/course-images/m1/image%2014.png)
+
 ## Final Comparison: Simplex vs Half Duplex vs Full Duplex
 
 | **Mode** | **Direction** | **Simultaneous?** | **Example** |
@@ -332,6 +362,8 @@ Data flows in **both directions SIMULTANEOUSLY**. Both devices can send and rece
 | Simplex | One way only | No | Keyboard, TV Broadcast, Traditional Monitor |
 | Half Duplex | Both ways, one at a time | No | Walkie Talkie, Old Ethernet |
 | Full Duplex | Both ways, at the same time | Yes | Phone Call, Modern Ethernet, Telephone Line |
+
+![Data Flow Comparison](/course-images/m1/image%2015.png)
 MD;
     }
 
@@ -350,6 +382,8 @@ When a device sends data on a network, it can address that data in different way
 
 **IPv4 unicast host addresses are in the address range:** 1.1.1.1 to 223.255.255.255. However, within this range are many addresses that are reserved for special purposes.
 
+![Unicast Communication](/course-images/m1/image%2016.png)
+
 ## Multicast
 
 **One to Many (selective)** communication. Data is sent to a specific GROUP of devices that have subscribed to receive it. Multicast transmission reduces traffic by allowing a host to send a single packet to a selected set of hosts that subscribe to a multicast group.
@@ -357,6 +391,8 @@ When a device sends data on a network, it can address that data in different way
 **Example:** Live video streaming. The streaming server sends one stream to all viewers who have joined. Video conferencing, IPTV.
 
 **IPv4 multicast address range:** 224.0.0.0 to 239.255.255.255.
+
+![Multicast Communication](/course-images/m1/image%2017.png)
 
 ## Broadcast
 
@@ -371,6 +407,8 @@ Attackers exploit **broadcast** traffic in attacks like ARP spoofing and DHCP st
 - **Directed broadcast:** Sent to all hosts on a specific network. Example: 172.16.4.255
 - **Limited broadcast:** Sent to 255.255.255.255. By default, routers do not forward broadcasts.
 
+![Broadcast Communication](/course-images/m1/image%2018.png)
+
 **Note:** IPv4 uses broadcast packets. However, there are no broadcast packets with IPv6. IPv6 replaces broadcast with multicast.
 
 ## Final Comparison: Unicast vs Multicast vs Broadcast
@@ -380,6 +418,8 @@ Attackers exploit **broadcast** traffic in attacks like ARP spoofing and DHCP st
 | Unicast | 1 device | 1 specific device | 192.168.1.10 |
 | Multicast | 1 device | Subscribed group | 224.0.0.1 (multicast range) |
 | Broadcast | 1 device | All devices on subnet | 192.168.1.255 |
+
+![Communication Types Comparison](/course-images/m1/image%2019.png)
 MD;
     }
 
@@ -412,6 +452,8 @@ In this model, there is a clear division of roles: **Servers provide services**,
 1. **2-Tier Architecture:** Client communicates directly with the server, which handles both processing and data storage.
 2. **3-Tier Architecture:** Divided into presentation layer (client), application layer (business logic), and data layer (database server). Widely used in web applications and enterprise systems.
 
+![Client-Server Architecture](/course-images/m1/image%2020.png)
+
 ## Peer-to-Peer (P2P) Model
 
 In P2P, **every device acts as BOTH a client AND a server**. There is no central authority. Peers connect directly to each other.
@@ -440,6 +482,8 @@ In P2P, **every device acts as BOTH a client AND a server**. There is no central
 2. **Structured P2P Networks:** Not easy to set up but gives easy access to content. Examples: P-Grid, Kademlia.
 3. **Hybrid P2P Networks:** Combines features of both P2P networks and client-server architecture. Uses a central server to find a node.
 
+![Peer-to-Peer Architecture](/course-images/m1/image%2021.png)
+
 ## Final Comparison: Client-Server vs Peer-to-Peer
 
 | **Feature** | **Client-Server** | **Peer-to-Peer** |
@@ -449,6 +493,8 @@ In P2P, **every device acts as BOTH a client AND a server**. There is no central
 | Scalability | Scales with server upgrades | Scales naturally as peers join |
 | Cost | High (dedicated servers needed) | Low (use existing hardware) |
 | Used In | Websites, enterprise networks, email | BitTorrent, Blockchain, gaming, small home networks |
+
+![Client-Server vs P2P](/course-images/m1/image%2022.png)
 MD;
     }
 
@@ -479,6 +525,8 @@ The smallest type of network, designed to connect devices within the immediate v
 | Low cost or no additional hardware required | Susceptible to interference in crowded 2.4 GHz band |
 | Automatic device discovery and pairing | Limited number of simultaneous connections |
 
+![Personal Area Network](/course-images/m1/image%2023.png)
+
 ## LAN: Local Area Network
 
 Connects computers and devices within a limited geographical area, typically a single building, floor, or small campus.
@@ -497,6 +545,8 @@ Connects computers and devices within a limited geographical area, typically a s
 - **Wired LAN:** Uses Ethernet cables (straight-through or crossover)
 - **Wireless LAN (WLAN):** Uses Wi-Fi technology
 
+![Local Area Network](/course-images/m1/image%2024.png)
+
 ## CAN: Campus Area Network
 
 Connects multiple LANs within a defined geographical area, typically a university campus, corporate headquarters, or hospital complex.
@@ -507,6 +557,8 @@ Connects multiple LANs within a defined geographical area, typically a universit
 | Technology | Ethernet (fiber backbone), Fiber Optics, 10 Gigabit Ethernet, Wi-Fi (outdoor mesh) |
 | Speed | Up to 1 Gbps to 100 Gbps on backbone links |
 | Ownership | Single organization (university, corporation) |
+
+![Campus Area Network](/course-images/m1/image%2025.png)
 
 ## MAN: Metropolitan Area Network
 
@@ -520,6 +572,8 @@ Spans a city or large urban area, connecting multiple LANs and CANs across dista
 | Examples | City-wide Wi-Fi networks, cable TV networks, bank branch networks, ISP metro networks |
 | Ownership | Typically operated by telecom companies, ISPs, or city governments |
 
+![Metropolitan Area Network](/course-images/m1/image%2026.png)
+
 ## WAN: Wide Area Network
 
 Spans large geographical areas, connecting networks across countries, continents, and the globe.
@@ -532,6 +586,8 @@ Spans large geographical areas, connecting networks across countries, continents
 | Examples | The Internet (world's largest WAN), multinational company's global network |
 | Ownership | ISPs, telecommunications carriers, consortiums |
 
+![Wide Area Network](/course-images/m1/image%2027.png)
+
 ## Final Comparison: PAN vs LAN vs CAN vs MAN vs WAN
 
 | **Feature** | **LAN** | **CAN** | **MAN** | **WAN** |
@@ -543,6 +599,8 @@ Spans large geographical areas, connecting networks across countries, continents
 | Owner | Organization | Organization | ISP/Telecom | Multiple ISPs/Carriers |
 | Cost | Low per port | Medium | High | Highest (per Mbps) |
 | Security Control | Full | Full | Limited (carrier managed) | Minimal (public internet) |
+
+![Network Types Comparison](/course-images/m1/image%2028.png)
 MD;
     }
 
@@ -559,6 +617,8 @@ The **global public network** that connects billions of devices worldwide. Anyon
 
 The internet is not owned by any individual or group. The internet is a worldwide collection of interconnected networks (internetwork or internet for short), cooperating with each other to exchange information using common standards. Through telephone wires, fiber optic cables, wireless transmissions, and satellite links, internet users can exchange information in a variety of forms.
 
+![Internet](/course-images/m1/image%2029.png)
+
 ## Intranet
 
 A **private, internal network** used within an organization. Uses the same web technologies (HTTP, HTML) as the Internet but is only accessible to employees.
@@ -570,6 +630,8 @@ A **private, internal network** used within an organization. Uses the same web t
 | Purpose | Internal communication and collaboration |
 | Uses | Employee portals, internal emails and messaging, sharing company policies and documents, internal applications (HR, payroll, project management) |
 | Examples | Corporate internal website, university campus portal, government department internal systems |
+
+![Intranet](/course-images/m1/image%2030.png)
 
 ## Extranet
 
@@ -583,6 +645,8 @@ An extension of the Intranet that is **partially accessible to authorized outsid
 | Uses | Business-to-business (B2B) communication, supply chain management, customer portals, partner collaboration platforms |
 | Examples | Supplier management system, online banking portals, vendor access portals |
 
+![Extranet](/course-images/m1/image%2031.png)
+
 ## Final Comparison: Internet vs Intranet vs Extranet
 
 | **Feature** | **Internet** | **Intranet** | **Extranet** |
@@ -593,6 +657,8 @@ An extension of the Intranet that is **partially accessible to authorized outsid
 | Example Use | Browsing websites | Company HR portal | Supplier portal, partner access |
 
 **Analogy:** Think of a large hospital. The **Internet** is the public parking lot — anyone can enter. The **Intranet** is the staff area — only hospital employees with ID badges can enter. The **Extranet** is the special access area for approved vendors and insurance companies — outsiders, but with special permission.
+
+![Internet vs Intranet vs Extranet](/course-images/m1/image%2032.png)
 MD;
     }
 
@@ -618,6 +684,8 @@ All devices are connected to a **single central cable** called the "bus" or "bac
 | Disadvantages | If the main cable breaks, the entire network fails. Difficult to troubleshoot. Performance degrades with more devices. No security |
 | Used in | Old Ethernet networks (coaxial cable), legacy systems |
 
+![Bus Topology](/course-images/m1/image%2033.png)
+
 ## Ring Topology
 
 All devices are connected in a **closed loop (ring)**. Data travels in one direction around the ring, passing through each device until it reaches the destination.
@@ -629,6 +697,8 @@ All devices are connected in a **closed loop (ring)**. Data travels in one direc
 | Advantages | Equal access for all devices, easy to install, handles heavy traffic better than bus |
 | Disadvantages | If one device or cable fails, the entire ring can break. Adding/removing devices disrupts the network |
 | Used in | IBM Token Ring networks, SONET/SDH fiber backbone rings |
+
+![Ring Topology](/course-images/m1/image%2034.png)
 
 ## Star Topology
 
@@ -644,6 +714,8 @@ All devices connect to a **central hub or switch**. All data passes through the 
 ### Types of Star Topology:
 - **Active Star Topology:** The central hub regenerates the signal. Works as a connector and boosts the signal.
 - **Passive Star Topology:** The central hub simply connects devices but does not regenerate signals.
+
+![Star Topology](/course-images/m1/image%2035.png)
 
 ## Mesh Topology
 
@@ -663,6 +735,8 @@ Every device is connected to every other device. **Maximum fault tolerance**.
 ### Partial Mesh:
 Only **some devices** have multiple connections. Balances cost and redundancy. Used in most real-world networks.
 
+![Mesh Topology](/course-images/m1/image%2036.png)
+
 ## Hybrid Topology
 
 A **combination of two or more topologies** in a single network. Most common in large real-world networks.
@@ -670,6 +744,8 @@ A **combination of two or more topologies** in a single network. Most common in 
 - Example: **Star topology in each department**, with switches connected in a **Ring or Mesh topology** at the core
 - The Internet itself is a massive hybrid topology
 - Provides the benefits of each individual topology while reducing their weaknesses
+
+![Hybrid Topology](/course-images/m1/image%2037.png)
 
 ## Final Comparison: Bus vs Ring vs Star vs Mesh vs Hybrid
 
@@ -681,6 +757,8 @@ A **combination of two or more topologies** in a single network. Most common in 
 | Full Mesh | Very High | Very High | Complex | Internet Backbone, Military |
 | Partial Mesh | High | High | Complex | WAN, Enterprise core |
 | Hybrid | High | Varies | Complex | Enterprise, Campus |
+
+![Topology Comparison](/course-images/m1/image%2038.png)
 
 ---
 
@@ -713,6 +791,8 @@ Congratulations on completing Module 1: Introduction to Computer Networks! This 
 - Review the Key Points from Lesson 9 before attempting
 - You need at least 50% to pass
 - You have 3 attempts
+
+![Quick Revision](/course-images/m1/image%2039.png)
 
 Good luck!
 MD;

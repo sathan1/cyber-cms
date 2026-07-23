@@ -11,8 +11,30 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    public static function ensureStaffMentorsExist()
+    {
+        try {
+            $codeMap = [
+                'sathish.cse@mcet.in' => ['name' => 'Prof. Sathish Kumar (CSE)', 'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-101', 'staff_id' => 'ST-1001'],
+                'anitha.ece@mcet.in'  => ['name' => 'Dr. Anitha Ramesh (ECE)',     'dept' => 'ECE', 'dept_name' => 'Electronics & Communication',  'mcode' => 'MTR-ECE-201', 'staff_id' => 'ST-2001'],
+                'vignesh.it@mcet.in'  => ['name' => 'Prof. Vigneshwaran (IT)',    'dept' => 'IT',  'dept_name' => 'Information Technology',       'mcode' => 'MTR-IT-301',  'staff_id' => 'ST-3001'],
+                'rajesh.cse@mcet.in'  => ['name' => 'Prof. Rajesh Kannan (CSE)',  'dept' => 'CSE', 'dept_name' => 'Computer Science & Engineering', 'mcode' => 'MTR-CSE-102', 'staff_id' => 'ST-1002'],
+            ];
+
+            foreach ($codeMap as $email => $meta) {
+                $dept = Department::firstOrCreate(['code' => $meta['dept']], ['name' => $meta['dept_name']]);
+                MentorId::firstOrCreate(
+                    ['mentor_code' => $meta['mcode']],
+                    ['staff_id' => $meta['staff_id'], 'department_id' => $dept->id]
+                );
+            }
+        } catch (\Throwable $e) {}
+    }
+
     public function register(Request $request)
     {
+        self::ensureStaffMentorsExist();
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users',
@@ -244,13 +266,21 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
+        self::ensureStaffMentorsExist();
+
         $request->validate([
-            'mentor_code' => 'required|string|exists:mentor_ids,mentor_code',
+            'mentor_code' => 'required|string',
             'year' => 'required|integer|min:1|max:4',
             'roll_number' => 'required|string|unique:users,roll_number,' . $user->id,
         ]);
 
-        $mentor = MentorId::where('mentor_code', $request->mentor_code)->firstOrFail();
+        $mentor = MentorId::where('mentor_code', $request->mentor_code)
+            ->orWhere('staff_id', $request->mentor_code)
+            ->first();
+
+        if (!$mentor) {
+            return response()->json(['message' => 'The selected mentor code is invalid.'], 422);
+        }
 
         $user->update([
             'mentor_id' => $mentor->id,
@@ -322,6 +352,8 @@ class AuthController extends Controller
 
     public function getMentors()
     {
+        self::ensureStaffMentorsExist();
+
         return response()->json([
             'mentors' => MentorId::with('department')->get(),
         ]);

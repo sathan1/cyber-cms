@@ -191,7 +191,15 @@ class DatabaseSeeder extends Seeder
         $quizLesson3 = null;
         foreach (\App\Data\NetworksCourseData::getLessons() as $lessonData) {
             $pos = $lessonData['position'];
-            unset($lessonData['position']);
+            unset(
+                $lessonData['position'],
+                $lessonData['quiz_question'],
+                $lessonData['quiz_option_a'],
+                $lessonData['quiz_option_b'],
+                $lessonData['quiz_option_c'],
+                $lessonData['quiz_option_d'],
+                $lessonData['quiz_correct_option']
+            );
             $l = Lesson::firstOrCreate(
                 ['course_id' => $c3->id, 'position' => $pos],
                 $lessonData

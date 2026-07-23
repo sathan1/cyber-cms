@@ -302,3 +302,29 @@ body.light pre code {
   background-color: transparent !important;
   color: #e2e8f0 !important;
 }
+
+/* --- High-contrast indigo / badge / footer overrides for Light Mode --- */
+body.light .text-indigo-300,
+body.light .text-indigo-400 {
+  color: #4338ca !important;
+}
+
+body.light .text-indigo-200 {
+  color: #3730a3 !important;
+}
+
+body.light .bg-indigo-900\/30,
+body.light .bg-indigo-900\/40,
+body.light .bg-indigo-950\/40 {
+  background-color: rgba(99, 102, 241, 0.12) !important;
+}
+
+body.light .border-indigo-500\/30 {
+  border-color: rgba(99, 102, 241, 0.3) !important;
+}
+
+body.light footer {
+  background-color: #f1f5f9 !important;
+  border-top-color: #e2e8f0 !important;
+}
+

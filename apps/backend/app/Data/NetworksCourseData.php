@@ -32,12 +32,6 @@ class NetworksCourseData
                 'title' => 'M1 - Module Quiz: Introduction to Computer Networks',
                 'content' => self::lesson10(),
                 'has_quiz' => true,
-                'quiz_question' => 'Which of the following best defines a Computer Network?',
-                'quiz_option_a' => 'A single computer connected to the internet',
-                'quiz_option_b' => 'Two or more nodes connected by communication links to share data and resources',
-                'quiz_option_c' => 'A software application for communication',
-                'quiz_option_d' => 'A type of operating system',
-                'quiz_correct_option' => 'B',
             ],
         ];
     }

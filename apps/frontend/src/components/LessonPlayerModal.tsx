@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   X, CheckCircle, HelpCircle, Award, ArrowRight, ArrowLeft, BookOpen,
-  Lock, AlertCircle, FileText, Clock, Send, CheckCircle2, RefreshCw
+  Lock, AlertCircle, FileText, Clock, Send, CheckCircle2, RefreshCw, Maximize2, Minimize2
 } from 'lucide-react';
 import { fetchApi } from '@/lib/api';
 import { Course, Lesson, Assignment, AssignmentSubmission } from '@/types';
@@ -118,8 +118,31 @@ export default function LessonPlayerModal({
   const [submittingAssignmentId, setSubmittingAssignmentId] = useState<number | null>(null);
   const [submissionContent, setSubmissionContent] = useState('');
   const [submittingAssignment, setSubmittingAssignment] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-  if (!isOpen || !course.lessons || course.lessons.length === 0) return null;
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        setIsFullscreen(false);
+      }
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    if (!isFullscreen) {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+      setIsFullscreen(true);
+    } else {
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+      setIsFullscreen(false);
+    }
+  };
 
   const currentLesson: Lesson = course.lessons[activeIdx] || course.lessons[0];
   const isCompleted = completedLessonIds.includes(currentLesson.id);
@@ -223,8 +246,10 @@ export default function LessonPlayerModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4">
-      <div className="glass-panel w-full max-w-5xl h-[88vh] rounded-2xl border border-gray-700/80 shadow-2xl flex flex-col overflow-hidden">
+    <div className={`fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md transition-all ${isFullscreen ? 'p-0' : 'p-4'}`}>
+      <div className={`glass-panel w-full shadow-2xl flex flex-col overflow-hidden transition-all ${
+        isFullscreen ? 'w-screen h-screen max-w-none h-full rounded-none border-0' : 'max-w-5xl h-[88vh] rounded-2xl border border-gray-700/80'
+      }`}>
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800 bg-gray-900/60 flex-shrink-0">
           <div className="flex items-center gap-3 min-w-0">
@@ -238,9 +263,28 @@ export default function LessonPlayerModal({
               </span>
             </div>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 flex-shrink-0">
-            <X className="w-5 h-5" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleFullscreen}
+              title={isFullscreen ? 'Exit Full Screen' : 'Full Screen Mode'}
+              className="text-gray-400 hover:text-white px-2.5 py-1.5 rounded-lg hover:bg-gray-800 flex-shrink-0 flex items-center gap-1.5 text-xs font-semibold border border-gray-700/60 transition-colors"
+            >
+              {isFullscreen ? (
+                <>
+                  <Minimize2 className="w-3.5 h-3.5 text-indigo-400" />
+                  <span className="hidden sm:inline">Exit Full Screen</span>
+                </>
+              ) : (
+                <>
+                  <Maximize2 className="w-3.5 h-3.5 text-indigo-400" />
+                  <span className="hidden sm:inline">Full Screen</span>
+                </>
+              )}
+            </button>
+            <button onClick={onClose} className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 flex-shrink-0">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
         </div>
 
         {/* Body */}

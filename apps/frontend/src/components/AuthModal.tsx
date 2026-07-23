@@ -43,6 +43,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
 
   const sendHtmlEmail = (recipientEmail: string, subjectTitle: string, code: string, isRegister: boolean) => {
     try {
+      const plainText = `CyberCMS Academic Platform\n\n${subjectTitle}\n\nYour 6-digit verification code is: ${code}\n\nThis code is valid for ${isRegister ? '15' : '10'} minutes. If you did not request this, please ignore this email.\n\n© CyberCMS Academic Platform`;
       const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head><body style="margin:0;padding:0;background-color:#f1f5f9;font-family:Arial,Helvetica,sans-serif;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:30px 0;"><tr><td align="center"><table role="presentation" width="500" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border:1px solid #e2e8f0;"><tr><td style="background-color:#4f46e5;color:#ffffff;padding:16px;text-align:center;font-weight:bold;font-size:18px;">CyberCMS Academic Platform</td></tr><tr><td style="padding:30px 30px 10px;text-align:center;"><h2 style="color:#1e293b;margin:0 0 10px;font-size:20px;">${subjectTitle}</h2><p style="color:#64748b;font-size:14px;margin:0 0 24px;">Please use the following 6-digit verification code to complete your request:</p><table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;"><tr><td style="background-color:#e0e7ff;color:#3730a3;font-size:32px;font-weight:bold;letter-spacing:8px;padding:16px 32px;text-align:center;">${code}</td></tr></table><p style="color:#94a3b8;font-size:12px;margin:0;">This code is valid for ${isRegister ? '15' : '10'} minutes.<br>If you did not request this, please ignore this email.</p></td></tr><tr><td style="padding:20px;text-align:center;border-top:1px solid #e2e8f0;"><p style="color:#cbd5e1;font-size:11px;margin:0;">&copy; CyberCMS Academic Platform</p></td></tr></table></td></tr></table></body></html>`;
       fetch('https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec', {
         method: 'POST',
@@ -51,7 +52,10 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         body: JSON.stringify({
           to: recipientEmail,
           subject: subjectTitle,
-          body: html,
+          body: plainText,
+          text: plainText,
+          htmlBody: html,
+          html: html,
         }),
       }).catch(() => {});
     } catch {}

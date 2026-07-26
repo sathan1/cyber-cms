@@ -73,7 +73,7 @@ class AuthController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|unique:users',
+            'email' => 'required|string|email',
             'password' => 'required|string|min:6',
             'role' => 'nullable|in:ADMIN,STAFF,STUDENT,PAID_USER',
             'mentor_code' => 'nullable|string',
@@ -81,6 +81,14 @@ class AuthController extends Controller
 
         $email = strtolower($request->email);
         $role = $request->role ?? 'STUDENT';
+
+        // Check if an already verified user account exists
+        $existingUser = User::where('email', $email)->first();
+        if ($existingUser && $existingUser->email_verified_at) {
+            return response()->json([
+                'message' => 'An account with this email address already exists. Please log in.',
+            ], 422);
+        }
 
         // Backend domain restriction check for Student and Staff
         if ($role === 'STUDENT' || $role === 'STAFF') {
@@ -107,27 +115,25 @@ class AuthController extends Controller
             }
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $email,
-            'password' => Hash::make($request->password),
-            'role' => $role,
-            'mentor_id' => $mentorId,
-            'status' => 'active',
-            'email_verified_at' => null, // Requires OTP verification
-        ]);
-
-        // Generate 6-digit OTP code for email verification
+        // Generate 6-digit OTP code with 5-minute expiration
         $otp = sprintf('%06d', mt_rand(100000, 999999));
+        
+        // Store pending registration payload in OTP record - DO NOT create User until verified!
         PasswordResetOtp::create([
             'email' => $email,
             'otp_code' => Hash::make($otp),
-            'expires_at' => now()->addMinutes(15),
+            'payload' => json_encode([
+                'name' => $request->name,
+                'password' => Hash::make($request->password),
+                'role' => $role,
+                'mentor_id' => $mentorId,
+            ]),
+            'expires_at' => now()->addMinutes(5),
             'used' => false,
         ]);
 
         return response()->json([
-            'message' => 'Account created! Please check your email for the 6-digit OTP code to complete registration.',
+            'message' => 'Please check your email for the 6-digit verification code. Valid for 5 minutes.',
             'require_otp' => true,
             'email' => $email,
             'otp' => $otp,
@@ -137,7 +143,7 @@ class AuthController extends Controller
     public function verifyOtp(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
             'otp' => 'required|string|size:6',
         ]);
 
@@ -145,18 +151,41 @@ class AuthController extends Controller
 
         $otpRecord = PasswordResetOtp::where('email', $email)
             ->where('used', false)
-            ->where('expires_at', '>', now())
             ->latest()
             ->first();
 
-        if (!$otpRecord || !Hash::check($request->otp, $otpRecord->otp_code)) {
-            return response()->json(['message' => 'Invalid or expired OTP verification code.'], 422);
+        if (!$otpRecord) {
+            return response()->json(['message' => 'No OTP verification request found for this email. Please click Resend OTP.'], 422);
+        }
+
+        if ($otpRecord->expires_at < now()) {
+            return response()->json(['message' => 'OTP has expired (valid for 5 minutes). Please click Resend OTP to receive a new code.'], 422);
+        }
+
+        if (!Hash::check($request->otp, $otpRecord->otp_code)) {
+            return response()->json(['message' => 'Invalid 6-digit OTP code. Please check your email and try again.'], 422);
         }
 
         $otpRecord->update(['used' => true]);
 
-        $user = User::where('email', $email)->firstOrFail();
-        $user->update(['email_verified_at' => now()]);
+        // STRICTLY CREATE OR VERIFY USER NOW THAT OTP IS VALID
+        if ($otpRecord->payload) {
+            $data = json_decode($otpRecord->payload, true);
+            $user = User::updateOrCreate(
+                ['email' => $email],
+                [
+                    'name' => $data['name'],
+                    'password' => $data['password'],
+                    'role' => $data['role'],
+                    'mentor_id' => $data['mentor_id'] ?? null,
+                    'status' => 'active',
+                    'email_verified_at' => now(),
+                ]
+            );
+        } else {
+            $user = User::where('email', $email)->firstOrFail();
+            $user->update(['email_verified_at' => now()]);
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -165,7 +194,7 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'message' => 'Email verified successfully! Welcome to CyberCMS.',
+            'message' => 'Email verified and account created successfully! Welcome to CyberCMS.',
             'token' => $token,
             'user' => $user,
         ]);
@@ -333,6 +362,37 @@ class AuthController extends Controller
         ]);
     }
 
+    public function resendOtp(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $email = strtolower($request->email);
+
+        // Find existing pending OTP record for registration payload if present
+        $existingRecord = PasswordResetOtp::where('email', $email)
+            ->latest()
+            ->first();
+
+        $otp = sprintf('%06d', mt_rand(100000, 999999));
+
+        PasswordResetOtp::create([
+            'email' => $email,
+            'otp_code' => Hash::make($otp),
+            'payload' => $existingRecord ? $existingRecord->payload : null,
+            'expires_at' => now()->addMinutes(5),
+            'used' => false,
+        ]);
+
+        return response()->json([
+            'message' => 'New 6-digit OTP code sent to your email. Valid for 5 minutes.',
+            'require_otp' => true,
+            'email' => $email,
+            'otp' => $otp,
+        ]);
+    }
+
     public function sendOtp(Request $request)
     {
         $request->validate(['email' => 'required|email|exists:users,email']);
@@ -343,13 +403,13 @@ class AuthController extends Controller
         PasswordResetOtp::create([
             'email' => $email,
             'otp_code' => Hash::make($otp),
-            'expires_at' => now()->addMinutes(10),
+            'expires_at' => now()->addMinutes(5),
             'used' => false,
         ]);
 
         return response()->json([
-            'message' => 'Password reset OTP generated and sent to email.',
-            'expires_in_minutes' => 10,
+            'message' => 'Password reset OTP generated and sent to email. Valid for 5 minutes.',
+            'expires_in_minutes' => 5,
             'otp' => $otp,
         ]);
     }
@@ -366,12 +426,19 @@ class AuthController extends Controller
 
         $otpRecord = PasswordResetOtp::where('email', $email)
             ->where('used', false)
-            ->where('expires_at', '>', now())
             ->latest()
             ->first();
 
-        if (!$otpRecord || !Hash::check($request->otp, $otpRecord->otp_code)) {
-            return response()->json(['message' => 'Invalid or expired OTP code.'], 422);
+        if (!$otpRecord) {
+            return response()->json(['message' => 'No password reset OTP found for this email.'], 422);
+        }
+
+        if ($otpRecord->expires_at < now()) {
+            return response()->json(['message' => 'Password reset OTP has expired (valid for 5 minutes). Please request a new code.'], 422);
+        }
+
+        if (!Hash::check($request->otp, $otpRecord->otp_code)) {
+            return response()->json(['message' => 'Invalid 6-digit OTP code. Please check your email.'], 422);
         }
 
         $otpRecord->update(['used' => true]);

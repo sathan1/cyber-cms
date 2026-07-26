@@ -27,6 +27,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
   const [role, setRole] = useState<Role>('STUDENT');
   const [mentorCode, setMentorCode] = useState('');
   const [otpCode, setOtpCode] = useState('');
+  const [timerSeconds, setTimerSeconds] = useState(300);
 
   // Reset modal state on open or initialMode change
   React.useEffect(() => {
@@ -38,13 +39,25 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
       setSuccessMsg(null);
       setDebugOtp(null);
       setOtpCode('');
+      setTimerSeconds(300);
     }
   }, [isOpen, initialMode]);
 
-  const sendHtmlEmail = (recipientEmail: string, subjectTitle: string, code: string, isRegister: boolean) => {
+  // Start 5-minute countdown timer when on OTP verification screens
+  React.useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isOpen && (mode === 'verify_reg_otp' || (mode === 'otp' && otpStep === 'verify'))) {
+      interval = setInterval(() => {
+        setTimerSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isOpen, mode, otpStep]);
+
+  const sendHtmlEmail = (recipientEmail: string, subjectTitle: string, code: string) => {
     try {
-      const plainText = `CyberCMS Academic Platform\n\n${subjectTitle}\n\nYour 6-digit verification code is: ${code}\n\nThis code is valid for ${isRegister ? '15' : '10'} minutes. If you did not request this, please ignore this email.\n\n© CyberCMS Academic Platform`;
-      const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head><body style="margin:0;padding:0;background-color:#f1f5f9;font-family:Arial,Helvetica,sans-serif;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:30px 0;"><tr><td align="center"><table role="presentation" width="500" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border:1px solid #e2e8f0;"><tr><td style="background-color:#4f46e5;color:#ffffff;padding:16px;text-align:center;font-weight:bold;font-size:18px;">CyberCMS Academic Platform</td></tr><tr><td style="padding:30px 30px 10px;text-align:center;"><h2 style="color:#1e293b;margin:0 0 10px;font-size:20px;">${subjectTitle}</h2><p style="color:#64748b;font-size:14px;margin:0 0 24px;">Please use the following 6-digit verification code to complete your request:</p><table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;"><tr><td style="background-color:#e0e7ff;color:#3730a3;font-size:32px;font-weight:bold;letter-spacing:8px;padding:16px 32px;text-align:center;">${code}</td></tr></table><p style="color:#94a3b8;font-size:12px;margin:0;">This code is valid for ${isRegister ? '15' : '10'} minutes.<br>If you did not request this, please ignore this email.</p></td></tr><tr><td style="padding:20px;text-align:center;border-top:1px solid #e2e8f0;"><p style="color:#cbd5e1;font-size:11px;margin:0;">&copy; CyberCMS Academic Platform</p></td></tr></table></td></tr></table></body></html>`;
+      const plainText = `CyberCMS Academic Platform\n\n${subjectTitle}\n\nYour 6-digit verification code is: ${code}\n\nThis code is valid for 5 minutes. If you did not request this, please ignore this email.\n\n© CyberCMS Academic Platform`;
+      const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head><body style="margin:0;padding:0;background-color:#f1f5f9;font-family:Arial,Helvetica,sans-serif;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:30px 0;"><tr><td align="center"><table role="presentation" width="500" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border:1px solid #e2e8f0;"><tr><td style="background-color:#4f46e5;color:#ffffff;padding:16px;text-align:center;font-weight:bold;font-size:18px;">CyberCMS Academic Platform</td></tr><tr><td style="padding:30px 30px 10px;text-align:center;"><h2 style="color:#1e293b;margin:0 0 10px;font-size:20px;">${subjectTitle}</h2><p style="color:#64748b;font-size:14px;margin:0 0 24px;">Please use the following 6-digit verification code to complete your request:</p><table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;"><tr><td style="background-color:#e0e7ff;color:#3730a3;font-size:32px;font-weight:bold;letter-spacing:8px;padding:16px 32px;text-align:center;">${code}</td></tr></table><p style="color:#94a3b8;font-size:12px;margin:0;">This code is valid for 5 minutes.<br>If you did not request this, please ignore this email.</p></td></tr><tr><td style="padding:20px;text-align:center;border-top:1px solid #e2e8f0;"><p style="color:#cbd5e1;font-size:11px;margin:0;">&copy; CyberCMS Academic Platform</p></td></tr></table></td></tr></table></body></html>`;
       fetch('https://script.google.com/macros/s/AKfycbyDg7v5tmiGKrtCFk7z5WswwQNEtr8F1Vc_8G2oKoQ3qHfMc4Lsz7uaeCtrUi011omH/exec', {
         method: 'POST',
         mode: 'no-cors',
@@ -59,6 +72,29 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         }),
       }).catch(() => {});
     } catch {}
+  };
+
+  const handleResendOtp = async () => {
+    if (!email) return;
+    setLoading(true);
+    setError(null);
+    setSuccessMsg(null);
+    try {
+      const res = await fetchApi('/resend-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      });
+      setSuccessMsg(res.message || 'New 6-digit OTP code sent! Valid for 5 minutes.');
+      setTimerSeconds(300);
+      if (res.otp) {
+        setDebugOtp(res.otp);
+        sendHtmlEmail(email, 'CyberCMS Email Verification OTP', res.otp);
+      }
+    } catch (err: any) {
+      setError(err.message || 'Failed to resend OTP.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isOpen) return null;
@@ -90,9 +126,10 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         });
         if (res.require_otp) {
           setSuccessMsg(res.message);
+          setTimerSeconds(300);
           if (res.otp) {
             setDebugOtp(res.otp);
-            sendHtmlEmail(email, 'CyberCMS Email Verification OTP', res.otp, true);
+            sendHtmlEmail(email, 'CyberCMS Email Verification OTP', res.otp);
           }
           setMode('verify_reg_otp');
         } else {
@@ -114,11 +151,12 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             method: 'POST',
             body: JSON.stringify({ email }),
           });
+          setTimerSeconds(300);
           if (res.otp) {
             setDebugOtp(res.otp);
-            sendHtmlEmail(email, 'CyberCMS Password Reset OTP', res.otp, false);
+            sendHtmlEmail(email, 'CyberCMS Password Reset OTP', res.otp);
           }
-          setSuccessMsg('OTP code sent to email. Valid for 10 minutes.');
+          setSuccessMsg('OTP code sent to email. Valid for 5 minutes.');
           setOtpStep('verify');
         } else {
           await fetchApi('/reset-password', {
@@ -142,29 +180,29 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
-      <div className="glass-panel w-full max-w-md rounded-2xl border border-gray-700/80 shadow-2xl overflow-hidden p-6 relative">
+      <div className="glass-panel w-full max-w-md rounded-2xl border border-indigo-500/30 shadow-2xl overflow-hidden p-6 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800 transition-colors"
+          className="absolute top-4 right-4 text-gray-400 hover:text-white p-1 rounded-lg hover:bg-gray-800"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="text-center mb-6">
-          <div className="w-12 h-12 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mx-auto mb-3">
-            {mode === 'otp' || mode === 'verify_reg_otp' ? <KeyRound className="w-6 h-6" /> : <Shield className="w-6 h-6" />}
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white mx-auto mb-3 shadow-lg">
+            <Shield className="w-7 h-7" />
           </div>
           <h3 className="text-xl font-bold text-white">
             {mode === 'login' && 'Sign In to CyberCMS'}
-            {mode === 'register' && 'Create Academic Account'}
-            {mode === 'verify_reg_otp' && 'Verify Email OTP Code'}
-            {mode === 'otp' && (otpStep === 'request' ? 'Password Reset OTP' : 'Verify OTP & Reset Password')}
+            {mode === 'register' && 'Create Your CyberCMS Account'}
+            {mode === 'verify_reg_otp' && 'Email Verification OTP'}
+            {mode === 'forgot' && (otpStep === 'request' ? 'Reset Password' : 'Verify Password Reset OTP')}
           </h3>
           <p className="text-xs text-gray-400 mt-1">
             {mode === 'login' && 'Enter your credentials to access your portal'}
-            {mode === 'register' && 'Create your account to start learning'}
+            {mode === 'register' && 'Fill out your details to receive a 5-minute verification OTP'}
             {mode === 'verify_reg_otp' && `Enter the 6-digit OTP code sent to ${email}`}
-            {mode === 'otp' && (otpStep === 'request' ? 'Receive a 10-minute single-use OTP code' : 'Enter the 6-digit code and your new password')}
+            {mode === 'forgot' && (otpStep === 'request' ? 'Enter your email to receive a password reset OTP' : `Enter OTP and new password for ${email}`)}
           </p>
         </div>
 
@@ -178,7 +216,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
         {successMsg && (
           <div className="mb-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-start gap-2 text-emerald-400 text-xs">
             <CheckCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <p>{successMsg}</p>
+            <span>{successMsg}</span>
           </div>
         )}
 
@@ -193,14 +231,14 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Alice Johnson"
+                  placeholder="e.g. Sathish Kumar"
                   className="w-full pl-9 pr-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
                 />
               </div>
             </div>
           )}
 
-          {(mode === 'login' || mode === 'register' || (mode === 'otp' && otpStep === 'request')) && (
+          {(mode === 'login' || mode === 'register' || (mode === 'forgot' && otpStep === 'request')) && (
             <div>
               <label className="block text-xs font-semibold text-gray-300 mb-1">
                 Email Address *
@@ -212,7 +250,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="e.g. student@example.com"
+                  placeholder="e.g. student@mcet.in"
                   className="w-full pl-9 pr-3 py-2 text-sm rounded-lg bg-gray-950/70 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
                 />
               </div>
@@ -252,10 +290,10 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             </>
           )}
 
-          {(mode === 'login' || mode === 'register' || (mode === 'otp' && otpStep === 'verify')) && (
+          {(mode === 'login' || mode === 'register' || (mode === 'forgot' && otpStep === 'verify')) && (
             <div>
               <label className="block text-xs font-semibold text-gray-300 mb-1">
-                {mode === 'otp' ? 'New Password' : 'Password'}
+                {mode === 'forgot' ? 'New Password' : 'Password'}
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 absolute left-3 top-3 text-gray-500" />
@@ -271,20 +309,41 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
             </div>
           )}
 
-          {(mode === 'verify_reg_otp' || (mode === 'otp' && otpStep === 'verify')) && (
-            <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1">6-Digit Verification OTP Code *</label>
-              <div className="relative">
-                <KeyRound className="w-4 h-4 absolute left-3 top-3 text-gray-500" />
-                <input
-                  type="text"
-                  maxLength={6}
-                  required
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value)}
-                  placeholder="e.g. 123456"
-                  className="w-full pl-9 pr-3 py-2 text-sm font-mono tracking-widest rounded-lg bg-gray-950/70 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
-                />
+          {(mode === 'verify_reg_otp' || (mode === 'forgot' && otpStep === 'verify')) && (
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-xs font-semibold text-gray-300">6-Digit Verification OTP Code *</label>
+                  <span className={`text-[11px] font-mono font-semibold ${timerSeconds > 0 ? 'text-amber-400' : 'text-rose-400'}`}>
+                    {timerSeconds > 0
+                      ? `⏱️ Expires in ${Math.floor(timerSeconds / 60)}:${String(timerSeconds % 60).padStart(2, '0')}`
+                      : '⚠️ OTP Expired'}
+                  </span>
+                </div>
+                <div className="relative">
+                  <KeyRound className="w-4 h-4 absolute left-3 top-3 text-gray-500" />
+                  <input
+                    type="text"
+                    maxLength={6}
+                    required
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value)}
+                    placeholder="e.g. 123456"
+                    className="w-full pl-9 pr-3 py-2 text-sm font-mono tracking-widest rounded-lg bg-gray-950/70 border border-gray-700 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-xs pt-1">
+                <span className="text-gray-400">Didn&apos;t receive code or expired?</span>
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={loading}
+                  className="text-indigo-400 hover:text-indigo-300 font-semibold underline disabled:opacity-50"
+                >
+                  Resend OTP
+                </button>
               </div>
             </div>
           )}
@@ -300,8 +359,8 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
               <>
                 {mode === 'login' && 'Sign In'}
                 {mode === 'register' && 'Register & Send OTP'}
-                {mode === 'verify_reg_otp' && 'Verify OTP & Enter Portal'}
-                {mode === 'otp' && (otpStep === 'request' ? 'Generate Reset OTP' : 'Update Password')}
+                {mode === 'verify_reg_otp' && 'Verify OTP & Create Account'}
+                {mode === 'forgot' && (otpStep === 'request' ? 'Generate Reset OTP' : 'Update Password')}
                 <ArrowRight className="w-4 h-4" />
               </>
             )}

@@ -370,26 +370,56 @@ class AuthController extends Controller
 
         $email = strtolower($request->email);
 
-        // Find existing pending OTP record for registration payload if present
-        $existingRecord = PasswordResetOtp::where('email', $email)
-            ->latest()
-            ->first();
+        // Find recent OTP attempts in the last 15 minutes to calculate rate limit
+        $recentOtps = PasswordResetOtp::where('email', $email)
+            ->where('created_at', '>=', now()->subMinutes(15))
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $latest = $recentOtps->first();
+
+        if ($latest) {
+            $attemptsCount = $recentOtps->count();
+            // 1st resend: 60s (1 min), 2nd resend: 120s (2 mins), 3rd+ resend: 180s (3 mins)
+            $cooldownSeconds = match (true) {
+                $attemptsCount >= 3 => 180,
+                $attemptsCount === 2 => 120,
+                default => 60,
+            };
+
+            $secondsPassed = now()->diffInSeconds($latest->created_at);
+            if ($secondsPassed < $cooldownSeconds) {
+                $remaining = $cooldownSeconds - $secondsPassed;
+                return response()->json([
+                    'message' => "Please wait {$remaining} seconds before requesting another OTP.",
+                    'cooldown_seconds' => $remaining,
+                ], 429);
+            }
+        }
 
         $otp = sprintf('%06d', mt_rand(100000, 999999));
 
         PasswordResetOtp::create([
             'email' => $email,
             'otp_code' => Hash::make($otp),
-            'payload' => $existingRecord ? $existingRecord->payload : null,
+            'payload' => $latest ? $latest->payload : null,
             'expires_at' => now()->addMinutes(5),
             'used' => false,
         ]);
+
+        $newCount = $recentOtps->count() + 1;
+        $nextCooldown = match (true) {
+            $newCount >= 3 => 180,
+            $newCount === 2 => 120,
+            default => 60,
+        };
 
         return response()->json([
             'message' => 'New 6-digit OTP code sent to your email. Valid for 5 minutes.',
             'require_otp' => true,
             'email' => $email,
             'otp' => $otp,
+            'cooldown_seconds' => $nextCooldown,
         ]);
     }
 

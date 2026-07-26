@@ -28,6 +28,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
   const [mentorCode, setMentorCode] = useState('');
   const [otpCode, setOtpCode] = useState('');
   const [timerSeconds, setTimerSeconds] = useState(300);
+  const [resendCooldown, setResendCooldown] = useState(60);
 
   // Reset modal state on open or initialMode change
   React.useEffect(() => {
@@ -40,19 +41,31 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
       setDebugOtp(null);
       setOtpCode('');
       setTimerSeconds(300);
+      setResendCooldown(60);
     }
   }, [isOpen, initialMode]);
 
   // Start 5-minute countdown timer when on OTP verification screens
   React.useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isOpen && (mode === 'verify_reg_otp' || (mode === 'otp' && otpStep === 'verify'))) {
+    if (isOpen && (mode === 'verify_reg_otp' || (mode === 'forgot' && otpStep === 'verify'))) {
       interval = setInterval(() => {
         setTimerSeconds((prev) => (prev > 0 ? prev - 1 : 0));
       }, 1000);
     }
     return () => clearInterval(interval);
   }, [isOpen, mode, otpStep]);
+
+  // Start Resend OTP rate limit cooldown timer
+  React.useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (resendCooldown > 0) {
+      interval = setInterval(() => {
+        setResendCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [resendCooldown]);
 
   const sendHtmlEmail = (recipientEmail: string, subjectTitle: string, code: string) => {
     try {
@@ -75,7 +88,7 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
   };
 
   const handleResendOtp = async () => {
-    if (!email) return;
+    if (!email || resendCooldown > 0) return;
     setLoading(true);
     setError(null);
     setSuccessMsg(null);
@@ -86,11 +99,15 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
       });
       setSuccessMsg(res.message || 'New 6-digit OTP code sent! Valid for 5 minutes.');
       setTimerSeconds(300);
+      setResendCooldown(res.cooldown_seconds || 60);
       if (res.otp) {
         setDebugOtp(res.otp);
         sendHtmlEmail(email, 'CyberCMS Email Verification OTP', res.otp);
       }
     } catch (err: any) {
+      if (err.cooldown_seconds) {
+        setResendCooldown(err.cooldown_seconds);
+      }
       setError(err.message || 'Failed to resend OTP.');
     } finally {
       setLoading(false);
@@ -339,10 +356,12 @@ export default function AuthModal({ isOpen, initialMode = 'login', onClose, onSu
                 <button
                   type="button"
                   onClick={handleResendOtp}
-                  disabled={loading}
-                  className="text-indigo-400 hover:text-indigo-300 font-semibold underline disabled:opacity-50"
+                  disabled={loading || resendCooldown > 0}
+                  className="text-indigo-400 hover:text-indigo-300 font-semibold underline disabled:opacity-50 disabled:no-underline"
                 >
-                  Resend OTP
+                  {resendCooldown > 0
+                    ? `Resend in ${Math.floor(resendCooldown / 60)}:${String(resendCooldown % 60).padStart(2, '0')}`
+                    : 'Resend OTP'}
                 </button>
               </div>
             </div>
